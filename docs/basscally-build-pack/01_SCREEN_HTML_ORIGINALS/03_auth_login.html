@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Basscally Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-brand:          #FF4500;
+    --color-brand-hover:    #FF5C1F;
+    --color-brand-muted:    #2A1408;
+    --color-bg:             #0A0A0B;
+    --color-surface:        #141416;
+    --color-surface-raised: #1C1C1F;
+    --color-border:         #26262A;
+    --color-border-strong:  #3A3A40;
+    --color-text:           #F5F5F7;
+    --color-text-muted:     #A1A1A8;
+    --color-text-dim:       #6B6B72;
+    --color-success:        #34D399;
+    --color-danger:         #F87171;
+
+    --font-display: "Cabinet Grotesk", "Inter", system-ui, sans-serif;
+    --font-body:    "Geist", "Inter", -apple-system, sans-serif;
+    --font-mono:    "Geist Mono", "JetBrains Mono", monospace;
+
+    --space-1: 4px;  --space-2: 8px;  --space-3: 12px;
+    --space-4: 16px; --space-5: 24px; --space-6: 32px;
+    --space-8: 48px; --space-10: 64px;
+
+    --radius-md: 10px; --radius-lg: 14px; --radius-full: 9999px;
+
+    --shadow-brand-glow: 0 0 32px rgba(255,69,0,0.28);
+    --motion-fast: 150ms;
+    --motion-default: 250ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--color-brand); color: #FFF; }
+
+  /* ============================================================
+     LAYOUT — centered vertically, full viewport
+  ============================================================ */
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-5);
+    position: relative;
+  }
+
+  /* Subtle warm glow — same language as the hero */
+  .auth-page::before {
+    content: "";
+    position: absolute;
+    top: -120px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 500px;
+    background: radial-gradient(circle, rgba(255,69,0,0.06) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* ============================================================
+     BACK LINK
+  ============================================================ */
+  .auth-back {
+    position: absolute;
+    top: var(--space-5);
+    left: var(--space-5);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--motion-fast) var(--ease-out);
+  }
+  .auth-back:hover { color: var(--color-text); }
+  .auth-back svg { transition: transform var(--motion-fast) var(--ease-out); }
+  .auth-back:hover svg { transform: translateX(-2px); }
+
+  /* ============================================================
+     AUTH CARD
+  ============================================================ */
+  .auth-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Brand mark */
+  .auth-card__mark {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    background: var(--color-brand);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800; font-size: 22px;
+    color: #FFF; line-height: 1;
+    margin-bottom: var(--space-6);
+  }
+
+  .auth-card__heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: var(--space-2);
+  }
+
+  .auth-card__sub {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-bottom: var(--space-8);
+    max-width: 320px;
+  }
+
+  /* ============================================================
+     FORM
+  ============================================================ */
+  .auth-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .field__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    letter-spacing: 0.01em;
+  }
+
+  .field__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--color-text);
+    outline: none;
+    transition: border-color var(--motion-fast) var(--ease-out),
+                box-shadow var(--motion-fast) var(--ease-out);
+    -webkit-appearance: none;
+  }
+
+  .field__input::placeholder {
+    color: var(--color-text-dim);
+  }
+
+  .field__input:focus {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px rgba(255,69,0,0.15);
+  }
+
+  /* Error state */
+  .field__input.error {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(248,113,113,0.15);
+  }
+
+  .field__error {
+    font-size: 13px;
+    color: var(--color-danger);
+    display: none;
+  }
+
+  .field__input.error ~ .field__error { display: block; }
+
+  /* ============================================================
+     BUTTONS (auth context)
+  ============================================================ */
+  .btn {
+    font-family: var(--font-body);
+    font-weight: 600; font-size: 15px; line-height: 1;
+    padding: 14px var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--ease-out);
+    text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; white-space: nowrap;
+    width: 100%;
+  }
+
+  .btn--primary { background: var(--color-brand); color: #FFF; }
+  .btn--primary:hover { background: var(--color-brand-hover); box-shadow: var(--shadow-brand-glow); }
+  .btn--primary:active { transform: scale(0.98); }
+
+  .btn--primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+
+  /* Loading spinner inside button */
+  .btn__spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #FFF;
+    border-radius: 50%;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     STATES — default, loading, success, error
+  ============================================================ */
+
+  /* --- Loading state --- */
+  .auth-form.loading .btn__label { opacity: 0; }
+  .auth-form.loading .btn__spinner {
+    display: block;
+    animation: spin 600ms linear infinite;
+  }
+  .auth-form.loading .btn--primary { pointer-events: none; }
+  .auth-form.loading .field__input { pointer-events: none; opacity: 0.6; }
+
+  /* --- Success state (email sent) --- */
+  .auth-success {
+    display: none;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-success.active { display: flex; }
+  .auth-card.hidden { display: none; }
+
+  .auth-success__icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.12);
+    border: 1px solid rgba(52,211,153,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: var(--space-6);
+    color: var(--color-success);
+  }
+
+  .auth-success__heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-3);
+  }
+
+  .auth-success__body {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin-bottom: var(--space-6);
+    max-width: 340px;
+  }
+
+  .auth-success__email {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .auth-success__fine {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.03em;
+  }
+
+  .auth-success__fine a {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ============================================================
+     FOOTER NOTE
+  ============================================================ */
+  .auth-footer {
+    position: absolute;
+    bottom: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .auth-footer a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  .auth-footer a:hover { color: var(--color-text); }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width: 767px) {
+    .auth-page { padding: var(--space-4); justify-content: flex-start; padding-top: 100px; }
+    .auth-back { top: var(--space-4); left: var(--space-4); }
+    .auth-card__heading { font-size: 24px; }
+    .auth-card__sub { font-size: 14px; }
+    .auth-footer { position: relative; bottom: auto; margin-top: var(--space-10); }
+  }
+
+  @media (max-width: 400px) {
+    .auth-card__mark { width: 40px; height: 40px; font-size: 20px; border-radius: 10px; }
+    .auth-card__heading { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="auth-page">
+
+  <!-- Back to home -->
+  <a href="/" class="auth-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    Back
+  </a>
+
+  <!-- === DEFAULT STATE: email form === -->
+  <div class="auth-card" id="auth-card">
+
+    <div class="auth-card__mark" aria-hidden="true">B</div>
+
+    <h1 class="auth-card__heading">Sign in to Basscally Club</h1>
+    <p class="auth-card__sub">Enter your email and we&rsquo;ll send you a magic link. No password needed.</p>
+
+    <div class="auth-form" id="auth-form">
+      <div class="field">
+        <label class="field__label" for="email">Email address</label>
+        <input
+          class="field__input"
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+          autofocus
+        />
+        <span class="field__error">Enter a valid email address.</span>
+      </div>
+
+      <button class="btn btn--primary" type="button" id="submit-btn">
+        <span class="btn__label">Send magic link</span>
+        <span class="btn__spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p style="margin-top: var(--space-5); font-size: 14px; color: var(--color-text-dim); text-align: center;">
+      Don&rsquo;t have an account?
+      <a href="#checkout" style="color: var(--color-brand); text-decoration: none; font-weight: 500;">Join for $1.50/month</a>
+    </p>
+
+  </div>
+
+  <!-- === SUCCESS STATE: check your email === -->
+  <div class="auth-success" id="auth-success">
+
+    <div class="auth-success__icon" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+
+    <h1 class="auth-success__heading">Check your email</h1>
+    <p class="auth-success__body">
+      We sent a magic link to <span class="auth-success__email" id="sent-email">you@example.com</span>. Click it to sign in.
+    </p>
+
+    <p class="auth-success__fine">
+      Didn&rsquo;t get it? Check spam, or <a href="#" id="resend-link">resend</a>.
+    </p>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="auth-footer">
+    <a href="/">Basscally Club</a> &ensp;&middot;&ensp; <a href="#">Privacy</a> &ensp;&middot;&ensp; <a href="#">Terms</a>
+  </div>
+
+</div>
+
+<!-- =========================================================
+     INTERACTION DEMO (simulates form states)
+========================================================= -->
+<script>
+  const form = document.getElementById('auth-form');
+  const card = document.getElementById('auth-card');
+  const success = document.getElementById('auth-success');
+  const emailInput = document.getElementById('email');
+  const submitBtn = document.getElementById('submit-btn');
+  const sentEmail = document.getElementById('sent-email');
+
+  submitBtn.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+
+    // Validate
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      emailInput.classList.add('error');
+      return;
+    }
+    emailInput.classList.remove('error');
+
+    // Loading state
+    form.classList.add('loading');
+
+    // Simulate API call
+    setTimeout(() => {
+      form.classList.remove('loading');
+      // Transition to success
+      sentEmail.textContent = email;
+      card.classList.add('hidden');
+      success.classList.add('active');
+    }, 1500);
+  });
+
+  // Clear error on input
+  emailInput.addEventListener('input', () => {
+    emailInput.classList.remove('error');
+  });
+
+  // Enter key submits
+  emailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitBtn.click();
+  });
+</script>
+
+</body>
+</html>

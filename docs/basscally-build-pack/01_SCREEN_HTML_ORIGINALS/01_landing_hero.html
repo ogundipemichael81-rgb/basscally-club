@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Basscally Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-brand: #FF4500;
+    --color-brand-hover: #FF5C1F;
+    --color-brand-muted: #2A1408;
+
+    --color-bg: #0A0A0B;
+    --color-surface: #141416;
+    --color-surface-raised: #1C1C1F;
+    --color-surface-sunken: #060607;
+
+    --color-border: #26262A;
+    --color-border-strong: #3A3A40;
+
+    --color-text: #F5F5F7;
+    --color-text-muted: #A1A1A8;
+    --color-text-dim: #6B6B72;
+
+    --color-success: #34D399;
+
+    --font-display: "Cabinet Grotesk", "Inter", system-ui, sans-serif;
+    --font-body: "Geist", "Inter", -apple-system, sans-serif;
+    --font-mono: "Geist Mono", "JetBrains Mono", monospace;
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-8: 48px;
+    --space-10: 64px;
+    --space-12: 96px;
+    --space-16: 128px;
+
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-full: 9999px;
+
+    --shadow-brand-glow: 0 0 32px rgba(255, 69, 0, 0.28);
+
+    --motion-fast: 150ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ============ NAV ============ */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 10, 11, 0.72);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border-bottom: 1px solid rgba(38, 38, 42, 0.6);
+  }
+
+  .nav__inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 18px var(--space-8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .nav__brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.015em;
+    color: var(--color-text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav__brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--color-brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 14px;
+    color: #FFF;
+    line-height: 1;
+  }
+
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    padding: 11px 18px;
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--ease-out);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .btn--primary {
+    background: var(--color-brand);
+    color: #FFFFFF;
+  }
+  .btn--primary:hover {
+    background: var(--color-brand-hover);
+    box-shadow: var(--shadow-brand-glow);
+  }
+  .btn--primary:active { transform: scale(0.98); }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-text-muted);
+  }
+  .btn--ghost:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .btn--lg {
+    font-size: 16px;
+    padding: 18px 28px;
+    border-radius: 14px;
+  }
+
+  .btn--lg .btn__arrow {
+    transition: transform var(--motion-fast) var(--ease-out);
+  }
+  .btn--lg:hover .btn__arrow { transform: translateX(3px); }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 65px);
+    padding: var(--space-10) var(--space-8) var(--space-12);
+    overflow: hidden;
+  }
+
+  /* Atmospheric base — single warm wash at top-left, fades out */
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 69, 0, 0.10) 0%,
+      rgba(255, 69, 0, 0.04) 30%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Faint grid backdrop — Linear-style depth, near-invisible */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center center;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    max-width: 1320px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: var(--space-12);
+    align-items: end;
+    min-height: calc(100vh - 65px - var(--space-10) - var(--space-12));
+  }
+
+  /* ----- Left: headline column ----- */
+  .hero__left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero__meta-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-8);
+  }
+
+  .hero__meta-row span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero__meta-row .sep {
+    width: 16px;
+    height: 1px;
+    background: var(--color-border-strong);
+  }
+
+  .hero__live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-success);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+    position: relative;
+  }
+
+  .hero__live-dot::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    animation: pulse 2.4s var(--ease-out) infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+
+  .hero__headline {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(64px, 11vw, 148px);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    color: var(--color-text);
+    margin-bottom: var(--space-6);
+  }
+
+  .hero__headline .line { display: block; }
+  .hero__headline .line--indent { padding-left: 0.18em; }
+
+  .hero__headline .accent {
+    color: var(--color-brand);
+    font-style: italic;
+    font-weight: 800;
+    position: relative;
+  }
+
+  /* Strikethrough '$20' to '$1.50' move — editorial moment */
+  .hero__price-strike {
+    color: var(--color-text-dim);
+    text-decoration: line-through;
+    text-decoration-thickness: 4px;
+    text-decoration-color: var(--color-brand);
+    font-weight: 700;
+  }
+
+  .hero__lede {
+    font-family: var(--font-body);
+    font-size: clamp(18px, 1.5vw, 22px);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    max-width: 540px;
+    margin-bottom: var(--space-8);
+  }
+
+  .hero__lede strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .hero__cta-cluster {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .hero__cta-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .hero__fine {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ----- Right: vertical rhythm rail ----- */
+  .hero__right {
+    position: relative;
+    padding-left: var(--space-6);
+    border-left: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-bottom: var(--space-2);
+  }
+
+  .hero__right-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+
+  .drop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .drop {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+  }
+
+  .drop:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .drop__num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .drop__body { display: flex; flex-direction: column; gap: 4px; }
+
+  .drop__title {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .drop__tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .drop--next .drop__num { color: var(--color-brand); }
+  .drop--next .drop__title { color: var(--color-text); }
+
+  .drop--next::before {
+    content: "";
+    position: absolute;
+    left: -25px;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-brand);
+    box-shadow: 0 0 12px rgba(255, 69, 0, 0.6);
+  }
+
+  .hero__right-footer {
+    margin-top: auto;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .hero__right-footer .count {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  /* ============ BOTTOM SOCIAL STRIP ============ */
+  .social-strip {
+    position: relative;
+    z-index: 1;
+    max-width: 1320px;
+    margin: 0 auto;
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .social-strip__stats {
+    display: flex;
+    gap: var(--space-8);
+  }
+
+  .stat__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .social-strip__note {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* ============ MOBILE ============ */
+  @media (max-width: 1023px) {
+    .nav__inner { padding: 14px var(--space-5); }
+    .hero { padding: var(--space-8) var(--space-5) var(--space-10); }
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+      min-height: 0;
+    }
+    .hero__right {
+      border-left: none;
+      border-top: 1px solid var(--color-border);
+      padding-left: 0;
+      padding-top: var(--space-6);
+    }
+    .social-strip { flex-direction: column; align-items: flex-start; gap: var(--space-5); }
+  }
+
+  @media (max-width: 767px) {
+    .nav__brand { font-size: 15px; }
+    .nav__actions .btn--ghost { display: none; }
+    .nav__inner .btn { font-size: 13px; padding: 9px 14px; }
+
+    .hero { padding: var(--space-6) 20px var(--space-10); }
+    .hero__meta-row { font-size: 11px; margin-bottom: var(--space-6); gap: 10px; }
+    .hero__meta-row .sep { width: 12px; }
+
+    .hero__headline {
+      font-size: clamp(48px, 13vw, 72px);
+      letter-spacing: -0.035em;
+      line-height: 0.94;
+    }
+    .hero__headline .line--indent { padding-left: 0; }
+
+    .hero__lede { font-size: 17px; margin-bottom: var(--space-6); }
+
+    .hero__cta-row .btn--lg { width: 100%; max-width: 420px; }
+
+    .social-strip__stats { gap: var(--space-5); flex-wrap: wrap; }
+    .stat__value { font-size: 22px; }
+  }
+
+  /* Entrance — staggered fade-rise */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__meta-row,
+    .hero__headline .line,
+    .hero__lede,
+    .hero__cta-cluster,
+    .hero__right > *,
+    .social-strip > * {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 700ms var(--ease-out) forwards;
+    }
+    .hero__meta-row              { animation-delay: 100ms; }
+    .hero__headline .line:nth-child(1) { animation-delay: 200ms; }
+    .hero__headline .line:nth-child(2) { animation-delay: 300ms; }
+    .hero__headline .line:nth-child(3) { animation-delay: 400ms; }
+    .hero__headline .line:nth-child(4) { animation-delay: 500ms; }
+    .hero__lede                  { animation-delay: 600ms; }
+    .hero__cta-cluster           { animation-delay: 700ms; }
+    .hero__right > *:nth-child(1) { animation-delay: 500ms; }
+    .hero__right > *:nth-child(2) { animation-delay: 600ms; }
+    .hero__right > *:nth-child(3) { animation-delay: 700ms; }
+    .social-strip > *:nth-child(1) { animation-delay: 800ms; }
+    .social-strip > *:nth-child(2) { animation-delay: 900ms; }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-brand);
+    color: #FFF;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Primary">
+  <div class="nav__inner">
+    <a href="/" class="nav__brand" aria-label="Basscally Club home">
+      <span class="nav__brand-mark" aria-hidden="true">B</span>
+      Basscally Club
+    </a>
+    <div class="nav__actions">
+      <a href="/auth/login" class="btn btn--ghost">Sign in</a>
+      <a href="#checkout" class="btn btn--primary">Join &mdash; $1.50/mo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" aria-labelledby="hero-headline">
+  <div class="hero__grid">
+
+    <div class="hero__left">
+
+      <div class="hero__meta-row">
+        <span>
+          <span class="hero__live-dot" aria-hidden="true"></span>
+          Now accepting members
+        </span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>Issue 001 &mdash; May 2026</span>
+      </div>
+
+      <h1 class="hero__headline" id="hero-headline">
+        <span class="line">Practice</span>
+        <span class="line line--indent">with</span>
+        <span class="line"><span class="accent">Basscally.</span></span>
+        <span class="line line--indent">
+          <span class="hero__price-strike">$20</span>
+          <span style="color: var(--color-brand);">$1.50</span>
+          <span style="color: var(--color-text-muted); font-weight: 500;">/month.</span>
+        </span>
+      </h1>
+
+      <p class="hero__lede">
+        New <strong>bass-less covers, grooves, fills, and challenges</strong> &mdash;
+        delivered to your inbox every 3 days. Practice on your time, from anywhere.
+      </p>
+
+      <div class="hero__cta-cluster">
+        <div class="hero__cta-row">
+          <a href="#checkout" class="btn btn--primary btn--lg">
+            Join the Club &mdash; $1.50/month
+            <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <span class="hero__fine">Cancel anytime &middot; No contracts</span>
+        </div>
+      </div>
+
+    </div>
+
+    <aside class="hero__right" aria-label="Upcoming drops">
+      <div class="hero__right-label">// This week&apos;s drops</div>
+
+      <div class="drop-list">
+        <div class="drop drop--next">
+          <span class="drop__num">001 &mdash; TUE</span>
+          <div class="drop__body">
+            <span class="drop__title">Funk slap pattern in E</span>
+            <span class="drop__tag">Groove &middot; Beginner &middot; 2 min</span>
+          </div>
+        </div>
+        <div class="drop">
+          <span class="drop__num">002 &mdash; FRI</span>
+          <div class="drop__body">
+            <span class="drop__title">Bass-less: D&apos;Angelo &mdash; Untitled</span>
+            <span class="drop__tag">Cover &middot; Intermediate &middot; 4 min</span>
+          </div>
+        </div>
+        <div class="drop">
+          <span class="drop__num">003 &mdash; MON</span>
+          <div class="drop__body">
+            <span class="drop__title">Ghost-note fill, 16th-note pocket</span>
+            <span class="drop__tag">Fill &middot; Advanced &middot; 1 min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__right-footer">
+        <span>Next drop in</span>
+        <span class="count">02d : 14h</span>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="social-strip">
+    <div class="social-strip__stats">
+      <div>
+        <div class="stat__label">TikTok</div>
+        <div class="stat__value">90,000+</div>
+      </div>
+      <div>
+        <div class="stat__label">Instagram</div>
+        <div class="stat__value">10,000+</div>
+      </div>
+      <div>
+        <div class="stat__label">Avg. views</div>
+        <div class="stat__value">20k&ndash;400k</div>
+      </div>
+    </div>
+    <div class="social-strip__note">
+      Trusted by bassists in<br />40+ countries &mdash; UK / US / NG / BR / JP
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>
