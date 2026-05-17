@@ -32,7 +32,9 @@ export function LandingHero() {
         <div className="flex flex-col">
           <div className="mb-8 flex flex-wrap items-center gap-3 font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-wide text-[var(--color-text-dim)]">
             <span className="inline-flex items-center gap-1.5">
-              <span className="hero-live-dot" aria-hidden />
+              <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full" aria-hidden>
+                <span className="hero-live-dot" />
+              </span>
               Now accepting members
             </span>
             <span className="hidden h-px w-4 bg-[var(--color-border-strong)] sm:block" aria-hidden />

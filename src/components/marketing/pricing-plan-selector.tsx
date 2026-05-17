@@ -17,7 +17,7 @@ function PlanPriceCard({ plan }: { plan: PlanDefinition }) {
   return (
     <article
       className={cn(
-        "basscally-panel-card relative overflow-hidden flex min-h-[420px] flex-col gap-[18px] rounded-[var(--radius-xl)] border p-6 transition-[transform,border-color,box-shadow] duration-200 ease-[var(--ease-out)] hover:-translate-y-1 hover:border-[rgba(255,69,0,0.45)] hover:shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_44px_rgba(255,69,0,0.1)] max-[680px]:min-h-0",
+        "basscally-panel-card relative overflow-hidden flex min-h-[420px] flex-col gap-[18px] rounded-[var(--radius-xl)] border p-6 transition-[transform,border-color,box-shadow] duration-200 ease-[var(--ease-out)] hover:-translate-y-1 hover:border-[rgba(255,69,0,0.45)] hover:shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_44px_rgba(255,69,0,0.1)] motion-reduce:hover:translate-y-0 max-[680px]:min-h-0",
         plan.highlighted &&
           "border-[rgba(255,69,0,0.62)] shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_52px_rgba(255,69,0,0.18)]",
       )}
@@ -65,18 +65,20 @@ function PricingOrbitPanel() {
     <aside className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
       <div className="relative z-[1]">
         <div
-          className="pricing-orbit-wrap relative mx-auto my-1 h-[230px] w-[230px] max-[680px]:h-[185px] max-[680px]:w-[185px]"
+          className="pricing-orbit-wrap decorative-motion mx-auto my-1"
           aria-hidden
         >
           <div className="pricing-orbit-ring absolute inset-0 rounded-full border border-[rgba(255,69,0,0.2)]" />
-          <div className="pricing-orbit-ring-2 absolute inset-[26px] rounded-full border border-[rgba(255,255,255,0.08)]" />
-          <div className="pricing-orbit-ring-3 absolute inset-[58px] rounded-full border border-[rgba(255,92,31,0.26)]" />
-          <div className="pricing-orbit-dot absolute left-1/2 top-1/2 h-3.5 w-3.5 -ml-[7px] -mt-[7px] rounded-full bg-[var(--color-brand)] shadow-[0_0_18px_rgba(255,69,0,0.65)]" />
-          <div className="absolute inset-[70px] flex items-center justify-center rounded-full bg-[var(--color-brand)] font-[family-name:var(--font-display)] text-[44px] font-black text-white shadow-[0_0_70px_rgba(255,69,0,0.52)] max-[680px]:inset-[56px] max-[680px]:text-[36px]">
+          <div className="pricing-orbit-ring-2 absolute inset-[26px] rounded-full border border-[rgba(255,255,255,0.08)] max-[680px]:inset-[22px]" />
+          <div className="pricing-orbit-ring-3 absolute inset-[58px] rounded-full border border-[rgba(255,92,31,0.26)] max-[680px]:inset-[48px]" />
+          <div className="pricing-orbit-rotator absolute inset-0">
+            <span className="pricing-orbit-dot" />
+          </div>
+          <div className="pricing-orbit-core absolute inset-[70px] z-[1] flex items-center justify-center rounded-full bg-[var(--color-brand)] font-[family-name:var(--font-display)] text-[44px] font-black text-white shadow-[0_0_70px_rgba(255,69,0,0.52)] max-[680px]:inset-[56px] max-[680px]:text-[36px]">
             $
           </div>
         </div>
-        <h3 className="mt-6 font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
+        <h3 className="relative z-[2] mt-2 font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
           Simple billing rule
         </h3>
         <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
@@ -84,13 +86,15 @@ function PricingOrbitPanel() {
           play, and downloads unlock only for active or grace-period members.
         </p>
         <hr className="my-[18px] border-[var(--color-border)]" />
-        <div className="pricing-wave flex h-11 items-end gap-[5px]" aria-hidden>
-          {Array.from({ length: 7 }).map((_, i) => (
-            <span
-              key={i}
-              className="w-[7px] rounded-full bg-gradient-to-t from-[var(--color-brand)] to-[rgba(255,69,0,0.22)]"
-            />
-          ))}
+        <div className="decorative-motion relative isolate h-11 overflow-hidden" aria-hidden>
+          <div className="pricing-wave flex h-11 items-end gap-[5px]">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <span
+                key={i}
+                className="w-[7px] rounded-full bg-gradient-to-t from-[var(--color-brand)] to-[rgba(255,69,0,0.22)]"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </aside>

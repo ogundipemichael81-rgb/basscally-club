@@ -33,31 +33,34 @@ export function CallbackContent() {
         </div>
 
         <div
-          className="callback-stage-card basscally-rise-in basscally-rise-in-delay-2 relative flex min-h-[360px] flex-col items-center justify-center gap-6 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-gradient-to-b from-[rgba(28,28,31,0.92)] to-[rgba(14,14,16,0.9)] p-8 lg:min-h-[520px]"
+          className="callback-stage-card basscally-rise-in basscally-rise-in-delay-2 relative flex min-h-[360px] flex-col items-center justify-center overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-gradient-to-b from-[rgba(28,28,31,0.92)] to-[rgba(14,14,16,0.9)] p-8 lg:min-h-[520px]"
           aria-label="Signing in status"
         >
-          <div className="callback-vinyl-wrap relative flex h-[210px] w-[210px] items-center justify-center lg:h-[240px] lg:w-[240px]" aria-hidden>
-            <div className="callback-vinyl relative h-[180px] w-[180px] rounded-full border border-[#303036] lg:h-[210px] lg:w-[210px]">
-              <span className="absolute inset-5 rounded-full border border-white/10" />
-              <span className="absolute inset-[64px] flex items-center justify-center rounded-full bg-[var(--color-brand)] font-[family-name:var(--font-display)] text-3xl font-black text-white shadow-[0_0_30px_rgba(255,69,0,0.28)] lg:inset-[76px] lg:text-[38px]">
-                B
-              </span>
+          <div className="callback-stage-deco" aria-hidden>
+            <div className="callback-vinyl-wrap decorative-motion flex items-center justify-center">
+              <div className="callback-vinyl relative h-[180px] w-[180px] rounded-full border border-[#303036] lg:h-[210px] lg:w-[210px]">
+                <span className="absolute inset-5 rounded-full border border-white/10" />
+                <span className="absolute inset-[64px] flex items-center justify-center rounded-full bg-[var(--color-brand)] font-[family-name:var(--font-display)] text-3xl font-black text-white shadow-[0_0_30px_rgba(255,69,0,0.28)] lg:inset-[76px] lg:text-[38px]">
+                  B
+                </span>
+              </div>
+              <span className="callback-accent-dot callback-accent-dot-one" />
+              <span className="callback-accent-dot callback-accent-dot-two" />
             </div>
-            <span className="callback-orbit-dot callback-orbit-dot-one absolute right-[68px] top-3.5 h-3 w-3 rounded-full bg-[var(--color-brand)] shadow-[0_0_18px_rgba(255,69,0,0.75)]" />
-            <span className="callback-orbit-dot callback-orbit-dot-two absolute bottom-8 left-14 h-3 w-3 rounded-full bg-[var(--color-brand)] shadow-[0_0_18px_rgba(255,69,0,0.75)]" />
+            <div className="decorative-motion relative h-10 w-full max-w-[200px] overflow-hidden">
+              <div className="callback-bars flex h-10 items-end justify-center gap-1">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="w-[5px] rounded-full bg-gradient-to-t from-[rgba(255,69,0,0.25)] to-[var(--color-brand)]"
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="callback-bars flex h-10 items-end gap-1" aria-hidden>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <span
-                key={i}
-                className="w-[5px] rounded-full bg-gradient-to-t from-[rgba(255,69,0,0.25)] to-[var(--color-brand)]"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              />
-            ))}
-          </div>
-
-          <p className="relative z-[1] flex items-center gap-2.5 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
+          <p className="callback-stage-status relative z-10 flex items-center gap-2.5 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
             <span className="callback-status-dot h-2 w-2 rounded-full bg-[var(--color-success)] shadow-[0_0_12px_rgba(52,211,153,0.7)]" />
             Magic link verified
           </p>

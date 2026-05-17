@@ -22,7 +22,7 @@ export function MotionDiv({
   return (
     <div
       className={cn(
-        "opacity-100 motion-reduce:opacity-100 [@media(prefers-reduced-motion:no-preference)]:animate-[fade-rise_0.4s_var(--ease-out)_both]",
+        "opacity-100 motion-reduce:opacity-100 [@media(prefers-reduced-motion:no-preference)]:animate-[fade-rise_0.6s_var(--ease-out)_both]",
         className,
       )}
       style={{ ...style, animationDelay: delayMs ? `${delayMs}ms` : undefined }}

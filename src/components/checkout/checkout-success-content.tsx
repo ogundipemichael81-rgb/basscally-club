@@ -61,15 +61,14 @@ export function CheckoutSuccessContent() {
               Active
             </Badge>
           </div>
-          <div
-            className="checkout-vinyl relative mx-auto my-6 flex h-[148px] w-[148px] items-center justify-center rounded-full border border-[var(--color-border-strong)] bg-[radial-gradient(circle_at_30%_30%,#2a2a30,#0d0d0f_70%)] shadow-[inset_0_0_0_12px_rgba(0,0,0,0.35)] max-[680px]:h-[132px] max-[680px]:w-[132px]"
-            aria-hidden
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-success)] text-[var(--color-bg)]">
-              <IconCheck className="h-7 w-7" />
+          <div className="checkout-vinyl-wrap decorative-motion my-6" aria-hidden>
+            <div className="checkout-vinyl relative flex h-full w-full items-center justify-center rounded-full border border-[var(--color-border-strong)] bg-[radial-gradient(circle_at_30%_30%,#2a2a30,#0d0d0f_70%)] shadow-[inset_0_0_0_12px_rgba(0,0,0,0.35)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-success)] text-[var(--color-bg)]">
+                <IconCheck className="h-7 w-7" />
+              </div>
             </div>
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-black tracking-[-0.02em]">
+          <h2 className="relative z-[2] font-[family-name:var(--font-display)] text-2xl font-black tracking-[-0.02em]">
             Founding member access
           </h2>
           <p className="mt-2 text-sm text-[var(--color-text-muted)]">

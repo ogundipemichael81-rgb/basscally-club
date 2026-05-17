@@ -101,7 +101,7 @@ export function CheckoutStepCards({
         <MotionDiv
           key={item.label}
           delayMs={240 + index * 50}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)]"
+          className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] motion-reduce:hover:translate-y-0"
         >
           <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-brand)]">
             {item.label}
@@ -134,7 +134,7 @@ export function CheckoutControlRoom({
         <MotionDiv
           key={item.title}
           delayMs={300 + index * 50}
-          className="min-h-[150px] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)]"
+          className="min-h-[150px] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] motion-reduce:hover:translate-y-0"
         >
           <h3 className="font-[family-name:var(--font-display)] text-xl font-black tracking-[-0.02em]">
             {item.title}
