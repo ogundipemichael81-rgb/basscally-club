@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
+import { LEGAL_SUPPORT_EMAIL } from "@/content/legal";
+import { routes } from "@/lib/routes";
 
 export function MarketingFooter() {
   return (
@@ -11,33 +14,32 @@ export function MarketingFooter() {
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">A bass practice membership.</p>
           <p className="mt-4 text-sm text-[var(--color-text-dim)]">
             <a
-              href="mailto:hello@basscally.club"
+              href={`mailto:${LEGAL_SUPPORT_EMAIL}`}
               className="inline-flex min-h-11 items-center hover:text-[var(--color-text)]"
             >
-              hello@basscally.club
+              Contact
             </a>
-            {" · "}Contact
           </p>
         </div>
         <nav className="flex flex-col gap-2 text-sm text-[var(--color-text-muted)]" aria-label="Legal">
-          <a
-            href="mailto:hello@basscally.club?subject=Terms%20of%20Service"
-            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          <Link
+            href={routes.legal.terms}
+            className="flex min-h-11 min-w-11 items-center px-1 hover:text-[var(--color-text)]"
           >
             Terms of Service
-          </a>
-          <a
-            href="mailto:hello@basscally.club?subject=Privacy%20Policy"
-            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          </Link>
+          <Link
+            href={routes.legal.privacy}
+            className="flex min-h-11 min-w-11 items-center px-1 hover:text-[var(--color-text)]"
           >
             Privacy Policy
-          </a>
-          <a
-            href="mailto:hello@basscally.club?subject=Refund%20Policy"
-            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          </Link>
+          <Link
+            href={routes.legal.refundPolicy}
+            className="flex min-h-11 min-w-11 items-center px-1 hover:text-[var(--color-text)]"
           >
             Refund Policy
-          </a>
+          </Link>
         </nav>
         <p className="text-xs text-[var(--color-text-dim)] lg:col-span-2">
           © {new Date().getFullYear()} Basscally. All rights reserved.

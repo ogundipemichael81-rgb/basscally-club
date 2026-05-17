@@ -13,6 +13,11 @@ export const routes = {
     success: "/checkout/success",
     cancelled: "/checkout/cancelled",
   },
+  legal: {
+    terms: "/terms",
+    privacy: "/privacy",
+    refundPolicy: "/refund-policy",
+  },
   member: {
     dashboard: "/dashboard",
     content: (id: string) => `/c/${id}` as const,

@@ -2,7 +2,7 @@
 
 **Status:** Active build strategy (supersedes “all 33 screens before launch”)  
 **Source of truth:** `docs/basscally-build-pack/` (PRD v1.1, `09_routes_wiring_screen_map_and_components.md`, `08_architecture_backend_auth_payments_email_logic.md`, `06_locked_screen_designs_UPDATED_01_33.md`)  
-**Last updated:** 2026-05-17
+**Last updated:** 2026-05-17 (legal pages implemented)
 
 ---
 
@@ -206,6 +206,33 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | 04–08 | Placeholder pages only |
 | 09, 20 | Placeholder pages only |
 | 24, 25 | Done (Phase 2); classified as beta polish tier |
+| Legal (Terms, Privacy, Refund) | **Done** — `/terms`, `/privacy`, `/refund-policy` (2026-05-17) |
+
+---
+
+## Legal pages (implemented)
+
+**Status:** **Implemented** in app (2026-05-17). Content is a **public-facing draft** pending final solicitor review (`docs/legal-public-content-draft.md` — internal checklist only).
+
+| Route | Document |
+| --- | --- |
+| `/terms` | Terms of Service |
+| `/privacy` | Privacy Policy |
+| `/refund-policy` | Refund Policy |
+
+**Confirmed public values:**
+
+| Field | Value |
+| --- | --- |
+| Support email | `basscally.enquiry@gmail.com` |
+| Address display | Registered in England & Wales, Company No. 16656420. Registered office address available on request. |
+| Payment provider (legal copy) | Lemon Squeezy only — **Stripe and PayPal are not active providers** and must not appear on public legal pages |
+
+**QA:** `node scripts/legal-audit.mjs` and `scripts/responsive-audit.mjs` (legal routes) — **PASS** (2026-05-17). See `docs/legal-pages-build-plan.md`.
+
+**Footer placeholder P1:** **Resolved** — marketing footer and auth login footer link to real legal routes; Contact uses `mailto:basscally.enquiry@gmail.com`.
+
+**Next build step:** **Phase B — Backend foundation** (Supabase, Lemon Squeezy webhooks, auth wiring) after legal route audit passes. Legal wording sign-off remains a parallel doc/counsel task, not a code blocker for Phase B.
 
 ---
 
@@ -218,20 +245,24 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | Gate | Doc / tool | Result |
 |------|------------|--------|
 | Visual depth | `docs/visual-depth-quality-gate.md` | **PASS** (P0) |
-| Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (48/48) |
+| Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (72/72 incl. legal routes) |
 | Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36) |
 | Build | `typecheck`, `lint`, `build` | **PASS** |
 
-**Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`.
+**Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
 
 **Breakpoints covered:** 320, 375, 390, 768, 1024, 1280, 280 (stress), 1440+ (stress); motion automation also at 1440.
 
+### Resolved P1 (2026-05-17)
+
+- **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy` live; marketing + login footers updated; support email `basscally.enquiry@gmail.com`.
+
 ### Remaining P1 (does not block Phase B)
 
-- Manual keyboard/focus walkthrough on selling-path routes.
+- Manual keyboard/focus walkthrough on selling-path and legal routes.
 - Optional device check: landing sticky CTA at 375×667.
-- Login footer: Privacy/Terms placeholders (not links).
-- Re-run `responsive-audit.mjs` and `motion-qa.mjs` after any selling-path UI change.
+- **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md` internal section).
+- Re-run `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any selling-path or legal UI change.
 
 ### Mandatory checks for every new screen
 
@@ -258,10 +289,12 @@ Before merge, every new route or major surface must pass:
 2. Screens **11, 12** — ensure success/cancelled copy and access rules match real subscription state (no fake unlock).  
 3. Screen **08** paywall state on `/pricing` for expired/anonymous.
 
-### Phase B — Backend foundation (recommended next)
+### Phase B — Backend foundation (**next — after legal route audit PASS**)
+
+Legal pages and footer links are implemented and audited (2026-05-17). Proceed with payment integration:
 
 4. Supabase project, schema (`users`, `subscriptions`, `content`), Storage bucket.  
-5. Lemon Squeezy webhook + subscription access helpers.  
+5. Lemon Squeezy webhook + subscription access helpers (hosted checkout only — not Stripe/PayPal).  
 6. Wire auth login/callback (replace UI-only login).
 
 ### Phase C — Member core
@@ -288,6 +321,8 @@ Before merge, every new route or major surface must pass:
 
 ## References
 
+- `docs/legal-pages-build-plan.md` — legal routes implementation and QA  
+- `docs/legal-public-content-draft.md` — public copy source + internal solicitor checklist  
 - `docs/visual-depth-quality-gate.md` — depth addendum (does not replace locked design system)  
 - `docs/mobile-responsive-quality-gate.md` — official responsive QA gate  
 - `docs/motion-audit-rules.md` — motion containment and reduced-motion rules  

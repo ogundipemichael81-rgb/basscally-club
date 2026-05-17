@@ -2,8 +2,8 @@
 
 **Status:** Official QA gate for layout, touch, and collision prevention  
 **Companion docs:** `docs/motion-audit-rules.md`, `docs/visual-depth-quality-gate.md`  
-**Last updated:** 2026-05-17  
-**Source audits:** Phase A responsive deep audit (`scripts/responsive-audit.mjs`), motion QA (`scripts/motion-qa.mjs`)
+**Last updated:** 2026-05-17 (legal routes added)  
+**Source audits:** Phase A responsive deep audit (`scripts/responsive-audit.mjs`), motion QA (`scripts/motion-qa.mjs`), legal content audit (`scripts/legal-audit.mjs`)
 
 Convert every selling-path screen from “desktop shrunk” to **intentionally mobile** before Phase B backend work.
 
@@ -14,17 +14,21 @@ Convert every selling-path screen from “desktop shrunk” to **intentionally m
 | Field | Value |
 | --- | --- |
 | **Responsive deep audit completed** | **2026-05-17** |
-| **Routes tested** | `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled` |
+| **Routes tested** | Selling path + legal: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy` |
 | **Required breakpoints** | 320, 375, 390, 768, 1024, 1280 |
 | **Stress breakpoints** | 280, 1440+ |
-| **P0 result** | **PASS** — 48/48 automated rows (Collision, Motion, Touch, Depth columns) |
-| **Build** | `npm run typecheck`, `npm run lint`, `npm run build` — PASS after fixes |
+| **P0 result** | **PASS** — 72/72 automated rows (Collision, Motion, Touch, Depth columns) |
+| **Build** | `npm run typecheck`, `npm run lint`, `npm run build` — PASS |
+
+### Resolved P1 (2026-05-17)
+
+- **Legal footer placeholders** — Marketing footer links to `/terms`, `/privacy`, `/refund-policy`; Contact → `mailto:basscally.enquiry@gmail.com`; login footer links to `/privacy`, `/terms`.
 
 ### Remaining P1 (non-blocking)
 
-- **Manual focus walkthrough** — Tab through nav, FAQ, and login form on a real device; automated audit does not fully certify focus visibility on every control.
+- **Manual focus walkthrough** — Tab through nav, FAQ, login, and legal pages on a real device.
 - **Landing hero CTA at 375×667** — Automated check passed; optional one device confirmation.
-- **Login footer** — `Privacy` / `Terms` remain placeholder text (not links); not a responsive failure.
+- **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md`).
 - **Depth on `/auth/login`** — Shell atmosphere only; no panel cards (documented exception).
 
 ---
@@ -141,7 +145,7 @@ Full rules: `docs/motion-audit-rules.md`.
 
 ## 6. Per-screen sign-off table
 
-**Signed off:** 2026-05-17 (automated responsive + motion QA). Re-run after any selling-path layout, depth, or motion change.
+**Signed off:** 2026-05-17 (automated responsive + motion + legal QA). Re-run after any selling-path, legal layout, depth, or motion change.
 
 | Screen | Route | Collision | Motion | Touch | Depth | Verdict |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -151,8 +155,11 @@ Full rules: `docs/motion-audit-rules.md`.
 | Auth callback | `/auth/callback` | PASS | PASS | PASS | PASS | PASS |
 | Checkout success | `/checkout/success` | PASS | PASS | PASS | PASS | PASS |
 | Checkout cancelled | `/checkout/cancelled` | PASS | PASS | PASS | PASS | PASS |
+| Terms of Service | `/terms` | PASS | PASS | PASS | PASS | PASS |
+| Privacy Policy | `/privacy` | PASS | PASS | PASS | PASS | PASS |
+| Refund Policy | `/refund-policy` | PASS | PASS | PASS | PASS | PASS |
 
-**Gate rule:** All Phase A rows must be **PASS** on Collision, Motion, and Touch before Phase B. Depth follows `docs/visual-depth-quality-gate.md`.
+**Gate rule:** All Phase A and legal rows must be **PASS** on Collision, Motion, and Touch before Phase B payment integration. Depth follows `docs/visual-depth-quality-gate.md`.
 
 ---
 
@@ -172,10 +179,11 @@ Before any new route or major UI surface merges:
 ## 7. Automated + manual workflow
 
 1. Start dev server: `npm run dev`
-2. Run `node scripts/responsive-audit.mjs` (all routes × required + stress widths; Collision / Motion / Touch / Depth columns)
-3. Run `node scripts/motion-qa.mjs` (motion regression at 375, 390, 768, 1024, 1280, 1440)
-4. Manually spot-check landing items in §4 if copy or layout changed
-5. Record results in §6 table (store in PR description or QA ticket)
+2. Run `node scripts/responsive-audit.mjs` (selling path + `/terms`, `/privacy`, `/refund-policy`)
+3. Run `node scripts/legal-audit.mjs` (content, footer links, forbidden providers)
+4. Run `node scripts/motion-qa.mjs` (motion regression at 375, 390, 768, 1024, 1280, 1440)
+5. Manually spot-check landing items in §4 if copy or layout changed
+6. Record results in §6 table (store in PR description or QA ticket)
 
 ---
 
@@ -195,5 +203,7 @@ Before any new route or major UI surface merges:
 - `docs/basscally-build-pack/03_DESIGN_MD/04_basscally_design_system.md` — §8 breakpoints, §13 accessibility
 - `docs/motion-audit-rules.md` — motion containment linked to responsive collisions
 - `docs/visual-depth-quality-gate.md` — atmosphere and card depth
-- `scripts/responsive-audit.mjs` — headless responsive deep audit (selling path)
+- `docs/legal-pages-build-plan.md` — legal routes implementation record  
+- `scripts/legal-audit.mjs` — legal content and footer smoke tests  
+- `scripts/responsive-audit.mjs` — headless responsive deep audit (selling path + legal)
 - `scripts/motion-qa.mjs` — headless motion/collision regression

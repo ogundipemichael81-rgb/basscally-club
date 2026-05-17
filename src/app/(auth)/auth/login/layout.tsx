@@ -16,9 +16,19 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
           Basscally Club
         </Link>
         {" · "}
-        <span>Privacy</span>
+        <Link
+          href={routes.legal.privacy}
+          className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 hover:text-[var(--color-text-muted)]"
+        >
+          Privacy
+        </Link>
         {" · "}
-        <span>Terms</span>
+        <Link
+          href={routes.legal.terms}
+          className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 hover:text-[var(--color-text-muted)]"
+        >
+          Terms
+        </Link>
       </footer>
     </div>
   );

@@ -210,6 +210,19 @@ blockquote {
   -webkit-overflow-scrolling: touch;
 }
 
+.basscally-legal-page {
+  overflow-x: hidden;
+}
+
+.basscally-legal-page .basscally-depth-card {
+  box-shadow: var(--shadow-sm);
+}
+
+.basscally-legal-page .basscally-depth-card:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
 h1,
 h2,
 h3,

@@ -3,7 +3,7 @@
 **Status:** Addendum to the locked design system  
 **Parent doc:** `docs/basscally-build-pack/03_DESIGN_MD/04_basscally_design_system.md` (v1.0 — do not replace)  
 **Applies to:** Phase A selling-path React screens and all future production UI  
-**Last updated:** 2026-05-17
+**Last updated:** 2026-05-17 (legal routes)
 
 This document defines **how Basscally achieves depth on dark surfaces**. It extends §2 (color), §6 (shadows), and §9 (components). If this addendum conflicts with the locked system on tokens or the 60-30-10 rule, **the design system wins**.
 
@@ -14,16 +14,21 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 | Field | Value |
 | --- | --- |
 | **Visual depth pass completed** | **2026-05-17** |
-| **Routes tested** | `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled` |
+| **Routes tested** | Selling path + legal: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy` |
 | **Breakpoints spot-checked** | 320, 375, 390, 768, 1024, 1280, 280 (stress), 1440+ (stress) |
-| **P0 result** | **PASS** (all selling-path routes) |
-| **Implementation** | `src/app/globals.css` (atmosphere, `.basscally-depth-card`, `.basscally-panel-card`, fills, mobile depth boost); `src/app/layout.tsx` (`.basscally-app-content` stacking) |
+| **P0 result** | **PASS** (selling path + legal routes) |
+| **Legal pages** | Calmer than landing — `.basscally-legal-page`, section `.basscally-depth-card`, no decorative motion; max-width prose column |
+| **Implementation** | `src/app/globals.css` (atmosphere, `.basscally-depth-card`, `.basscally-legal-page`); `src/components/legal/*`; `src/content/legal.ts` |
+
+### Resolved P1 (2026-05-17)
+
+- **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy`; Contact `basscally.enquiry@gmail.com`.
 
 ### Remaining P1 (non-blocking)
 
 - **Manual squint test** on `/pricing` at desktop — confirm plan-card hover glow stays within 60-30-10 (automated checks passed).
 - **`/auth/login`** — no `.basscally-depth-card` on form shell by design; uses page atmosphere only (acceptable).
-- **Legal footer placeholders** on login (`Privacy` / `Terms` as non-links) — copy unchanged; not a depth failure.
+- **Solicitor review** of public legal copy before treating as launch-final.
 
 ---
 
@@ -173,7 +178,7 @@ Before merging depth work on any route:
 - [ ] Mobile 375px: depth readable, no clipped headings, no horizontal scroll
 - [ ] Passes `docs/mobile-responsive-quality-gate.md` P0 layout checks
 
-**Phase A routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`.
+**Routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
 
 ---
 
@@ -196,4 +201,6 @@ Before any new route or major UI surface merges:
 - `src/components/ui/card.tsx` — default `Card` uses `.basscally-depth-card`
 - `docs/motion-audit-rules.md` — decorative overlap and glow motion
 - `docs/mobile-responsive-quality-gate.md` — breakpoint QA
-- `scripts/responsive-audit.mjs` — automated responsive gate (selling path)
+- `docs/legal-pages-build-plan.md` — legal pages implementation
+- `scripts/responsive-audit.mjs` — automated responsive gate (selling path + legal)
+- `scripts/legal-audit.mjs` — legal content smoke tests

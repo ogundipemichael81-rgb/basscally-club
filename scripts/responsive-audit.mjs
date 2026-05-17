@@ -12,6 +12,9 @@ const ROUTES = [
   "/auth/callback",
   "/checkout/success",
   "/checkout/cancelled",
+  "/terms",
+  "/privacy",
+  "/refund-policy",
 ];
 const WIDTHS = [320, 375, 390, 768, 1024, 1280];
 const STRESS_WIDTHS = [280, 1440];
@@ -52,8 +55,9 @@ function runPageChecks(route) {
       issues.push({ cat: "collision", msg: "horizontal scroll" });
     }
 
-    // Elements wider than viewport
+    // Elements wider than viewport (ignore intentional scroll containers)
     const wide = [...document.querySelectorAll("body *")].filter((el) => {
+      if (el.closest(".basscally-table-scroll")) return false;
       const r = el.getBoundingClientRect();
       if (r.width < 4 || r.height < 4) return false;
       const s = getComputedStyle(el);
