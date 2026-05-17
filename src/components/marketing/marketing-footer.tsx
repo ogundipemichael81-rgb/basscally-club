@@ -10,7 +10,10 @@ export function MarketingFooter() {
           </p>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">A bass practice membership.</p>
           <p className="mt-4 text-sm text-[var(--color-text-dim)]">
-            <a href="mailto:hello@basscally.club" className="hover:text-[var(--color-text)]">
+            <a
+              href="mailto:hello@basscally.club"
+              className="inline-flex min-h-11 items-center hover:text-[var(--color-text)]"
+            >
               hello@basscally.club
             </a>
             {" · "}Contact

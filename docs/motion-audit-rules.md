@@ -2,6 +2,25 @@
 
 Practical rules for decorative and UI motion on public selling-path screens. Apply these before adding new animation to any screen.
 
+**Last updated:** 2026-05-17
+
+---
+
+## Phase A sign-off record
+
+| Field | Value |
+| --- | --- |
+| **Motion stabilization pass completed** | **2026-05-17** |
+| **Routes tested** | `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled` |
+| **Breakpoints (automated)** | 375, 390, 768, 1024, 1280, 1440 |
+| **Breakpoints (responsive gate)** | Also 320, 280 (stress), 1280, 1440+ via `scripts/responsive-audit.mjs` |
+| **P0 result** | **PASS** — 36/36 (`node scripts/motion-qa.mjs`) |
+
+### Remaining P1 (non-blocking)
+
+- Re-run motion QA after any change to `globals.css` motion section or decorative markup on selling-path routes.
+- Manual `prefers-reduced-motion` spot check on `/auth/callback` scanline when editing callback CSS.
+
 ---
 
 ## 1. Allowed motion types
@@ -161,9 +180,39 @@ Manual pass if you change motion CSS or decorative markup:
 
 ---
 
+## 11. Motion containment and responsive layout
+
+Motion failures are often **responsive failures**: a spinning ring or vinyl expands its bounding box and overlaps a heading on mobile even when desktop looks fine.
+
+**Shared contract with** `docs/mobile-responsive-quality-gate.md`:
+
+- Use `.decorative-motion` and fixed-size wrappers (`pricing-orbit-wrap`, `checkout-vinyl-wrap`, `callback-vinyl-wrap`) with `overflow: hidden`.
+- Keep headings, CTAs, and inputs in a sibling layer at `relative z-[2]` (or higher) when decoration sits in the same card.
+- Test motion at **375, 390, 768, 1024, 1280, 1440px**; run collision checks at **320px** and stress **280px** for horizontal scroll.
+- A motion PASS at one width does not sign off the screen — all required breakpoints in the responsive gate must pass.
+
+If motion QA passes but layout P0 fails, fix containment/z-index first, then re-run `node scripts/motion-qa.mjs`.
+
+---
+
+## 12. Rules for every new screen
+
+Before any new route or major UI surface merges:
+
+1. **Visual depth check** — `docs/visual-depth-quality-gate.md`
+2. **Responsive collision check** — `docs/mobile-responsive-quality-gate.md` + `node scripts/responsive-audit.mjs`
+3. **Motion containment check** — This document §2–§10 + `node scripts/motion-qa.mjs`
+4. **Touch target check** — Mobile responsive gate §5
+
+**Backend phase rule:** Do **not** start Phase B while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, or touch.
+
+---
+
 ## Reference
 
 - Styles: `src/app/globals.css` (motion section)
+- Visual depth gate: `docs/visual-depth-quality-gate.md`
+- Responsive gate: `docs/mobile-responsive-quality-gate.md`
 - Wrapper utility: `.decorative-motion`
 - Entrance component: `src/components/ui/motion.tsx` (`MotionDiv`)
-- Automated QA: `scripts/motion-qa.mjs`
+- Automated QA: `scripts/motion-qa.mjs`, `scripts/responsive-audit.mjs`

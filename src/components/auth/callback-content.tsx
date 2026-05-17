@@ -68,7 +68,7 @@ export function CallbackContent() {
       </section>
 
       <section className="basscally-container mt-12 basscally-rise-in basscally-rise-in-delay-3">
-        <div className="grid gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 lg:grid-cols-3">
+        <div className="basscally-depth-card grid gap-3 rounded-[var(--radius-lg)] p-5 lg:grid-cols-3">
           {steps.map((step) => (
             <div
               key={step.num}
@@ -107,7 +107,7 @@ export function CallbackContent() {
           ].map((item) => (
             <div
               key={item.title}
-              className="min-h-[92px] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.6)] p-4"
+              className="basscally-depth-card min-h-[92px] rounded-[var(--radius-lg)] p-4"
             >
               <h4 className="text-sm font-semibold text-[var(--color-text)]">{item.title}</h4>
               <p className="mt-1.5 text-[13px] leading-[1.45] text-[var(--color-text-muted)]">

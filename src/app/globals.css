@@ -58,10 +58,23 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
-  --shadow-brand-glow: 0 0 24px rgba(255, 69, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.62);
+  --shadow-brand-glow: 0 0 28px rgba(255, 69, 0, 0.42), 0 0 10px rgba(255, 69, 0, 0.22);
+
+  --fill-meter-track: #2b2b31;
+  --fill-meter-accent: linear-gradient(
+    to top,
+    rgba(255, 69, 0, 0.28) 0%,
+    var(--color-brand) 100%
+  );
+  --fill-scrub-track: var(--color-border-strong);
+  --fill-scrub-progress: linear-gradient(
+    90deg,
+    rgba(255, 69, 0, 0.35) 0%,
+    var(--color-brand) 100%
+  );
 
   --motion-fast: 150ms;
   --motion-default: 250ms;
@@ -90,6 +103,9 @@
     --text-h1: 2.25rem;
     --text-h2: 1.75rem;
     --text-h3: 1.25rem;
+    --color-text-muted: #adadb4;
+    --color-text-dim: #75757e;
+    --color-border: #2c2c31;
   }
 }
 
@@ -105,6 +121,8 @@ html {
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
@@ -114,6 +132,82 @@ body {
   font-size: var(--text-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Global body atmosphere — behind all app content */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% -8%, rgba(255, 69, 0, 0.08), transparent 38%),
+    radial-gradient(circle at 88% 4%, rgba(255, 92, 31, 0.05), transparent 34%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  background-size: 64px 64px, 64px 64px, 200px 200px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 15%, transparent 78%);
+}
+
+.basscally-app-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* Collision prevention & overflow safety */
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.basscally-container .grid > *,
+.basscally-container .flex > *,
+.basscally-hero .grid > *,
+.basscally-hero .flex > *,
+.basscally-pricing-page .grid > *,
+.basscally-pricing-page .flex > *,
+.basscally-checkout-shell .grid > *,
+.basscally-checkout-shell .flex > *,
+.basscally-callback-page .grid > *,
+.basscally-callback-page .flex > * {
+  min-width: 0;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+li,
+dd,
+dt,
+blockquote {
+  overflow-wrap: anywhere;
+}
+
+.basscally-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 h1,
@@ -236,6 +330,9 @@ h4 {
 /* Auth pages */
 .auth-page-shell {
   position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -249,6 +346,7 @@ h4 {
   position: absolute;
   top: -120px;
   left: 50%;
+  z-index: 0;
   transform: translateX(-50%);
   width: 600px;
   height: 500px;
@@ -261,12 +359,28 @@ h4 {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  contain: paint;
   pointer-events: none;
 }
 
 /* Callback cinematic */
 .basscally-callback-page {
   position: relative;
+  z-index: 1;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.basscally-callback-page::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: 0;
+  width: min(480px, 100vw);
+  height: 480px;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 69, 0, 0.07) 0%, transparent 58%);
 }
 
 .callback-stage-card {
@@ -288,6 +402,8 @@ h4 {
 
 .callback-vinyl-wrap {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: 210px;
   height: 210px;
   flex-shrink: 0;
@@ -460,6 +576,8 @@ h4 {
 
 /* Pricing page */
 .basscally-pricing-page {
+  position: relative;
+  z-index: 1;
   background:
     radial-gradient(circle at 12% 0%, rgba(255, 69, 0, 0.16), transparent 30%),
     radial-gradient(circle at 90% 18%, rgba(255, 92, 31, 0.09), transparent 28%),
@@ -479,21 +597,67 @@ h4 {
   z-index: -1;
 }
 
-.basscally-panel-card {
+/* Depth cards — panel + marketing surfaces */
+.basscally-panel-card,
+.basscally-depth-card {
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
   background: linear-gradient(180deg, rgba(28, 28, 31, 0.93), rgba(13, 13, 15, 0.94));
 }
 
-.basscally-panel-card::before {
+.basscally-panel-card::before,
+.basscally-depth-card::before {
   content: "";
   position: absolute;
   inset: -1px;
+  z-index: 0;
   background:
-    radial-gradient(circle at 15% 0%, rgba(255, 69, 0, 0.2), transparent 36%),
-    radial-gradient(circle at 90% 90%, rgba(255, 92, 31, 0.08), transparent 42%);
+    radial-gradient(circle at 15% 0%, rgba(255, 69, 0, 0.18), transparent 36%),
+    radial-gradient(circle at 90% 90%, rgba(255, 92, 31, 0.07), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 28%);
   pointer-events: none;
   border-radius: inherit;
+}
+
+.basscally-panel-content {
+  position: relative;
+  z-index: 1;
+}
+
+.basscally-panel-card > *:not(.callback-stage-deco):not(.decorative-motion),
+.basscally-depth-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Progress / scrub / meter fills */
+.scrub-track,
+.progress-track {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--fill-scrub-track);
+  overflow: hidden;
+}
+
+.scrub-fill,
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--fill-scrub-progress);
+}
+
+.checkout-meter-bar {
+  display: block;
+  min-width: 6px;
+  flex: 1;
+  border-radius: 999px 999px 2px 2px;
+  background: var(--fill-meter-track);
+}
+
+.checkout-meter-bar--accent {
+  background: var(--fill-meter-accent);
 }
 
 .checkout-eyebrow::before {
@@ -546,6 +710,7 @@ h4 {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  contain: paint;
   width: var(--orbit-size);
   height: var(--orbit-size);
   flex-shrink: 0;
@@ -653,6 +818,9 @@ h4 {
 
 /* Checkout success / cancelled */
 .basscally-checkout-shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
   background:
     radial-gradient(circle at 20% 0%, rgba(255, 69, 0, 0.1), transparent 30%),
     radial-gradient(circle at 85% 15%, rgba(255, 92, 31, 0.07), transparent 28%),
@@ -663,6 +831,7 @@ h4 {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
@@ -671,11 +840,29 @@ h4 {
   mask-image: radial-gradient(ellipse at 45% 20%, black 0%, transparent 72%);
 }
 
+.basscally-checkout-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mask-image: radial-gradient(ellipse at 40% 15%, black 0%, transparent 70%);
+}
+
+.basscally-checkout-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
 .checkout-vinyl-wrap {
   --vinyl-size: 148px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  contain: paint;
   width: var(--vinyl-size);
   height: var(--vinyl-size);
   flex-shrink: 0;
@@ -740,5 +927,36 @@ h4 {
 @keyframes checkout-vinyl-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Mobile depth boost — contrast without extra orange */
+@media (max-width: 767px) {
+  .basscally-panel-card,
+  .basscally-depth-card {
+    background: linear-gradient(180deg, rgba(32, 32, 35, 0.97), rgba(10, 10, 12, 0.98));
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .basscally-panel-card::before,
+  .basscally-depth-card::before {
+    background:
+      radial-gradient(circle at 15% 0%, rgba(255, 69, 0, 0.14), transparent 34%),
+      radial-gradient(circle at 90% 90%, rgba(255, 92, 31, 0.06), transparent 40%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 24%);
+  }
+
+  .basscally-hero::before {
+    width: 560px;
+    height: 560px;
+    top: -160px;
+    left: -160px;
+  }
+
+  body::before {
+    background:
+      radial-gradient(circle at 10% -4%, rgba(255, 69, 0, 0.06), transparent 32%),
+      radial-gradient(circle at 92% 2%, rgba(255, 92, 31, 0.04), transparent 30%);
   }
 }

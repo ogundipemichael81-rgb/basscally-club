@@ -177,28 +177,32 @@ export function PricingPlanSelector() {
 
         <div className="mt-[18px] grid gap-[18px] lg:grid-cols-2">
           <MotionDiv delayMs={240} className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
-            <Badge variant="warning" className="mb-4 text-[10px]">
-              Later tier
-            </Badge>
-            <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-              Club Plus stays hidden for MVP
-            </h3>
-            <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
-              The $9/month tier should wait until feedback, live challenges, or premium
-              coaching becomes real. Do not show it in public checkout yet.
-            </p>
+            <div className="basscally-panel-content">
+              <Badge variant="warning" className="mb-4 text-[10px]">
+                Later tier
+              </Badge>
+              <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
+                Club Plus stays hidden for MVP
+              </h3>
+              <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
+                The $9/month tier should wait until feedback, live challenges, or premium
+                coaching becomes real. Do not show it in public checkout yet.
+              </p>
+            </div>
           </MotionDiv>
           <MotionDiv delayMs={320} className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
-            <Badge variant="brand" className="mb-4 text-[10px]">
-              Checkout flow
-            </Badge>
-            <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-              After payment
-            </h3>
-            <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
-              Lemon Squeezy confirms payment, webhook updates Supabase, user receives
-              welcome email, then magic link opens the dashboard.
-            </p>
+            <div className="basscally-panel-content">
+              <Badge variant="brand" className="mb-4 text-[10px]">
+                Checkout flow
+              </Badge>
+              <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
+                After payment
+              </h3>
+              <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
+                Lemon Squeezy confirms payment, webhook updates Supabase, user receives
+                welcome email, then magic link opens the dashboard.
+              </p>
+            </div>
           </MotionDiv>
         </div>
       </div>

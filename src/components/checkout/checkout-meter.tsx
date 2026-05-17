@@ -7,16 +7,12 @@ type CheckoutMeterProps = {
 
 export function CheckoutMeter({ accentFrom = 6 }: CheckoutMeterProps) {
   return (
-    <div className="mt-5 flex h-[42px] items-end gap-[5px]" aria-hidden>
+    <div className="mt-5 flex h-[42px] items-end gap-[5px] overflow-hidden" aria-hidden>
       {heights.map((height, index) => (
         <span
           key={index}
-          className="block min-w-[6px] flex-1 rounded-t-full rounded-b-[2px]"
-          style={{
-            height: `${height}px`,
-            background:
-              index >= accentFrom - 1 ? "var(--color-brand)" : "#2b2b31",
-          }}
+          className={`checkout-meter-bar ${index >= accentFrom - 1 ? "checkout-meter-bar--accent" : ""}`}
+          style={{ height: `${height}px` }}
         />
       ))}
     </div>

@@ -52,7 +52,7 @@ export function LandingSections() {
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {valueCards.map((card) => (
-            <Card key={card.title} className="border-[var(--color-border)] bg-[var(--color-surface)]">
+            <Card key={card.title}>
               <h3 className="mb-2 font-semibold text-[var(--color-text)]">{card.title}</h3>
               <p className="text-[length:var(--text-body-sm)] text-[var(--color-text-muted)]">
                 {card.desc}
@@ -75,7 +75,7 @@ export function LandingSections() {
           ].map((item) => (
             <li
               key={item.step}
-              className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
+              className="basscally-depth-card rounded-[var(--radius-lg)] p-6"
             >
               <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-brand)]">
                 {item.step}
@@ -144,7 +144,7 @@ export function LandingSections() {
             ["Bro you need to make a course or something. I'd pay for more content like this every week.", "@placeholder_user2 — TikTok"],
             ["This is making me actually practice consistently for the first time in years. The grooves are addictive.", "@placeholder_user3 — Instagram"],
           ].map(([quote, author]) => (
-            <Card key={author} className="bg-[var(--color-surface)]">
+            <Card key={author}>
               <p className="mb-4 text-[var(--color-text-muted)]">&ldquo;{quote}&rdquo;</p>
               <p className="text-sm text-[var(--color-text-dim)]">{author}</p>
             </Card>

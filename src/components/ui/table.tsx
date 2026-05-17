@@ -5,7 +5,7 @@ export const Table = forwardRef<
   HTMLTableElement,
   HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="w-full overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-border)]">
+  <div className="basscally-table-scroll w-full rounded-[var(--radius-lg)] border border-[var(--color-border)]">
     <table
       ref={ref}
       className={cn("w-full min-w-[640px] border-collapse text-left text-[length:var(--text-body-sm)]", className)}

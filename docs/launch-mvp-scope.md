@@ -200,24 +200,65 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 
 | Launch screen | Status (2026-05-17) |
 |---------------|---------------------|
-| 01, 02 | Done (Phase 2 UI) |
-| 03, 13 | Done (Phase 2 UI; auth not wired) |
-| 32, 11, 12 | Placeholder pages only |
+| 01, 02 | Done — UI + visual depth + responsive gates |
+| 03, 13 | Done — UI + gates; auth not wired |
+| 32, 11, 12 | Done — UI + gates; Lemon Squeezy / paywall logic not wired |
 | 04–08 | Placeholder pages only |
 | 09, 20 | Placeholder pages only |
 | 24, 25 | Done (Phase 2); classified as beta polish tier |
 
 ---
 
+## Phase A quality gates (selling path)
+
+**Visual depth pass date:** 2026-05-17  
+**Responsive deep audit date:** 2026-05-17  
+**Motion stabilization date:** 2026-05-17
+
+| Gate | Doc / tool | Result |
+|------|------------|--------|
+| Visual depth | `docs/visual-depth-quality-gate.md` | **PASS** (P0) |
+| Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (48/48) |
+| Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36) |
+| Build | `typecheck`, `lint`, `build` | **PASS** |
+
+**Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`.
+
+**Breakpoints covered:** 320, 375, 390, 768, 1024, 1280, 280 (stress), 1440+ (stress); motion automation also at 1440.
+
+### Remaining P1 (does not block Phase B)
+
+- Manual keyboard/focus walkthrough on selling-path routes.
+- Optional device check: landing sticky CTA at 375×667.
+- Login footer: Privacy/Terms placeholders (not links).
+- Re-run `responsive-audit.mjs` and `motion-qa.mjs` after any selling-path UI change.
+
+### Mandatory checks for every new screen
+
+Before merge, every new route or major surface must pass:
+
+1. Visual depth check (`docs/visual-depth-quality-gate.md`)  
+2. Responsive collision check (`docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs`)  
+3. Motion containment check (`docs/motion-audit-rules.md` + `scripts/motion-qa.mjs`)  
+4. Touch target check (responsive gate §5)
+
+**No backend phase rule:** Do **not** start **Phase B** (or later backend/integration work) if any selling-path route has a **P0** fail on visual depth, responsive layout, motion, or touch.
+
+---
+
 ## Revised build sequence (after this document)
 
-### Phase A — Launch marketing & checkout (next)
+### Phase A — Launch marketing & checkout
 
-1. Screen **32** `/pricing` — plan selector + LS checkout links (env variants).  
-2. Screens **11, 12** checkout success/cancelled — no fake unlock.  
+**Quality gates:** **Cleared** (2026-05-17) — see table above.
+
+**Functional work still in Phase A** (product scope; not gate blockers):
+
+1. Screen **32** `/pricing` — wire Lemon Squeezy checkout URLs (env variants); paywall state for Screen **08**.  
+2. Screens **11, 12** — ensure success/cancelled copy and access rules match real subscription state (no fake unlock).  
 3. Screen **08** paywall state on `/pricing` for expired/anonymous.
 
-### Phase B — Backend foundation
+### Phase B — Backend foundation (recommended next)
 
 4. Supabase project, schema (`users`, `subscriptions`, `content`), Storage bucket.  
 5. Lemon Squeezy webhook + subscription access helpers.  
@@ -247,6 +288,9 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 
 ## References
 
+- `docs/visual-depth-quality-gate.md` — depth addendum (does not replace locked design system)  
+- `docs/mobile-responsive-quality-gate.md` — official responsive QA gate  
+- `docs/motion-audit-rules.md` — motion containment and reduced-motion rules  
 - `docs/basscally-build-pack/00_START_HERE/BUILD_SEQUENCE_GUIDE.md` — original phase prompts (still useful per-tier)  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/09_routes_wiring_screen_map_and_components.md` — full route table  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/08_architecture_backend_auth_payments_email_logic.md` — data model and access rules  

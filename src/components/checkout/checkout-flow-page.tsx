@@ -101,7 +101,7 @@ export function CheckoutStepCards({
         <MotionDiv
           key={item.label}
           delayMs={240 + index * 50}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] motion-reduce:hover:translate-y-0"
+          className="basscally-depth-card rounded-[var(--radius-lg)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-md)] motion-reduce:hover:translate-y-0"
         >
           <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--color-brand)]">
             {item.label}
@@ -163,7 +163,7 @@ export function CheckoutStateGrid({
         <MotionDiv
           key={item.title}
           delayMs={380 + index * 40}
-          className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.55)] p-4"
+          className="basscally-depth-card rounded-[var(--radius-lg)] p-4 opacity-95"
         >
           <strong className="block text-sm text-[var(--color-text)]">{item.title}</strong>
           <span className="mt-1 block text-[13px] leading-[1.45] text-[var(--color-text-muted)]">

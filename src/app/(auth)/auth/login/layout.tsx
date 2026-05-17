@@ -9,7 +9,10 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
       <AuthBackLink />
       {children}
       <footer className="relative z-[1] mt-10 text-center font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">
-        <Link href={routes.home} className="hover:text-[var(--color-text-muted)]">
+        <Link
+          href={routes.home}
+          className="inline-flex min-h-11 items-center hover:text-[var(--color-text-muted)]"
+        >
           Basscally Club
         </Link>
         {" · "}

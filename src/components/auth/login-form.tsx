@@ -60,7 +60,7 @@ export function LoginForm() {
           Didn&apos;t get it? Check spam, or{" "}
           <button
             type="button"
-            className="underline hover:text-[var(--color-text-muted)]"
+            className="inline-flex min-h-11 items-center underline hover:text-[var(--color-text-muted)]"
             onClick={() => {
               setState("idle");
               setEmail(sentEmail);
@@ -117,7 +117,10 @@ export function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-[var(--color-text-dim)]">
         Don&apos;t have an account?{" "}
-        <Link href={routes.pricing} className="font-medium text-[var(--color-brand)] hover:underline">
+        <Link
+          href={routes.pricing}
+          className="inline-flex min-h-11 items-center font-medium text-[var(--color-brand)] hover:underline"
+        >
           Join for $1.50/month
         </Link>
       </p>

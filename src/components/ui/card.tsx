@@ -2,7 +2,7 @@ import { forwardRef, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const cardBase =
-  "rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 motion-reduce:transition-none [@media(prefers-reduced-motion:no-preference)]:transition-[border,box-shadow,transform] [@media(prefers-reduced-motion:no-preference)]:duration-[var(--motion-default)]";
+  "basscally-depth-card rounded-[var(--radius-lg)] p-6 motion-reduce:transition-none [@media(prefers-reduced-motion:no-preference)]:transition-[border,box-shadow,transform] [@media(prefers-reduced-motion:no-preference)]:duration-[var(--motion-default)]";
 
 export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (

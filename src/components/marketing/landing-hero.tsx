@@ -84,7 +84,7 @@ export function LandingHero() {
               <li
                 key={drop.num}
                 className={cn(
-                  "flex gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4",
+                  "basscally-depth-card flex gap-3 rounded-[var(--radius-md)] p-4",
                   drop.next && "border-[rgba(255,69,0,0.35)] bg-[var(--color-brand-muted)]",
                 )}
               >

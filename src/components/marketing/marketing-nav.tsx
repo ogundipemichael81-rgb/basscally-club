@@ -51,7 +51,7 @@ export function MarketingNav(props: MarketingNavProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)]/60 bg-[rgba(10,10,11,0.72)] backdrop-blur-2xl">
-      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-5 py-4 lg:px-8">
+      <div className="mx-auto flex max-w-[1320px] min-w-0 flex-wrap items-center justify-between gap-3 px-5 py-4 lg:gap-4 lg:px-8">
         <Link
           href={routes.home}
           className="inline-flex min-h-11 items-center gap-2.5 font-[family-name:var(--font-display)] text-[17px] font-bold tracking-tight text-[var(--color-text)]"
@@ -60,7 +60,7 @@ export function MarketingNav(props: MarketingNavProps) {
           <BrandMark />
           {APP_NAME}
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2" aria-label="Primary">
+        <nav className="flex min-w-0 flex-wrap items-center justify-end gap-1 sm:gap-2" aria-label="Primary">
           <ButtonLink
             href={ghostHref}
             variant="ghost"

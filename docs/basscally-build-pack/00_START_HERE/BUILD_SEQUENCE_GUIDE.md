@@ -17,6 +17,20 @@ Recommended process:
 6. Build phase by phase.
 7. After each phase, run the audit prompt before moving on.
 
+## Visual QA gates before backend
+
+Do **not** start Phase B (Supabase, Lemon Squeezy, webhooks) until Phase A selling-path UI passes these repo gates:
+
+| Gate | Document | Quick check |
+| --- | --- | --- |
+| Visual depth | `docs/visual-depth-quality-gate.md` | Atmosphere on pseudo-layers; cards use gradient + wash; 60-30-10 holds |
+| Responsive | `docs/mobile-responsive-quality-gate.md` | 320–1280px + stress 280 / 1440+; P0 collisions; touch targets |
+| Motion | `docs/motion-audit-rules.md` | `node scripts/motion-qa.mjs` with dev server running |
+
+Also read `docs/launch-mvp-scope.md` — Phase A sign-off requires all three gates plus `typecheck`, `lint`, and `build`.
+
+The locked design system (`03_DESIGN_MD/04_basscally_design_system.md`) is unchanged; depth and responsive docs are **addenda**, not replacements.
+
 This is better than uploading everything into a single Cursor chat because Cursor can read the files from the repo, track changes, inspect routes, and audit against the docs.
 
 ## File reading order for Cursor
@@ -33,6 +47,12 @@ Give Cursor this order:
 8. `05_PROMPTS_AND_BUILD_PROMPTS/03_cursor_codex_build_prompt_UPDATED_v2.md`
 9. `05_PROMPTS_AND_BUILD_PROMPTS/07_master_build_sequence_and_ai_prompts.md`
 10. `10_system_checks_audit_prompts_and_acceptance_tests.md` if Cursor asks for audit logic.
+
+When polishing Phase A UI (before Phase B), also read:
+
+- `docs/visual-depth-quality-gate.md`
+- `docs/mobile-responsive-quality-gate.md`
+- `docs/motion-audit-rules.md`
 
 ## Phase 0 prompt to paste first
 
