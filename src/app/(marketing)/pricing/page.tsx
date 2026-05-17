@@ -1,14 +1,13 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { routes } from "@/lib/routes";
+import { PricingPlanSelector } from "@/components/marketing/pricing-plan-selector";
+import type { Metadata } from "next";
 
-/** Screens 08, 32 — pricing / paywall */
+/** Screen 32 — plan selector */
+export const metadata: Metadata = {
+  title: "Choose your Club plan — Basscally Club",
+  description:
+    "Founding member, annual, and monthly plans. Lock your groove and join Basscally Club.",
+};
+
 export default function PricingPage() {
-  return (
-    <PlaceholderPage
-      screenNumber={32}
-      title="Pricing"
-      description="Founding, monthly, and annual plan selector."
-      route={routes.pricing}
-    />
-  );
+  return <PricingPlanSelector />;
 }

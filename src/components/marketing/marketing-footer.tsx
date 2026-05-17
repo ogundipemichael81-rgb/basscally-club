@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
 
 export function MarketingFooter() {
@@ -18,15 +17,24 @@ export function MarketingFooter() {
           </p>
         </div>
         <nav className="flex flex-col gap-2 text-sm text-[var(--color-text-muted)]" aria-label="Legal">
-          <Link href="#" className="min-h-11 flex items-center hover:text-[var(--color-text)]">
+          <a
+            href="mailto:hello@basscally.club?subject=Terms%20of%20Service"
+            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          >
             Terms of Service
-          </Link>
-          <Link href="#" className="min-h-11 flex items-center hover:text-[var(--color-text)]">
+          </a>
+          <a
+            href="mailto:hello@basscally.club?subject=Privacy%20Policy"
+            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          >
             Privacy Policy
-          </Link>
-          <Link href="#" className="min-h-11 flex items-center hover:text-[var(--color-text)]">
+          </a>
+          <a
+            href="mailto:hello@basscally.club?subject=Refund%20Policy"
+            className="min-h-11 flex items-center hover:text-[var(--color-text)]"
+          >
             Refund Policy
-          </Link>
+          </a>
         </nav>
         <p className="text-xs text-[var(--color-text-dim)] lg:col-span-2">
           © {new Date().getFullYear()} Basscally. All rights reserved.

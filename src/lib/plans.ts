@@ -16,7 +16,14 @@ export type PlanDefinition = {
   code: PlanCode;
   label: string;
   priceLabel: string;
+  priceAmount: string;
+  pricePeriod: string;
   description: string;
+  badge: string;
+  badgeTone: "brand" | "success" | "info" | "warn";
+  features: string[];
+  ctaLabel: string;
+  highlighted?: boolean;
   /** Hidden until product offers Club Plus */
   hidden?: boolean;
 };
@@ -24,27 +31,67 @@ export type PlanDefinition = {
 export const PLANS: Record<PlanCode, PlanDefinition> = {
   founding_monthly: {
     code: "founding_monthly",
-    label: "Founding Member",
+    label: "Founding member",
     priceLabel: "$1.50/month",
-    description: "Locked for life while membership stays active.",
+    priceAmount: "$1.50",
+    pricePeriod: "/ month",
+    description: "Best for the first 500 to 1,000 early members.",
+    badge: "Founder lock-in",
+    badgeTone: "brand",
+    features: [
+      "All weekly grooves, fills, and challenges",
+      "Member dashboard access",
+      "Audio play and gated downloads",
+      "Early member price stays locked",
+    ],
+    ctaLabel: "Join as founder",
   },
   standard_monthly: {
     code: "standard_monthly",
-    label: "Monthly",
+    label: "Monthly club",
     priceLabel: "$2.99/month",
-    description: "Public monthly after the founding window closes.",
+    priceAmount: "$2.99",
+    pricePeriod: "/ month",
+    description: "Default public plan after the launch window.",
+    badge: "Public price",
+    badgeTone: "info",
+    features: [
+      "All fresh Basscally drops",
+      "Cancel anytime",
+      "Magic-link login",
+      "Billing portal access",
+    ],
+    ctaLabel: "Choose monthly",
   },
   annual_18: {
     code: "annual_18",
-    label: "Annual",
+    label: "Annual lock-in",
     priceLabel: "$18/year",
-    description: "Annual lock-in to reduce payment-fee drag.",
+    priceAmount: "$18",
+    pricePeriod: "/ year",
+    description: "Best value. Cleaner revenue for the team.",
+    badge: "Recommended",
+    badgeTone: "success",
+    features: [
+      "Same full Club access",
+      "Lower effective monthly cost",
+      "Fewer payment failures",
+      "Better for serious practice habit",
+    ],
+    ctaLabel: "Choose annual",
+    highlighted: true,
   },
   club_plus: {
     code: "club_plus",
     label: "Club Plus",
     priceLabel: "$9/month",
+    priceAmount: "$9",
+    pricePeriod: "/ month",
     description: "Future tier — feedback, challenges, premium drops.",
+    badge: "Later tier",
+    badgeTone: "warn",
+    features: [],
+    ctaLabel: "Coming later",
     hidden: true,
   },
 };
@@ -52,3 +99,10 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
 export const VISIBLE_PLANS = PLAN_CODES.filter(
   (code) => !PLANS[code].hidden,
 ).map((code) => PLANS[code]);
+
+/** Display order on Screen 32 — founding, annual, monthly */
+export const PRICING_DISPLAY_ORDER: PlanCode[] = [
+  "founding_monthly",
+  "annual_18",
+  "standard_monthly",
+];

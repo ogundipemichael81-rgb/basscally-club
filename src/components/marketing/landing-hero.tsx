@@ -106,15 +106,17 @@ export function LandingHero() {
       </div>
 
       <div className="relative z-[1] mx-auto mt-12 flex max-w-[1320px] flex-col gap-8 border-t border-[var(--color-border)] pt-8 lg:flex-row lg:items-center lg:justify-between">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid min-w-0 grid-cols-3 gap-3 sm:gap-6">
           {[
             { label: "TikTok", value: "90,000+" },
             { label: "Instagram", value: "10,000+" },
             { label: "Avg. views", value: "20k–400k" },
           ].map((stat) => (
-            <div key={stat.label}>
-              <p className="text-xs uppercase tracking-wide text-[var(--color-text-dim)]">{stat.label}</p>
-              <p className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-text)]">
+            <div key={stat.label} className="min-w-0">
+              <p className="text-[10px] uppercase tracking-wide text-[var(--color-text-dim)] sm:text-xs">
+                {stat.label}
+              </p>
+              <p className="font-[family-name:var(--font-display)] text-base font-bold text-[var(--color-text)] sm:text-xl">
                 {stat.value}
               </p>
             </div>

@@ -101,11 +101,13 @@
 
 html {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   min-height: 100%;
   margin: 0;
+  overflow-x: hidden;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
@@ -366,4 +368,195 @@ h4 {
 
 .utility-panel-card {
   background: linear-gradient(180deg, rgba(28, 28, 31, 0.92), rgba(13, 13, 15, 0.92));
+}
+
+/* Pricing page */
+.basscally-pricing-page {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 69, 0, 0.16), transparent 30%),
+    radial-gradient(circle at 90% 18%, rgba(255, 92, 31, 0.09), transparent 28%),
+    linear-gradient(180deg, #0a0a0b 0%, #030304 100%);
+}
+
+.basscally-pricing-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at top, black 20%, transparent 72%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.basscally-panel-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(28, 28, 31, 0.93), rgba(13, 13, 15, 0.94));
+}
+
+.basscally-panel-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 69, 0, 0.2), transparent 36%),
+    radial-gradient(circle at 90% 90%, rgba(255, 92, 31, 0.08), transparent 42%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.checkout-eyebrow::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  box-shadow: 0 0 12px rgba(255, 69, 0, 0.65);
+  flex-shrink: 0;
+}
+
+.callback-stage-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 69, 0, 0.18), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .callback-stage-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: callback-scan 3.8s var(--ease-in-out) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes callback-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pricing-orbit-ring {
+    animation: pricing-spin 16s linear infinite;
+  }
+
+  .pricing-orbit-ring-2 {
+    animation: pricing-spin-back 12s linear infinite;
+  }
+
+  .pricing-orbit-ring-3 {
+    animation: pricing-spin 8s linear infinite;
+  }
+
+  .pricing-orbit-dot {
+    transform-origin: 7px -108px;
+    animation: pricing-spin 4s linear infinite;
+  }
+
+  .pricing-wave span {
+    animation: pricing-wave 1.1s ease-in-out infinite;
+  }
+
+  .pricing-wave span:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .pricing-wave span:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+  .pricing-wave span:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+  .pricing-wave span:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+  .pricing-wave span:nth-child(6) {
+    animation-delay: 0.5s;
+  }
+  .pricing-wave span:nth-child(7) {
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes pricing-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pricing-spin-back {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pricing-wave {
+  0%,
+  100% {
+    height: 12px;
+    opacity: 0.6;
+  }
+  50% {
+    height: 42px;
+    opacity: 1;
+  }
+}
+
+/* Checkout success / cancelled */
+.basscally-checkout-shell {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 69, 0, 0.1), transparent 30%),
+    radial-gradient(circle at 85% 15%, rgba(255, 92, 31, 0.07), transparent 28%),
+    linear-gradient(180deg, #0a0a0b 0%, #060607 100%);
+}
+
+.basscally-checkout-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 45% 20%, black 0%, transparent 72%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .checkout-rise {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fade-rise 420ms var(--ease-out) forwards;
+  }
+
+  .checkout-rise-delay-1 {
+    animation-delay: 90ms;
+  }
+  .checkout-rise-delay-2 {
+    animation-delay: 140ms;
+  }
+  .checkout-rise-delay-3 {
+    animation-delay: 190ms;
+  }
+  .checkout-rise-delay-5 {
+    animation-delay: 420ms;
+  }
+
+  .checkout-vinyl {
+    animation: pricing-spin 18s linear infinite;
+  }
 }

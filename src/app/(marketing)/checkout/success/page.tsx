@@ -1,14 +1,13 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { routes } from "@/lib/routes";
+import { CheckoutSuccessContent } from "@/components/checkout/checkout-success-content";
+import type { Metadata } from "next";
 
 /** Screen 11 */
+export const metadata: Metadata = {
+  title: "Checkout success — Basscally Club",
+  description:
+    "Your Basscally Club membership is live. Check your email for a magic link and start practicing.",
+};
+
 export default function CheckoutSuccessPage() {
-  return (
-    <PlaceholderPage
-      screenNumber={11}
-      title="Checkout success"
-      description="Post-payment — magic link and dashboard direction."
-      route={routes.checkout.success}
-    />
-  );
+  return <CheckoutSuccessContent />;
 }

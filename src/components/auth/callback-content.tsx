@@ -22,18 +22,18 @@ export function CallbackContent() {
             Hold on. We are checking your magic link, creating your session, and opening your
             dashboard.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href={routes.auth.login} variant="secondary">
+          <div className="mt-8 flex flex-wrap gap-3 max-[1023px]:flex-col">
+            <ButtonLink href={routes.auth.login} variant="secondary" className="max-[1023px]:w-full">
               Use another email
             </ButtonLink>
-            <ButtonLink href={routes.home} variant="ghost">
+            <ButtonLink href={routes.home} variant="ghost" className="max-[1023px]:w-full">
               Return home
             </ButtonLink>
           </div>
         </div>
 
         <div
-          className="basscally-rise-in basscally-rise-in-delay-2 relative flex min-h-[360px] flex-col items-center justify-center gap-6 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-gradient-to-b from-[rgba(28,28,31,0.92)] to-[rgba(14,14,16,0.9)] p-8 lg:min-h-[520px]"
+          className="callback-stage-card basscally-rise-in basscally-rise-in-delay-2 relative flex min-h-[360px] flex-col items-center justify-center gap-6 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-gradient-to-b from-[rgba(28,28,31,0.92)] to-[rgba(14,14,16,0.9)] p-8 lg:min-h-[520px]"
           aria-label="Signing in status"
         >
           <div className="callback-vinyl-wrap relative flex h-[210px] w-[210px] items-center justify-center lg:h-[240px] lg:w-[240px]" aria-hidden>
@@ -81,6 +81,35 @@ export function CallbackContent() {
                 <strong className="block text-[15px] text-[var(--color-text)]">{step.title}</strong>
                 <p className="mt-1 text-[13px] leading-snug text-[var(--color-text-muted)]">{step.desc}</p>
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="basscally-container mt-8 basscally-rise-in basscally-rise-in-delay-3">
+        <div className="grid gap-3 md:grid-cols-3" aria-label="Designed states">
+          {[
+            {
+              title: "Loading state",
+              body: "Use this default view while the callback route exchanges the magic link.",
+            },
+            {
+              title: "Success state",
+              body: "Swap title to “You are in” and redirect to dashboard after 900ms.",
+            },
+            {
+              title: "Error state",
+              body: "Show “This link expired” with Send new magic link as the primary CTA.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="min-h-[92px] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.6)] p-4"
+            >
+              <h4 className="text-sm font-semibold text-[var(--color-text)]">{item.title}</h4>
+              <p className="mt-1.5 text-[13px] leading-[1.45] text-[var(--color-text-muted)]">
+                {item.body}
+              </p>
             </div>
           ))}
         </div>
