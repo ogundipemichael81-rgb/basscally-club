@@ -1,0 +1,126 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { BrandMark } from "@/components/marketing/brand-mark";
+import { IconCheck } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { routes } from "@/lib/routes";
+import { cn } from "@/lib/utils";
+
+type FormState = "idle" | "loading" | "success";
+
+function isValidEmail(value: string) {
+  return value.includes("@") && value.includes(".");
+}
+
+export function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | undefined>();
+  const [state, setState] = useState<FormState>("idle");
+  const [sentEmail, setSentEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+
+    if (!isValidEmail(trimmed)) {
+      setError("Enter a valid email address.");
+      return;
+    }
+
+    setError(undefined);
+    setState("loading");
+
+    window.setTimeout(() => {
+      setSentEmail(trimmed);
+      setState("success");
+    }, 1500);
+  };
+
+  if (state === "success") {
+    return (
+      <div className="relative z-[1] flex w-full max-w-[400px] flex-col items-center text-center">
+        <div
+          className="mb-6 flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(52,211,153,0.25)] bg-[rgba(52,211,153,0.12)] text-[var(--color-success)]"
+          aria-hidden
+        >
+          <IconCheck className="h-6 w-6" />
+        </div>
+        <h1 className="mb-3 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
+          Check your email
+        </h1>
+        <p className="mb-6 max-w-[340px] text-[length:var(--text-body-sm)] leading-relaxed text-[var(--color-text-muted)]">
+          We sent a magic link to{" "}
+          <span className="font-medium text-[var(--color-text)]">{sentEmail}</span>. Click it to
+          sign in.
+        </p>
+        <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-dim)]">
+          Didn&apos;t get it? Check spam, or{" "}
+          <button
+            type="button"
+            className="underline hover:text-[var(--color-text-muted)]"
+            onClick={() => {
+              setState("idle");
+              setEmail(sentEmail);
+            }}
+          >
+            resend
+          </button>
+          .
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative z-[1] flex w-full max-w-[400px] flex-col items-center">
+      <BrandMark size="lg" className="mb-6" />
+      <h1 className="mb-3 text-center font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
+        Sign in to Basscally Club
+      </h1>
+      <p className="mb-8 text-center text-[length:var(--text-body-sm)] text-[var(--color-text-muted)]">
+        Enter your email and we&apos;ll send you a magic link. No password needed.
+      </p>
+
+      <form
+        onSubmit={handleSubmit}
+        className={cn("w-full space-y-4", state === "loading" && "pointer-events-none opacity-60")}
+        noValidate
+      >
+        <Input
+          label="Email address"
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          required
+          value={email}
+          error={error}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) setError(undefined);
+          }}
+        />
+        <Button type="submit" className="relative w-full" disabled={state === "loading"}>
+          <span className={cn(state === "loading" && "opacity-0")}>Send magic link</span>
+          {state === "loading" ? (
+            <span
+              className="absolute inset-0 m-auto h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white motion-reduce:animate-none"
+              aria-hidden
+            />
+          ) : null}
+        </Button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-[var(--color-text-dim)]">
+        Don&apos;t have an account?{" "}
+        <Link href={routes.pricing} className="font-medium text-[var(--color-brand)] hover:underline">
+          Join for $1.50/month
+        </Link>
+      </p>
+    </div>
+  );
+}
