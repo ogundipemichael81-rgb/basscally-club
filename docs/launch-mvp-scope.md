@@ -2,7 +2,7 @@
 
 **Status:** Active build strategy (supersedes “all 33 screens before launch”)  
 **Source of truth:** `docs/basscally-build-pack/` (PRD v1.1, `09_routes_wiring_screen_map_and_components.md`, `08_architecture_backend_auth_payments_email_logic.md`, `06_locked_screen_designs_UPDATED_01_33.md`)  
-**Last updated:** 2026-05-17 (legal pages implemented)
+**Last updated:** 2026-05-17 (navigation and CTA ownership)
 
 ---
 
@@ -240,14 +240,28 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 
 **Visual depth pass date:** 2026-05-17  
 **Responsive deep audit date:** 2026-05-17  
-**Motion stabilization date:** 2026-05-17
+**Motion stabilization date:** 2026-05-17  
+**CTA / navigation audit date:** 2026-05-17
 
 | Gate | Doc / tool | Result |
 |------|------------|--------|
 | Visual depth | `docs/visual-depth-quality-gate.md` | **PASS** (P0) |
 | Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (72/72 incl. legal routes) |
 | Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36) |
+| Navigation & CTA ownership | `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownership) + `scripts/cta-nav-qa.mjs` | **PASS** (63/63 route×width rows) |
 | Build | `typecheck`, `lint`, `build` | **PASS** |
+
+### Navigation and CTA ownership
+
+1. **`MarketingNav` owns top navigation** on public marketing pages.
+2. **Page components must not render their own top-right nav actions** under `MarketingNav`.
+3. **Pricing cards own plan-specific CTAs** (no duplicate page-level Sign in / Continue row).
+4. **Checkout pages use checkout-specific CTAs only** (support nav + in-content recovery; no marketing Join cluster).
+5. **Legal pages stay calm and readable** (Sign in in nav only; contact/footer links in body).
+6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way.
+7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` on all selling-path and legal routes at 320, 375, 390, 768, 1024, 1280, 1440.
+
+Full rules: `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownership) and `docs/visual-depth-quality-gate.md` (Phase A sign-off record).
 
 **Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
 
@@ -262,7 +276,7 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 - Manual keyboard/focus walkthrough on selling-path and legal routes.
 - Optional device check: landing sticky CTA at 375×667.
 - **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md` internal section).
-- Re-run `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any selling-path or legal UI change.
+- Re-run `cta-nav-qa.mjs`, `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any selling-path or legal UI change.
 
 ### Mandatory checks for every new screen
 
@@ -271,9 +285,10 @@ Before merge, every new route or major surface must pass:
 1. Visual depth check (`docs/visual-depth-quality-gate.md`)  
 2. Responsive collision check (`docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs`)  
 3. Motion containment check (`docs/motion-audit-rules.md` + `scripts/motion-qa.mjs`)  
-4. Touch target check (responsive gate §5)
+4. Touch target check (responsive gate §5)  
+5. Duplicate CTA audit (Navigation and CTA ownership + `scripts/cta-nav-qa.mjs`)
 
-**No backend phase rule:** Do **not** start **Phase B** (or later backend/integration work) if any selling-path route has a **P0** fail on visual depth, responsive layout, motion, or touch.
+**No backend phase rule:** Do **not** start **Phase B** (or later backend/integration work) if any selling-path route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs.
 
 ---
 
@@ -324,8 +339,9 @@ Legal pages and footer links are implemented and audited (2026-05-17). Proceed w
 - `docs/legal-pages-build-plan.md` — legal routes implementation and QA  
 - `docs/legal-public-content-draft.md` — public copy source + internal solicitor checklist  
 - `docs/visual-depth-quality-gate.md` — depth addendum (does not replace locked design system)  
-- `docs/mobile-responsive-quality-gate.md` — official responsive QA gate  
+- `docs/mobile-responsive-quality-gate.md` — official responsive QA gate (includes Navigation and CTA ownership)  
 - `docs/motion-audit-rules.md` — motion containment and reduced-motion rules  
+- `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit  
 - `docs/basscally-build-pack/00_START_HERE/BUILD_SEQUENCE_GUIDE.md` — original phase prompts (still useful per-tier)  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/09_routes_wiring_screen_map_and_components.md` — full route table  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/08_architecture_backend_auth_payments_email_logic.md` — data model and access rules  

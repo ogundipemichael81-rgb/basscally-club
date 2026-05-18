@@ -9,19 +9,50 @@ import { routes } from "@/lib/routes";
 
 type MarketingNavProps = {
   hideGhostOnMobile?: boolean;
+  hidePrimary?: boolean;
+  /** Hides Join (or route primary) below lg so landing sticky bar owns mobile conversion */
+  hidePrimaryOnMobile?: boolean;
   ghostHref?: string;
   ghostLabel?: string;
   primaryHref?: string;
   primaryLabel?: string;
 };
 
+const LEGAL_PATHS: ReadonlySet<string> = new Set([
+  routes.legal.terms,
+  routes.legal.privacy,
+  routes.legal.refundPolicy,
+]);
+
 function navFromPath(pathname: string | null): Partial<MarketingNavProps> | null {
+  if (pathname && LEGAL_PATHS.has(pathname)) {
+    return {
+      ghostHref: routes.auth.login,
+      ghostLabel: "Sign in",
+      hidePrimary: true,
+      hideGhostOnMobile: false,
+    };
+  }
+  if (pathname === routes.home) {
+    return {
+      hidePrimaryOnMobile: true,
+    };
+  }
+  if (pathname === routes.checkout.success) {
+    return {
+      ghostHref: "mailto:hello@basscally.club",
+      ghostLabel: "Need help?",
+      primaryHref: routes.home,
+      primaryLabel: "Home",
+      hideGhostOnMobile: false,
+    };
+  }
   if (pathname === routes.checkout.cancelled) {
     return {
-      ghostHref: `${routes.home}#faq`,
-      ghostLabel: "Questions",
-      primaryHref: routes.auth.login,
-      primaryLabel: "Sign in",
+      ghostHref: "mailto:hello@basscally.club",
+      ghostLabel: "Need help?",
+      primaryHref: routes.home,
+      primaryLabel: "Home",
       hideGhostOnMobile: false,
     };
   }
@@ -29,8 +60,8 @@ function navFromPath(pathname: string | null): Partial<MarketingNavProps> | null
     return {
       ghostHref: "mailto:hello@basscally.club",
       ghostLabel: "Need help?",
-      primaryHref: routes.auth.login,
-      primaryLabel: "Sign in",
+      primaryHref: routes.home,
+      primaryLabel: "Home",
       hideGhostOnMobile: false,
     };
   }
@@ -43,11 +74,17 @@ export function MarketingNav(props: MarketingNavProps) {
 
   const hideGhostOnMobile =
     props.hideGhostOnMobile ?? routeDefaults?.hideGhostOnMobile ?? true;
+  const hidePrimary = props.hidePrimary ?? routeDefaults?.hidePrimary ?? false;
+  const hidePrimaryOnMobile =
+    props.hidePrimaryOnMobile ?? routeDefaults?.hidePrimaryOnMobile ?? false;
   const ghostHref = props.ghostHref ?? routeDefaults?.ghostHref ?? routes.auth.login;
   const ghostLabel = props.ghostLabel ?? routeDefaults?.ghostLabel ?? "Sign in";
   const primaryHref = props.primaryHref ?? routeDefaults?.primaryHref ?? routes.pricing;
   const primaryLabel =
     props.primaryLabel ?? routeDefaults?.primaryLabel ?? "Join — $1.50/mo";
+
+  const showPrimary = !hidePrimary;
+  const primaryClassName = hidePrimaryOnMobile ? "hidden lg:inline-flex" : undefined;
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)]/60 bg-[rgba(10,10,11,0.72)] backdrop-blur-2xl">
@@ -69,9 +106,16 @@ export function MarketingNav(props: MarketingNavProps) {
           >
             {ghostLabel}
           </ButtonLink>
-          <ButtonLink href={primaryHref} size="sm" variant={primaryHref === routes.auth.login ? "secondary" : "primary"}>
-            {primaryLabel}
-          </ButtonLink>
+          {showPrimary ? (
+            <ButtonLink
+              href={primaryHref}
+              size="sm"
+              variant={primaryHref === routes.auth.login ? "secondary" : "primary"}
+              className={primaryClassName}
+            >
+              {primaryLabel}
+            </ButtonLink>
+          ) : null}
         </nav>
       </div>
     </header>

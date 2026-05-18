@@ -11,7 +11,7 @@ export function LegalPageShell({ document }: { document: LegalDocument }) {
     <article className="basscally-legal-page relative z-[1] py-10 sm:py-14 lg:py-16">
       <div className="basscally-container">
         <div className="mx-auto max-w-3xl">
-          <header className="mb-10">
+          <div className="mb-10">
             <SectionLabel>Legal</SectionLabel>
             <h1 className="font-[family-name:var(--font-display)] text-3xl font-black tracking-tight text-[var(--color-text)] sm:text-4xl">
               {document.title}
@@ -26,7 +26,7 @@ export function LegalPageShell({ document }: { document: LegalDocument }) {
                 <dd className="inline text-[var(--color-text)]">{document.effectiveDate}</dd>
               </div>
             </dl>
-          </header>
+          </div>
 
           <div className="basscally-depth-card mb-8 rounded-[var(--radius-lg)] p-6 sm:p-8">
             <div className="flex flex-col gap-4">

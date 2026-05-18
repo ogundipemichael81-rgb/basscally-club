@@ -2,7 +2,7 @@
 
 **Status:** Official QA gate for layout, touch, and collision prevention  
 **Companion docs:** `docs/motion-audit-rules.md`, `docs/visual-depth-quality-gate.md`  
-**Last updated:** 2026-05-17 (legal routes added)  
+**Last updated:** 2026-05-17 (navigation and CTA ownership)  
 **Source audits:** Phase A responsive deep audit (`scripts/responsive-audit.mjs`), motion QA (`scripts/motion-qa.mjs`), legal content audit (`scripts/legal-audit.mjs`)
 
 Convert every selling-path screen from “desktop shrunk” to **intentionally mobile** before Phase B backend work.
@@ -30,6 +30,22 @@ Convert every selling-path screen from “desktop shrunk” to **intentionally m
 - **Landing hero CTA at 375×667** — Automated check passed; optional one device confirmation.
 - **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md`).
 - **Depth on `/auth/login`** — Shell atmosphere only; no panel cards (documented exception).
+
+---
+
+## Navigation and CTA ownership
+
+These rules apply to every Phase A route and are enforced before phase sign-off.
+
+1. **`MarketingNav` owns top navigation** on public marketing pages (`MarketingShell` / `(marketing)` layout).
+2. **Page components must not render their own top-right nav actions** under `MarketingNav` — no page-level Sign in + Join / Continue rows that mirror the nav cluster.
+3. **Pricing cards own plan-specific CTAs** — each plan card contains its checkout/selection action; `/pricing` does not add a second top action bar.
+4. **Checkout pages use checkout-specific CTAs only** — route-aware nav (support + Home); primary recovery CTAs live in the checkout hero/card, not duplicated in nav.
+5. **Legal pages stay calm and readable** — nav shows Sign in only (no Join); document body uses footer contact and related legal links, not conversion banners.
+6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way — when a bottom sticky bar is present, hide or defer competing hero/nav Join buttons on the same viewport (landing: hero Join ≥`lg`, sticky owns &lt;`lg`).
+7. **A duplicate CTA audit is required before every phase sign-off** — run `node scripts/cta-nav-qa.mjs` at widths 320, 375, 390, 768, 1024, 1280, 1440 on all selling-path and legal routes; must be **PASS** with `typecheck`, `lint`, and `build`.
+
+**CTA audit signed off:** 2026-05-17 — 63/63 route×width rows PASS (`scripts/cta-nav-qa.mjs`).
 
 ---
 
@@ -126,7 +142,7 @@ Full rules: `docs/motion-audit-rules.md`.
 | Hero headline | Scales via mobile type rules; no clipping at 320px |
 | Hero stats row | Fits 375px without overlap; readable mono labels |
 | Drop preview cards | Stack or scroll cleanly; play affordance not cut off |
-| Sticky mobile CTA | Visible ≤1023px; hidden ≥1024px; full-width button ≥44px tall |
+| Sticky mobile CTA | Visible ≤1023px; hidden ≥1024px; full-width button ≥44px tall; does not duplicate visible hero Join (hero Join hidden &lt;`lg`) |
 | Live status dot | Contained in overflow box; pulse does not expand into nav |
 | Section rhythm | `--space-8` between sections on mobile |
 | FAQ / footer | Links tappable; no horizontal overflow |
@@ -171,19 +187,21 @@ Before any new route or major UI surface merges:
 2. **Responsive collision check** — This document §2–§5 + `node scripts/responsive-audit.mjs`
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`
 4. **Touch target check** — §5; buttons/inputs ≥44px / 16px body font on mobile
+5. **Duplicate CTA audit** — Navigation and CTA ownership (above) + `node scripts/cta-nav-qa.mjs`
 
-**Backend phase rule:** Do **not** start Phase B while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, or touch.
+**Backend phase rule:** Do **not** start Phase B while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs.
 
 ---
 
 ## 7. Automated + manual workflow
 
 1. Start dev server: `npm run dev`
-2. Run `node scripts/responsive-audit.mjs` (selling path + `/terms`, `/privacy`, `/refund-policy`)
-3. Run `node scripts/legal-audit.mjs` (content, footer links, forbidden providers)
-4. Run `node scripts/motion-qa.mjs` (motion regression at 375, 390, 768, 1024, 1280, 1440)
-5. Manually spot-check landing items in §4 if copy or layout changed
-6. Record results in §6 table (store in PR description or QA ticket)
+2. Run `node scripts/cta-nav-qa.mjs` (navigation + duplicate CTA audit at 320–1440)
+3. Run `node scripts/responsive-audit.mjs` (selling path + `/terms`, `/privacy`, `/refund-policy`)
+4. Run `node scripts/legal-audit.mjs` (content, footer links, forbidden providers)
+5. Run `node scripts/motion-qa.mjs` (motion regression at 375, 390, 768, 1024, 1280, 1440)
+6. Manually spot-check landing items in §4 if copy or layout changed
+7. Record results in §6 table (store in PR description or QA ticket)
 
 ---
 
@@ -195,6 +213,8 @@ Before any new route or major UI surface merges:
 - Decorative motion touching readable content without clipping/z-index fix
 - More than ~10% visible brand orange on screen (60-30-10 violation)
 - Mobile CTA shown on desktop breakpoint without usable layout purpose
+- Duplicate top-right CTA cluster (nav + page-level Sign in / Join / Continue on the same route)
+- Mobile sticky Join visible at the same time as hero Join on the same viewport
 
 ---
 
@@ -205,5 +225,6 @@ Before any new route or major UI surface merges:
 - `docs/visual-depth-quality-gate.md` — atmosphere and card depth
 - `docs/legal-pages-build-plan.md` — legal routes implementation record  
 - `scripts/legal-audit.mjs` — legal content and footer smoke tests  
+- `scripts/cta-nav-qa.mjs` — headless navigation and duplicate CTA audit
 - `scripts/responsive-audit.mjs` — headless responsive deep audit (selling path + legal)
 - `scripts/motion-qa.mjs` — headless motion/collision regression

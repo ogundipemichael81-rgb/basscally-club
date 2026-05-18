@@ -3,7 +3,7 @@
 **Status:** Addendum to the locked design system  
 **Parent doc:** `docs/basscally-build-pack/03_DESIGN_MD/04_basscally_design_system.md` (v1.0 — do not replace)  
 **Applies to:** Phase A selling-path React screens and all future production UI  
-**Last updated:** 2026-05-17 (legal routes)
+**Last updated:** 2026-05-17 (navigation and CTA ownership)
 
 This document defines **how Basscally achieves depth on dark surfaces**. It extends §2 (color), §6 (shadows), and §9 (components). If this addendum conflicts with the locked system on tokens or the 60-30-10 rule, **the design system wins**.
 
@@ -29,6 +29,16 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 - **Manual squint test** on `/pricing` at desktop — confirm plan-card hover glow stays within 60-30-10 (automated checks passed).
 - **`/auth/login`** — no `.basscally-depth-card` on form shell by design; uses page atmosphere only (acceptable).
 - **Solicitor review** of public legal copy before treating as launch-final.
+
+### Navigation and CTA ownership (2026-05-17)
+
+1. **`MarketingNav` owns top navigation** on public marketing pages (`(marketing)` layout: `/`, `/pricing`, `/checkout/*`, legal routes).
+2. **Page components must not render their own top-right nav actions** under `MarketingNav` (no duplicate Sign in / Join / Continue rows at page level).
+3. **Pricing cards own plan-specific CTAs** — conversion lives inside each plan card, not in a second header row.
+4. **Checkout pages use checkout-specific CTAs only** — nav shows support/navigation labels (e.g. Need help?, Home); hero/card owns recovery actions.
+5. **Legal pages stay calm and readable** — nav: Sign in only (no Join); body has contact/footer links, not aggressive conversion blocks.
+6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way (e.g. landing: hero Join hidden below `lg`; sticky bar owns mobile conversion).
+7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` (see `docs/mobile-responsive-quality-gate.md`).
 
 ---
 
@@ -177,6 +187,7 @@ Before merging depth work on any route:
 - [ ] No new hex tokens; only `var(--color-*)` and rgba derivatives
 - [ ] Mobile 375px: depth readable, no clipped headings, no horizontal scroll
 - [ ] Passes `docs/mobile-responsive-quality-gate.md` P0 layout checks
+- [ ] Passes navigation and CTA ownership rules (§ Phase A sign-off — Navigation and CTA ownership)
 
 **Routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
 
@@ -190,8 +201,9 @@ Before any new route or major UI surface merges:
 2. **Responsive collision check** — `docs/mobile-responsive-quality-gate.md` + `node scripts/responsive-audit.mjs`.
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`.
 4. **Touch target check** — Primary actions ≥44×44px; inputs ≥16px font-size on mobile.
+5. **Duplicate CTA audit** — Navigation and CTA ownership rules (Phase A sign-off above) + `node scripts/cta-nav-qa.mjs`.
 
-**Backend phase rule:** Do **not** start Phase B (or later backend/integration work) while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, or touch. P1 items may ship with documented follow-up.
+**Backend phase rule:** Do **not** start Phase B (or later backend/integration work) while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs. P1 items may ship with documented follow-up.
 
 ---
 
@@ -203,4 +215,5 @@ Before any new route or major UI surface merges:
 - `docs/mobile-responsive-quality-gate.md` — breakpoint QA
 - `docs/legal-pages-build-plan.md` — legal pages implementation
 - `scripts/responsive-audit.mjs` — automated responsive gate (selling path + legal)
+- `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit (selling path + legal)
 - `scripts/legal-audit.mjs` — legal content smoke tests

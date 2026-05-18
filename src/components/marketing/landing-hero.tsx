@@ -65,7 +65,11 @@ export function LandingHero() {
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-            <ButtonLink href={routes.pricing} size="lg" className="group w-full sm:w-auto">
+            <ButtonLink
+              href={routes.pricing}
+              size="lg"
+              className="group hidden w-full sm:w-auto lg:inline-flex"
+            >
               Join the Club — $1.50/month
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>

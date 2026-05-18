@@ -41,15 +41,16 @@ export function CheckoutSuccessContent() {
             <ButtonLink href={routes.auth.login} className="max-[680px]:w-full">
               Go to sign in
             </ButtonLink>
-            <ButtonLink
+          </CheckoutCtaRow>
+          <CheckoutFinePrint>
+            No password needed · Access is tied to your email ·{" "}
+            <a
               href={routes.auth.login}
-              variant="secondary"
-              className="max-[680px]:w-full"
+              className="inline-flex min-h-11 items-center text-[var(--color-brand)] underline decoration-[var(--color-brand)]/40 underline-offset-2 hover:text-[var(--color-text)]"
             >
               Resend magic link
-            </ButtonLink>
-          </CheckoutCtaRow>
-          <CheckoutFinePrint>No password needed · Access is tied to your email</CheckoutFinePrint>
+            </a>
+          </CheckoutFinePrint>
         </div>
 
         <CheckoutPassCard aria-label="Membership pass">

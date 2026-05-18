@@ -107,22 +107,6 @@ export function PricingPlanSelector() {
   return (
     <div className="basscally-pricing-page relative min-h-full overflow-x-hidden px-5 py-7 pb-16 lg:px-8 lg:py-7 lg:pb-16">
       <div className="mx-auto max-w-[1320px]">
-        <MotionDiv className="mb-7 flex flex-col gap-5 max-[680px]:items-start lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="font-[family-name:var(--font-display)] text-[28px] font-black tracking-[-0.03em]">
-              Choose your Club plan
-            </h1>
-          </div>
-          <div className="flex w-full flex-wrap gap-2.5 max-[680px]:flex-col lg:w-auto">
-            <ButtonLink href={routes.auth.login} variant="secondary" className="max-[680px]:w-full">
-              Sign in
-            </ButtonLink>
-            <ButtonLink href="#plans" className="max-[680px]:w-full">
-              Continue
-            </ButtonLink>
-          </div>
-        </MotionDiv>
-
         <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
           <MotionDiv
             delayMs={0}
@@ -130,7 +114,10 @@ export function PricingPlanSelector() {
           >
             <div className="relative z-[1]">
               <SectionLabel>Basscally Club pricing</SectionLabel>
-              <h2 className="font-[family-name:var(--font-display)] text-[clamp(42px,6.5vw,82px)] font-black leading-[0.9] tracking-[-0.055em]">
+              <h1 className="font-[family-name:var(--font-display)] text-[clamp(28px,4vw,36px)] font-black tracking-[-0.03em] text-[var(--color-text)]">
+                Choose your Club plan
+              </h1>
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-[clamp(42px,6.5vw,82px)] font-black leading-[0.9] tracking-[-0.055em]">
                 Lock your groove.
                 <br />
                 <span className="text-[var(--color-brand)] italic">Pay less yearly.</span>
