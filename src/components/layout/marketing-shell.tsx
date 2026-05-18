@@ -3,9 +3,9 @@ import { MarketingNav } from "@/components/marketing/marketing-nav";
 
 export function MarketingShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-full flex-col pb-20 lg:pb-0">
+    <div className="basscally-marketing flex min-h-full flex-col pb-20 lg:pb-0">
       <MarketingNav />
-      <main className="flex-1">{children}</main>
+      <main className="min-w-0 flex-1">{children}</main>
     </div>
   );
 }

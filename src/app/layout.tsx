@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col overflow-x-hidden bg-[var(--color-bg)] text-[var(--color-text)]">
+      <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-text)]">
         <div className="basscally-app-content">
           <Providers>{children}</Providers>
         </div>

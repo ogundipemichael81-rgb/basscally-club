@@ -2,8 +2,8 @@
 
 **Status:** Official QA gate for layout, touch, and collision prevention  
 **Companion docs:** `docs/motion-audit-rules.md`, `docs/visual-depth-quality-gate.md`  
-**Last updated:** 2026-05-17 (public route audit, `/account/cancel`, homepage motion)  
-**Source audits:** `scripts/public-route-audit.mjs`, `scripts/responsive-audit.mjs`, `scripts/motion-qa.mjs`, `scripts/cta-nav-qa.mjs`, `scripts/legal-audit.mjs`
+**Last updated:** 2026-05-18 (landing scroll performance pass)  
+**Source audits:** `scripts/public-route-audit.mjs`, `scripts/responsive-audit.mjs`, `scripts/motion-qa.mjs`, `scripts/cta-nav-qa.mjs`, `scripts/legal-audit.mjs`, `scripts/home-scroll-qa.mjs`, `scripts/scroll-performance-audit.mjs`
 
 Convert every selling-path screen from “desktop shrunk” to **intentionally mobile** before Phase B backend work.
 
@@ -15,10 +15,11 @@ Convert every selling-path screen from “desktop shrunk” to **intentionally m
 | --- | --- |
 | **Responsive deep audit completed** | **2026-05-17** (updated with `/account/cancel`) |
 | **Public route audit completed** | **2026-05-17** — `scripts/public-route-audit.mjs` 70/70 PASS |
+| **Landing scroll performance completed** | **2026-05-18** — `scripts/home-scroll-qa.mjs` 6 widths PASS; 375/390 smooth scroll P0 |
 | **Routes tested** | Public set: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` |
 | **Required breakpoints** | 320, 375, 390, 768, 1024, 1280, 1440 |
 | **Stress breakpoints** | 280, 1440+ |
-| **P0 result** | **PASS** — 90/90 `responsive-audit.mjs`; 70/70 `public-route-audit.mjs` |
+| **P0 result** | **PASS** — 90/90 `responsive-audit.mjs`; 70/70 `public-route-audit.mjs`; landing scroll QA PASS |
 | **Build** | `npm run typecheck`, `npm run lint`, `npm run build` — PASS |
 
 ### Resolved P1 (2026-05-17)
@@ -26,6 +27,7 @@ Convert every selling-path screen from “desktop shrunk” to **intentionally m
 - **Legal footer placeholders** — Marketing footer links to `/terms`, `/privacy`, `/refund-policy`; Contact → `mailto:basscally.enquiry@gmail.com`; login footer links to `/privacy`, `/terms`.
 - **Public dev-language copy** — No placeholder/MVP/webhook UI strings on public routes (`public-route-audit.mjs`).
 - **Homepage subtle motion** — Landing checks in §4 + `docs/motion-audit-rules.md` §6; no deco/CTA collision at required widths.
+- **Landing scroll performance** — Static body atmosphere, sticky nav fix, transform-only wave; `home-scroll-qa.mjs` PASS (2026-05-18).
 - **`/account/cancel`** — Member sidebar stacks on narrow widths; tap targets ≥44px; accessible info page (no fake cancellation).
 
 ### Remaining P1 (non-blocking)
@@ -89,8 +91,8 @@ Test every Phase A route at these viewport widths (height ≥ 800px unless noted
 **CSS contract (collision prevention):**
 
 ```css
-/* Page */
-html, body { overflow-x: hidden; }
+/* Page — do NOT use overflow-x: hidden on html/body (breaks sticky nav) */
+main { overflow-x: clip; max-width: 100%; }
 
 /* Decorative animation */
 .decorative-motion {
@@ -125,6 +127,8 @@ Run automated motion QA:
 ```bash
 npm run dev
 node scripts/motion-qa.mjs
+node scripts/scroll-performance-audit.mjs
+node scripts/home-scroll-qa.mjs    # required after / motion, depth, or atmosphere changes
 ```
 
 **FAIL if:**
@@ -134,8 +138,9 @@ node scripts/motion-qa.mjs
 - Decorative overlap with nav / headings / CTAs / inputs (unclipped)
 - Mobile CTA bar overlapped or untappable when visible (`lg:hidden` bar only)
 - `prefers-reduced-motion: reduce` still runs continuous loops
+- **Landing (`/`):** scroll hang/stutter, CTA jump, sticky nav flicker, or mobile `backdrop-filter` on nav/CTA at 375/390px
 
-Full rules: `docs/motion-audit-rules.md`.
+Full rules: `docs/motion-audit-rules.md` §14 (scroll performance P0).
 
 ---
 
@@ -143,13 +148,16 @@ Full rules: `docs/motion-audit-rules.md`.
 
 | Check | PASS criteria |
 | --- | --- |
+| **Scroll smoothness (P0)** | No hang/stutter at **375px and 390px**; no horizontal scroll; sticky nav stays pinned; mobile CTA does not jump — `home-scroll-qa.mjs` or manual §14 in motion doc |
 | Hero headline | Scales via mobile type rules; no clipping at 320px |
 | Hero stats row | Fits 375px without overlap; readable mono labels |
 | Drop preview cards | Stack or scroll cleanly; play affordance not cut off |
-| Sticky mobile CTA | Visible ≤1023px; hidden ≥1024px; full-width button ≥44px tall; does not duplicate visible hero Join (hero Join hidden &lt;`lg`) |
-| Live status dot | Contained in overflow box; pulse does not expand into nav |
-| Drops visual panel | Wave + vinyl in `.landing-drops-stage`; rail shimmer `max-lg:hidden`; no overlap with sticky CTA |
-| Subtle motion | Wave, glow drift, or live dot active under `prefers-reduced-motion: no-preference` |
+| Sticky mobile CTA | Visible ≤1023px; hidden ≥1024px; solid background (no `backdrop-blur`); full-width button ≥44px tall; hero Join hidden &lt;`lg` |
+| Sticky marketing nav | `position: sticky` works (no `overflow-x: hidden` on `html`/`body`); no heavy blur on mobile |
+| Live status dot | Contained in overflow box; pulse pauses when hero off-screen |
+| Drops visual panel | Wave (`scaleY` on desktop) + vinyl in `.landing-drops-stage`; static founding rail; no overlap with sticky CTA |
+| Subtle motion | Alive but light: live dot / wave when hero in view; static bars on mobile; no full-page animated background |
+| Body atmosphere | Static radials + grid; no fixed SVG noise on mobile |
 | Section rhythm | `--space-8` between sections on mobile |
 | FAQ / footer | Links tappable; no horizontal overflow |
 
@@ -193,8 +201,10 @@ Before any new route or major UI surface merges:
 1. **Visual depth check** — `docs/visual-depth-quality-gate.md`
 2. **Responsive collision check** — This document §2–§5 + `node scripts/responsive-audit.mjs`
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`
-4. **Touch target check** — §5; buttons/inputs ≥44px / 16px body font on mobile
-5. **Duplicate CTA audit** — Navigation and CTA ownership (above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`
+4. **Landing scroll performance** — `docs/motion-audit-rules.md` §14 + `node scripts/home-scroll-qa.mjs` (required for `/` or global atmosphere changes)
+5. **Touch target check** — §5; buttons/inputs ≥44px / 16px body font on mobile
+6. **Duplicate CTA audit** — Navigation and CTA ownership (above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`
+7. **Stable React keys** — Mapped UI lists must use stable internal IDs for React keys. Public labels, titles, names, and source text must not be used as keys because duplicated copy can cause React identity bugs.
 
 **Backend phase rule:** Do **not** start Phase B until **all public-route P0 items pass**. **Status: cleared** 2026-05-17. Duplicate CTA audit **remains required** before every phase sign-off.
 
@@ -204,8 +214,8 @@ Before any new route or major UI surface merges:
 
 1. Start dev server: `npm run dev`
 2. Run `node scripts/public-route-audit.mjs` (combined copy, CTA, motion, responsive at 320–1440 + tooling)
-3. Or run individually: `cta-nav-qa.mjs`, `responsive-audit.mjs`, `motion-qa.mjs`, `legal-audit.mjs`
-4. Manually spot-check landing items in §4 if copy, motion, or layout changed
+3. Or run individually: `cta-nav-qa.mjs`, `responsive-audit.mjs`, `motion-qa.mjs`, `legal-audit.mjs`, `home-scroll-qa.mjs`, `scroll-performance-audit.mjs`
+4. Manually spot-check landing scroll + §4 if copy, motion, depth, or atmosphere changed
 5. Record results in §6 table (store in PR description or QA ticket)
 
 ---
@@ -234,3 +244,5 @@ Before any new route or major UI surface merges:
 - `scripts/responsive-audit.mjs` — headless responsive deep audit (public routes + stress widths)
 - `scripts/public-route-audit.mjs` — combined public-route gate (copy, CTA, motion, responsive)
 - `scripts/motion-qa.mjs` — headless motion/collision regression
+- `scripts/home-scroll-qa.mjs` — landing scroll smoothness at 320–1280 + reduced-motion + CPU throttle
+- `scripts/scroll-performance-audit.mjs` — public-route scroll/motion performance regression @ 375

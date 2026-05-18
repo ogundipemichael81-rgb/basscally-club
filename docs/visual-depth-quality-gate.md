@@ -3,7 +3,7 @@
 **Status:** Addendum to the locked design system  
 **Parent doc:** `docs/basscally-build-pack/03_DESIGN_MD/04_basscally_design_system.md` (v1.0 — do not replace)  
 **Applies to:** Phase A selling-path React screens and all future production UI  
-**Last updated:** 2026-05-17 (homepage motion, public copy cleanup, `/account/cancel`)
+**Last updated:** 2026-05-18 (landing scroll performance — static atmosphere)
 
 This document defines **how Basscally achieves depth on dark surfaces**. It extends §2 (color), §6 (shadows), and §9 (components). If this addendum conflicts with the locked system on tokens or the 60-30-10 rule, **the design system wins**.
 
@@ -15,6 +15,7 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 | --- | --- |
 | **Visual depth pass completed** | **2026-05-17** |
 | **Homepage motion + depth** | **2026-05-17** — `.landing-*` motion layered on existing depth cards (see `docs/motion-audit-rules.md` §6) |
+| **Landing scroll performance** | **2026-05-18** — static body atmosphere; no fixed SVG noise on mobile; depth unchanged (see `docs/motion-audit-rules.md` §14) |
 | **Routes tested** | Public set: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` |
 | **Breakpoints spot-checked** | 320, 375, 390, 768, 1024, 1280, 1440; stress 280, 1440+ |
 | **P0 result** | **PASS** — `scripts/public-route-audit.mjs` 70/70 |
@@ -27,6 +28,7 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 - **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy`; Contact `basscally.enquiry@gmail.com`.
 - **Public dev-language cleanup** — Product-facing copy on public routes; no placeholder/MVP/webhook UI strings.
 - **Homepage subtle motion pass** — Premium, slow, contained motion on `/` only.
+- **Landing scroll performance** — Static full-page atmosphere; mobile non-fixed pseudo layers; premium depth retained.
 
 ### Remaining P1 (non-blocking)
 
@@ -62,19 +64,25 @@ Implement depth with **existing CSS variables**. Do not introduce new brand hex 
 
 ## 1. Body atmosphere rules
 
-Page shells (`html`, `body`, route wrappers) use `--color-bg` as the base. Atmosphere is added with **fixed or absolute pseudo-layers**, never by painting the whole page brand-orange.
+Page shells (`html`, `body`, route wrappers) use `--color-bg` as the base. Atmosphere is added with **static pseudo-layers**, never by painting the whole page brand-orange.
 
 **Allowed on marketing / pricing / checkout shells:**
 
 - One or two **low-opacity radial gradients** (brand at ≤0.16 peak alpha, fading to transparent by 30–42% radius).
 - Optional **grid texture** via `linear-gradient` lines at ~1.5–2% white alpha, `background-size: 64px`, masked with `radial-gradient` so edges fade out.
-- Layers use `pointer-events: none` and sit **behind** content (`z-index: -1` or `z-index: 0` inside an isolated hero with content at `z-[1]`).
+- Layers use `pointer-events: none` and sit **behind** content (`z-index: 0` with `.basscally-app-content` above).
+
+**Scroll performance rules (P0 on `/`):**
+
+- **No full-page continuous background animation** — atmosphere is static only.
+- **No fixed SVG noise on mobile** — do not use `feTurbulence` data-URI on fixed `body::after`; grid-only texture. On ≤767px, atmosphere pseudo layers should not be `position: fixed` (reduces scroll repaint).
+- **Do not** use `overflow-x: hidden` on `html`/`body` — breaks sticky nav; clip on `main` instead (`overflow-x: clip`).
 
 **Rules:**
 
 - Atmosphere must not reduce text contrast below WCAG AA on `--color-text` / `--color-bg`.
-- No animated full-page gradients.
-- `overflow-x: hidden` on `html`, `body`, and long page wrappers (e.g. `.basscally-pricing-page`).
+- No animated full-page gradients or drifting full-viewport glows.
+- Long page wrappers (e.g. `.basscally-pricing-page`) may use route-scoped overflow rules without affecting `MarketingNav` sticky behavior.
 
 **Reference in repo:** `body::before/::after`, `.basscally-app-content`, `.basscally-hero::before/::after`, `.basscally-pricing-page`, `.basscally-checkout-shell`, `.auth-page-shell`, `.basscally-callback-page`.
 
@@ -191,6 +199,8 @@ Before merging depth work on any route:
 - [ ] No new hex tokens; only `var(--color-*)` and rgba derivatives
 - [ ] Mobile 375px: depth readable, no clipped headings, no horizontal scroll
 - [ ] Passes `docs/mobile-responsive-quality-gate.md` P0 layout checks
+- [ ] **Landing scroll smoothness** at 375px and 390px if route is `/` (`scripts/home-scroll-qa.mjs`)
+- [ ] After motion/depth/atmosphere change: run `scroll-performance-audit.mjs` or manual scroll QA (`docs/motion-audit-rules.md` §14)
 - [ ] Passes navigation and CTA ownership rules (§ Phase A sign-off — Navigation and CTA ownership)
 
 **Routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` (info page).
@@ -204,8 +214,9 @@ Before any new route or major UI surface merges:
 1. **Visual depth check** — This document §8 checklist; use `.basscally-depth-card` or `.basscally-panel-card` for elevated surfaces.
 2. **Responsive collision check** — `docs/mobile-responsive-quality-gate.md` + `node scripts/responsive-audit.mjs`.
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`.
-4. **Touch target check** — Primary actions ≥44×44px; inputs ≥16px font-size on mobile.
-5. **Duplicate CTA audit** — Navigation and CTA ownership rules (Phase A sign-off above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`.
+4. **Landing scroll performance** — `docs/motion-audit-rules.md` §14 + `node scripts/home-scroll-qa.mjs` (when `/` or global atmosphere changes).
+5. **Touch target check** — Primary actions ≥44×44px; inputs ≥16px font-size on mobile.
+6. **Duplicate CTA audit** — Navigation and CTA ownership rules (Phase A sign-off above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`.
 
 **Backend phase rule:** Do **not** start Phase B until **all public-route P0 items pass**. **P0 cleared** 2026-05-17. Duplicate CTA audit **remains required** before every phase sign-off. P1 items may ship with documented follow-up.
 
@@ -222,4 +233,6 @@ Before any new route or major UI surface merges:
 - `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit (public routes)
 - `scripts/public-route-audit.mjs` — combined public-route gate
 - `scripts/legal-audit.mjs` — legal content smoke tests
-- `src/components/marketing/landing-hero.tsx`, `landing-sections.tsx` — homepage depth + motion
+- `scripts/home-scroll-qa.mjs` — landing scroll smoothness regression
+- `scripts/scroll-performance-audit.mjs` — public-route scroll/motion performance
+- `src/components/marketing/landing-hero.tsx`, `landing-sections.tsx`, `landing-motion-gate.tsx` — homepage depth + motion

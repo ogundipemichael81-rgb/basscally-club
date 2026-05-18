@@ -40,7 +40,7 @@ const drops = [
 function LandingWaveBars() {
   return (
     <div
-      className="decorative-motion relative isolate h-9 min-w-0 flex-1 overflow-hidden"
+      className="landing-wave-motion-root decorative-motion relative isolate h-9 min-w-0 flex-1 overflow-hidden"
       aria-hidden
     >
       <div className="landing-wave flex h-9 items-end gap-1">

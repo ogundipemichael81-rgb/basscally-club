@@ -5,7 +5,7 @@ import { routes } from "@/lib/routes";
 export function MobileCtaBar() {
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[var(--color-bg)]/95 p-4 backdrop-blur-md lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[var(--color-bg)] p-4 lg:hidden"
     >
       <ButtonLink href={routes.pricing} className="landing-cta-glow w-full">
         Join — $1.50/mo

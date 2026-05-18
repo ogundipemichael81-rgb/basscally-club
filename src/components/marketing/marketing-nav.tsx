@@ -90,7 +90,7 @@ export function MarketingNav(props: MarketingNavProps) {
   const primaryClassName = hidePrimaryOnMobile ? "hidden lg:inline-flex" : undefined;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border)]/60 bg-[rgba(10,10,11,0.72)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border)]/60 bg-[rgba(10,10,11,0.96)] md:bg-[rgba(10,10,11,0.9)] md:backdrop-blur-sm lg:backdrop-blur-md">
       <div className="mx-auto flex max-w-[1320px] min-w-0 flex-wrap items-center justify-between gap-3 px-5 py-4 lg:gap-4 lg:px-8">
         <Link
           href={routes.home}

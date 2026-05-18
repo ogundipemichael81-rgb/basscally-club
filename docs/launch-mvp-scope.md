@@ -2,7 +2,7 @@
 
 **Status:** Active build strategy (supersedes “all 33 screens before launch”)  
 **Source of truth:** `docs/basscally-build-pack/` (PRD v1.1, `09_routes_wiring_screen_map_and_components.md`, `08_architecture_backend_auth_payments_email_logic.md`, `06_locked_screen_designs_UPDATED_01_33.md`)  
-**Last updated:** 2026-05-17 (public route audit, cancel info page, homepage motion, copy cleanup)
+**Last updated:** 2026-05-18 (landing scroll performance pass)
 
 ---
 
@@ -210,6 +210,7 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | 18 (cancel — information) | **Done** — `/account/cancel` explains policy; disabled portal until Phase B (2026-05-17) |
 | Public copy cleanup | **Done** — no dev/placeholder language on public routes (2026-05-17) |
 | Homepage subtle motion | **Done** — `.landing-*` motion on `/` only (2026-05-17) |
+| Landing scroll performance | **Done** — static atmosphere, transform-only loops, sticky nav fix (2026-05-18) |
 
 ---
 
@@ -261,6 +262,7 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 **Visual depth pass date:** 2026-05-17  
 **Responsive deep audit date:** 2026-05-17 (updated with `/account/cancel`)  
 **Motion stabilization date:** 2026-05-17 (updated with homepage `/` landing motion)  
+**Landing scroll performance date:** 2026-05-18  
 **CTA / navigation audit date:** 2026-05-17  
 **Public copy cleanup date:** 2026-05-17  
 **Public route audit date:** 2026-05-17  
@@ -271,6 +273,8 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (90/90 incl. `/account/cancel`, stress 280px) |
 | Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36 selling path) |
 | Homepage subtle motion | `docs/motion-audit-rules.md` §6 + `/` in `scripts/public-route-audit.mjs` | **PASS** (2026-05-17) |
+| **Landing scroll performance (P0)** | `docs/motion-audit-rules.md` §14 + `scripts/home-scroll-qa.mjs` | **PASS** (2026-05-18 — 320–1280; 375/390 smooth scroll; reduced-motion; CPU 4×) |
+| Scroll performance (public routes) | `scripts/scroll-performance-audit.mjs` | **PASS** (2026-05-18 — 10 routes @ 375) |
 | Public dev-language copy | `scripts/public-route-audit.mjs` | **PASS** (70/70 route×width; no placeholder/MVP/webhook UI copy) |
 | Navigation & CTA ownership | `docs/mobile-responsive-quality-gate.md` + `scripts/cta-nav-qa.mjs` | **PASS** (70/70 incl. `/account/cancel`) |
 | Cancel page (accessible, honest) | `/account/cancel` in `scripts/public-route-audit.mjs` | **PASS** — info only; portal disabled |
@@ -297,7 +301,8 @@ Full rules: `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownersh
 
 - **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy` live; marketing + login footers updated; support email `basscally.enquiry@gmail.com`.
 - **Public dev-language cleanup** — placeholder/MVP/webhook/Phase copy removed from public UI; vendor names on legal pages only where required (e.g. Supabase in Privacy Policy).
-- **Homepage subtle motion** — landing wave, glow drift, card hover, staggered rise (see `docs/motion-audit-rules.md` §6).
+- **Homepage subtle motion** — landing wave, card hover, staggered rise (see `docs/motion-audit-rules.md` §6).
+- **Landing scroll performance** — static body atmosphere, transform-only wave, motion gate, sticky nav fix; no mobile backdrop blur on nav/CTA (see `docs/motion-audit-rules.md` §14).
 - **`/account/cancel` information page** — policy + disabled portal; no fake cancellation state.
 - **Public-route P0 audit** — `scripts/public-route-audit.mjs` 70/70 PASS.
 
@@ -306,7 +311,7 @@ Full rules: `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownersh
 - Manual keyboard/focus walkthrough on selling-path, legal, and `/account/cancel` routes.
 - Optional device check: landing sticky CTA at 375×667.
 - **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md` internal section).
-- Re-run `public-route-audit.mjs`, `cta-nav-qa.mjs`, `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any public-route UI change.
+- Re-run `public-route-audit.mjs`, `cta-nav-qa.mjs`, `responsive-audit.mjs`, `legal-audit.mjs`, `motion-qa.mjs`, **`home-scroll-qa.mjs`**, and **`scroll-performance-audit.mjs`** after any public-route UI change (scroll audits required when `/` motion, depth, or atmosphere changes).
 
 ### Mandatory checks for every new screen
 
@@ -315,8 +320,11 @@ Before merge, every new route or major surface must pass:
 1. Visual depth check (`docs/visual-depth-quality-gate.md`)  
 2. Responsive collision check (`docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs`)  
 3. Motion containment check (`docs/motion-audit-rules.md` + `scripts/motion-qa.mjs`)  
-4. Touch target check (responsive gate §5)  
-5. Duplicate CTA audit (Navigation and CTA ownership + `scripts/cta-nav-qa.mjs` or `scripts/public-route-audit.mjs`)
+4. **Landing scroll performance** (`docs/motion-audit-rules.md` §14 + `scripts/home-scroll-qa.mjs` — required for `/` or global atmosphere changes; smooth scroll at **375px and 390px**)  
+5. Touch target check (responsive gate §5)  
+6. Duplicate CTA audit (Navigation and CTA ownership + `scripts/cta-nav-qa.mjs` or `scripts/public-route-audit.mjs`)  
+7. Stable React keys — Mapped UI lists must use stable internal IDs for React keys. Public labels, titles, names, and source text must not be used as keys because duplicated copy can cause React identity bugs.  
+8. After motion/depth changes — run `scripts/scroll-performance-audit.mjs` or manual scroll QA per `docs/motion-audit-rules.md` §14.
 
 **No backend phase rule:** Do **not** start **Phase B** until **all public-route P0 items pass** (visual depth, responsive layout, motion, touch, duplicate CTAs, public copy, cancel-page honesty). **Status: P0 cleared** (2026-05-17). Re-run audits after any public-route change before merging.
 
@@ -371,9 +379,11 @@ Public routes, legal pages, footer links, copy cleanup, homepage motion, and `/a
 - `docs/legal-public-content-draft.md` — public copy source + internal solicitor checklist  
 - `docs/visual-depth-quality-gate.md` — depth addendum (does not replace locked design system)  
 - `docs/mobile-responsive-quality-gate.md` — official responsive QA gate (includes Navigation and CTA ownership)  
-- `docs/motion-audit-rules.md` — motion containment and reduced-motion rules  
+- `docs/motion-audit-rules.md` — motion containment, reduced-motion, and **scroll performance** (§14)  
 - `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit  
 - `scripts/public-route-audit.mjs` — combined public-route audit (copy, CTA, motion, responsive)  
+- `scripts/home-scroll-qa.mjs` — landing scroll smoothness QA  
+- `scripts/scroll-performance-audit.mjs` — public-route scroll/motion performance audit  
 - `src/components/account/account-cancel-content.tsx` — pre–Phase B cancellation information page  
 - `docs/basscally-build-pack/00_START_HERE/BUILD_SEQUENCE_GUIDE.md` — original phase prompts (still useful per-tier)  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/09_routes_wiring_screen_map_and_components.md` — full route table  
