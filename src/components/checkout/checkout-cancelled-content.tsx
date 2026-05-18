@@ -15,10 +15,10 @@ import { Badge } from "@/components/ui/badge";
 import { routes } from "@/lib/routes";
 
 const passRows = [
-  { label: "Checkout", value: "Not completed" },
-  { label: "Access", value: "Not active yet" },
-  { label: "Files", value: "Ready after payment" },
-  { label: "Time", value: "Under 2 minutes" },
+  { id: "cancel-pass-checkout", label: "Checkout", value: "Not completed" },
+  { id: "cancel-pass-access", label: "Access", value: "Not active yet" },
+  { id: "cancel-pass-files", label: "Files", value: "Ready after payment" },
+  { id: "cancel-pass-time", label: "Time", value: "Under 2 minutes" },
 ];
 
 export function CheckoutCancelledContent() {
@@ -88,7 +88,7 @@ export function CheckoutCancelledContent() {
           <hr className="my-5 border-[var(--color-border)]" />
           <dl className="space-y-3">
             {passRows.map((row) => (
-              <div key={row.label} className="flex justify-between gap-4 text-sm">
+              <div key={row.id} className="flex justify-between gap-4 text-sm">
                 <dt className="text-[var(--color-text-muted)]">{row.label}</dt>
                 <dd className="font-semibold text-[var(--color-text)]">{row.value}</dd>
               </div>
@@ -103,16 +103,19 @@ export function CheckoutCancelledContent() {
       <CheckoutStepCards
         items={[
           {
+            id: "cancelled-step-retry",
             label: "Option 01",
             title: "Try again",
             body: "Return to Lemon Squeezy checkout and complete the same plan.",
           },
           {
+            id: "cancelled-step-card",
             label: "Option 02",
             title: "Use another card",
             body: "If the first card failed, try another card or payment method at checkout.",
           },
           {
+            id: "cancelled-step-help",
             label: "Option 03",
             title: "Ask for help",
             body: "Message the team if checkout fails twice. We will help you get in.",
@@ -124,18 +127,22 @@ export function CheckoutCancelledContent() {
         aria-label="What you were about to get"
         items={[
           {
+            id: "cancelled-value-covers",
             title: "Bass-less covers",
             body: "The songs you see Chris cover, without the bass. Drop in and play the part.",
           },
           {
+            id: "cancelled-value-grooves",
             title: "Grooves",
             body: "Short patterns for pocket, timing, and consistency.",
           },
           {
+            id: "cancelled-value-fills",
             title: "Fills",
             body: "Transitions you can steal, repeat, and make yours.",
           },
           {
+            id: "cancelled-value-challenges",
             title: "Challenges",
             body: "A clear bass goal every week. Record it, share it, keep moving.",
           },
@@ -146,14 +153,17 @@ export function CheckoutCancelledContent() {
         aria-label="Need help"
         items={[
           {
+            id: "cancelled-help-payment",
             title: "Payment did not go through?",
             body: "Return to checkout and try again with the same plan or a different card.",
           },
           {
+            id: "cancelled-help-declined",
             title: "Card declined?",
             body: "Try another payment method or contact your bank, then complete checkout again.",
           },
           {
+            id: "cancelled-help-questions",
             title: "Questions before you join?",
             body: "Read the FAQ on the home page or email basscally.enquiry@gmail.com — we are happy to help.",
           },

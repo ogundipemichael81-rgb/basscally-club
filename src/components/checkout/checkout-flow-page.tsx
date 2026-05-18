@@ -93,13 +93,13 @@ export function CheckoutPassCard({
 export function CheckoutStepCards({
   items,
 }: {
-  items: { label: string; title: string; body: string }[];
+  items: { id: string; label: string; title: string; body: string }[];
 }) {
   return (
     <section className="mt-8 grid gap-4 md:grid-cols-3" aria-label="Steps">
       {items.map((item, index) => (
         <MotionDiv
-          key={item.label}
+          key={item.id}
           delayMs={240 + index * 50}
           className="basscally-depth-card rounded-[var(--radius-lg)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-md)] motion-reduce:hover:translate-y-0"
         >
@@ -122,7 +122,7 @@ export function CheckoutControlRoom({
   items,
   "aria-label": ariaLabel,
 }: {
-  items: { title: string; body: string }[];
+  items: { id: string; title: string; body: string }[];
   "aria-label"?: string;
 }) {
   return (
@@ -132,7 +132,7 @@ export function CheckoutControlRoom({
     >
       {items.map((item, index) => (
         <MotionDiv
-          key={item.title}
+          key={item.id}
           delayMs={300 + index * 50}
           className="min-h-[150px] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(20,20,22,0.8)] p-5 transition-[transform,border-color] duration-[var(--motion-default)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] motion-reduce:hover:translate-y-0"
         >
@@ -152,7 +152,7 @@ export function CheckoutControlRoom({
 export function CheckoutStateGrid({
   items,
 }: {
-  items: { title: string; body: string }[];
+  items: { id: string; title: string; body: string }[];
 }) {
   return (
     <section
@@ -161,7 +161,7 @@ export function CheckoutStateGrid({
     >
       {items.map((item, index) => (
         <MotionDiv
-          key={item.title}
+          key={item.id}
           delayMs={380 + index * 40}
           className="basscally-depth-card rounded-[var(--radius-lg)] p-4 opacity-95"
         >

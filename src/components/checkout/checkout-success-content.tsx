@@ -16,10 +16,10 @@ import { Badge } from "@/components/ui/badge";
 import { routes } from "@/lib/routes";
 
 const passRows = [
-  { label: "Plan", value: "Club monthly" },
-  { label: "Price", value: "$1.50/month" },
-  { label: "Status", value: "Magic link sent" },
-  { label: "Next renewal", value: "Shown in your account" },
+  { id: "pass-plan", label: "Plan", value: "Club monthly" },
+  { id: "pass-price", label: "Price", value: "$1.50/month" },
+  { id: "pass-status", label: "Status", value: "Magic link sent" },
+  { id: "pass-renewal", label: "Next renewal", value: "Shown in your account" },
 ];
 
 export function CheckoutSuccessContent() {
@@ -76,7 +76,7 @@ export function CheckoutSuccessContent() {
           <hr className="my-5 border-[var(--color-border)]" />
           <dl className="space-y-3">
             {passRows.map((row) => (
-              <div key={row.label} className="flex justify-between gap-4 text-sm">
+              <div key={row.id} className="flex justify-between gap-4 text-sm">
                 <dt className="text-[var(--color-text-muted)]">{row.label}</dt>
                 <dd className="font-semibold text-[var(--color-text)]">{row.value}</dd>
               </div>
@@ -88,16 +88,19 @@ export function CheckoutSuccessContent() {
       <CheckoutStepCards
         items={[
           {
+            id: "success-step-payment",
             label: "Step 01",
             title: "Payment received",
             body: "Lemon Squeezy confirmed your membership and created your Club access.",
           },
           {
+            id: "success-step-magic-link",
             label: "Step 02",
             title: "Magic link sent",
             body: "Open the email on your phone or laptop. It signs you in without a password.",
           },
           {
+            id: "success-step-practice",
             label: "Step 03",
             title: "Practice starts",
             body: "Open the dashboard, play the latest drop, download the file, and lock in.",
@@ -109,18 +112,22 @@ export function CheckoutSuccessContent() {
         aria-label="What happens next"
         items={[
           {
+            id: "success-next-latest-drop",
             title: "Latest drop",
             body: "Your dashboard opens with the newest groove, fill, challenge, or bass-less cover first.",
           },
           {
+            id: "success-next-schedule",
             title: "Every 3 days",
             body: "New practice material lands on schedule. No searching. No noise.",
           },
           {
+            id: "success-next-download",
             title: "Download offline",
             body: "Files stay ready for practice. Download when you have access, play anywhere.",
           },
           {
+            id: "success-next-membership",
             title: "Membership",
             body: "Cancel anytime from your account. You keep access until the end of your paid period.",
           },
@@ -131,14 +138,17 @@ export function CheckoutSuccessContent() {
         aria-label="Need help"
         items={[
           {
+            id: "success-help-processing",
             title: "Payment still processing?",
             body: "It can take a minute for your membership to activate. Access updates automatically after payment.",
           },
           {
+            id: "success-help-email",
             title: "No email yet?",
             body: "Check spam and promotions. Use Resend magic link above or sign in with the same email you used at checkout.",
           },
           {
+            id: "success-help-stuck",
             title: "Still stuck?",
             body: "Email basscally.enquiry@gmail.com with your checkout email and we will help you in.",
           },

@@ -9,19 +9,28 @@ const dropRiseDelays = [
   "landing-rise-delay-4",
 ] as const;
 
+const heroStats = [
+  { id: "hero-stat-tiktok", label: "TikTok", value: "90,000+" },
+  { id: "hero-stat-instagram", label: "Instagram", value: "10,000+" },
+  { id: "hero-stat-views", label: "Avg. views", value: "20k–400k" },
+] as const;
+
 const drops = [
   {
+    id: "drop-001",
     num: "001 — TUE",
     title: "Funk slap pattern in E",
     tag: "Groove · Beginner · 2 min",
     next: true,
   },
   {
+    id: "drop-002",
     num: "002 — FRI",
     title: "Bass-less: D'Angelo — Untitled",
     tag: "Cover · Intermediate · 4 min",
   },
   {
+    id: "drop-003",
     num: "003 — MON",
     title: "Ghost-note fill, 16th-note pocket",
     tag: "Fill · Advanced · 1 min",
@@ -141,7 +150,7 @@ export function LandingHero() {
           <ul className="flex flex-col gap-2">
             {drops.map((drop, index) => (
               <li
-                key={drop.num}
+                key={drop.id}
                 className={cn(
                   "landing-interactive-card landing-rise basscally-depth-card flex gap-3 rounded-[var(--radius-md)] p-4 motion-reduce:hover:translate-y-0",
                   dropRiseDelays[index],
@@ -169,12 +178,8 @@ export function LandingHero() {
 
       <div className="landing-rise landing-rise-delay-2 relative z-[1] mx-auto mt-12 flex max-w-[1320px] flex-col gap-8 border-t border-[var(--color-border)] pt-8 max-lg:mb-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="grid min-w-0 grid-cols-3 gap-3 sm:gap-6">
-          {[
-            { label: "TikTok", value: "90,000+" },
-            { label: "Instagram", value: "10,000+" },
-            { label: "Avg. views", value: "20k–400k" },
-          ].map((stat) => (
-            <div key={stat.label} className="min-w-0">
+          {heroStats.map((stat) => (
+            <div key={stat.id} className="min-w-0">
               <p className="text-[10px] uppercase tracking-wide text-[var(--color-text-dim)] sm:text-xs">
                 {stat.label}
               </p>

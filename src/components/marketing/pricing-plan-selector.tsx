@@ -39,8 +39,8 @@ function PlanPriceCard({ plan }: { plan: PlanDefinition }) {
           </small>
         </div>
         <ul className="flex flex-col gap-2.5 text-sm text-[var(--color-text-muted)]">
-          {plan.features.map((feature) => (
-            <li key={feature} className="flex items-start gap-2">
+          {plan.features.map((feature, featureIndex) => (
+            <li key={`${plan.code}-feature-${featureIndex}`} className="flex items-start gap-2">
               <b className="text-[var(--color-brand)]">✓</b>
               {feature}
             </li>
@@ -130,12 +130,12 @@ export function PricingPlanSelector() {
               <hr className="my-[18px] border-[var(--color-border)]" />
               <div className="grid gap-[18px] sm:grid-cols-3">
                 {[
-                  { label: "Founding price", value: "$1.50" },
-                  { label: "Public monthly", value: "$2.99" },
-                  { label: "Annual lock-in", value: "$18" },
+                  { id: "pricing-stat-founding", label: "Founding price", value: "$1.50" },
+                  { id: "pricing-stat-monthly", label: "Public monthly", value: "$2.99" },
+                  { id: "pricing-stat-annual", label: "Annual lock-in", value: "$18" },
                 ].map((stat) => (
                   <div
-                    key={stat.label}
+                    key={stat.id}
                     className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(6,6,7,0.55)] p-[18px]"
                   >
                     <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.08em] text-[var(--color-text-dim)]">

@@ -7,18 +7,22 @@ import { routes } from "@/lib/routes";
 
 const cancellationPoints = [
   {
+    id: "cancel-anytime",
     title: "Cancel anytime",
     body: "Stop future renewals whenever you choose through our secure billing partner.",
   },
   {
+    id: "cancel-access-period",
     title: "Access until period end",
     body: "After you cancel, you keep full member access until the end of your current paid billing period.",
   },
   {
+    id: "cancel-no-refunds",
     title: "No mid-period refunds",
     body: "We do not offer pro-rata refunds for unused time in a billing period, except where the law requires or we agree in good faith.",
   },
   {
+    id: "cancel-lemon-squeezy",
     title: "Billing through Lemon Squeezy",
     body: "Payments, invoices, and subscription changes are handled by Lemon Squeezy. The customer billing portal will open here once billing is connected.",
   },
@@ -43,7 +47,7 @@ export function AccountCancelContent() {
 
         <ul className="space-y-4 border-t border-[var(--color-border)] pt-6">
           {cancellationPoints.map((point) => (
-            <li key={point.title} className="flex gap-3">
+            <li key={point.id} className="flex gap-3">
               <span
                 className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--color-brand)]"
                 aria-hidden

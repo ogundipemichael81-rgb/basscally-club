@@ -41,22 +41,92 @@ function MarketingSection({
 
 const valueCards = [
   {
+    id: "value-bassless-covers",
     title: "Bass-less Covers",
     desc: "The songs you see Chris cover on TikTok — without the bass. Drop in, play the part, sound huge.",
   },
   {
+    id: "value-grooves",
     title: "Grooves",
     desc: "Short, looped patterns to lock in your pocket. New ones every 3 days. Easy on day one, addictive by day ten.",
   },
   {
+    id: "value-fills",
     title: "Fills",
     desc: "The transitions that separate beginners from players. Steal them. Reuse them. Make them yours.",
   },
   {
+    id: "value-weekly-challenges",
     title: "Weekly Challenges",
     desc: "A bass goal to hit every week. Record it, share it, level up. Recognition in the Club.",
   },
-];
+] as const;
+
+const howItWorksSteps = [
+  { id: "how-join", step: "Step 01", strong: "Join the Club", rest: " for $1.50/month." },
+  {
+    id: "how-email",
+    step: "Step 02",
+    strong: "Get an email every 3 days",
+    rest: " when a new drop lands.",
+  },
+  {
+    id: "how-practice",
+    step: "Step 03",
+    strong: "Open the dashboard,",
+    rest: " download the audio, and practice.",
+  },
+] as const;
+
+const whoItsForItems = [
+  { id: "who-structure", text: "Self-taught bassists who want structure without a teacher" },
+  { id: "who-tiktok", text: "Players who learned the basics on TikTok and are ready to go deeper" },
+  { id: "who-price", text: "Anyone who's tired of paying $20 for a single masterclass" },
+  {
+    id: "who-global",
+    text: "Bassists anywhere on Earth — Africa, UK, US, Asia, Latin America, Europe",
+  },
+] as const;
+
+const whoItsNotForItems = [
+  { id: "not-curriculum", text: "People who want a structured curriculum from beginner to pro" },
+  { id: "not-lessons", text: "Players looking for one-on-one lessons (we'll have that later)" },
+  { id: "not-practice", text: "Anyone who doesn't actually want to practice" },
+] as const;
+
+const testimonials = [
+  {
+    id: "testimonial-tiktok-1",
+    quote:
+      "I've been looking for something exactly like this. Finally, practice material that's actually fun and keeps coming.",
+    author: "Club member — TikTok",
+  },
+  {
+    id: "testimonial-tiktok-2",
+    quote:
+      "Bro you need to make a course or something. I'd pay for more content like this every week.",
+    author: "Club member — TikTok",
+  },
+  {
+    id: "testimonial-instagram-1",
+    quote:
+      "This is making me actually practice consistently for the first time in years. The grooves are addictive.",
+    author: "Club member — Instagram",
+  },
+] as const;
+
+const socialProofStats = [
+  { id: "stat-tiktok-followers", value: "90,000+", label: "TikTok followers" },
+  { id: "stat-instagram-followers", value: "10,000+", label: "Instagram followers" },
+  { id: "stat-avg-views", value: "20k–400k", label: "Avg. video views" },
+] as const;
+
+const priceComparisonRows = [
+  { id: "compare-masterclass", label: "Typical bass masterclass", price: "$20–$50/mo" },
+  { id: "compare-lesson", label: "One-on-one bass lesson", price: "$40–$80/hr" },
+  { id: "compare-tabs", label: "Bass tab subscription", price: "$10–$15/mo" },
+  { id: "compare-club", label: "Basscally Club", price: "$1.50/mo" },
+] as const;
 
 export function LandingSections() {
   return (
@@ -69,7 +139,7 @@ export function LandingSections() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {valueCards.map((card, index) => (
             <Card
-              key={card.title}
+              key={card.id}
               className={cn(
                 "landing-interactive-card landing-rise motion-reduce:hover:translate-y-0",
                 valueCardDelays[index],
@@ -90,13 +160,9 @@ export function LandingSections() {
           How it works
         </h2>
         <ol className="grid gap-4 lg:grid-cols-3">
-          {[
-            { step: "Step 01", strong: "Join the Club", rest: " for $1.50/month." },
-            { step: "Step 02", strong: "Get an email every 3 days", rest: " when a new drop lands." },
-            { step: "Step 03", strong: "Open the dashboard,", rest: " download the audio, and practice." },
-          ].map((item) => (
+          {howItWorksSteps.map((item) => (
             <li
-              key={item.step}
+              key={item.id}
               className="landing-interactive-card basscally-depth-card rounded-[var(--radius-lg)] p-6 motion-reduce:hover:translate-y-0"
             >
               <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-brand)]">
@@ -121,33 +187,24 @@ export function LandingSections() {
         </h2>
         <div className="grid gap-10 lg:grid-cols-2">
           <ul className="space-y-4">
-            {[
-              "Self-taught bassists who want structure without a teacher",
-              "Players who learned the basics on TikTok and are ready to go deeper",
-              "Anyone who's tired of paying $20 for a single masterclass",
-              "Bassists anywhere on Earth — Africa, UK, US, Asia, Latin America, Europe",
-            ].map((item) => (
-              <li key={item} className="flex gap-3 text-[var(--color-text-muted)]">
+            {whoItsForItems.map((item) => (
+              <li key={item.id} className="flex gap-3 text-[var(--color-text-muted)]">
                 <span className="mt-0.5 text-[var(--color-success)]" aria-hidden>
                   <IconCheck />
                 </span>
-                {item}
+                {item.text}
               </li>
             ))}
           </ul>
           <div>
             <h3 className="mb-4 text-xl font-semibold text-[var(--color-text)]">Who it&apos;s NOT for</h3>
             <ul className="space-y-4">
-              {[
-                "People who want a structured curriculum from beginner to pro",
-                "Players looking for one-on-one lessons (we'll have that later)",
-                "Anyone who doesn't actually want to practice",
-              ].map((item) => (
-                <li key={item} className="flex gap-3 text-[var(--color-text-muted)]">
+              {whoItsNotForItems.map((item) => (
+                <li key={item.id} className="flex gap-3 text-[var(--color-text-muted)]">
                   <span className="mt-0.5 text-[var(--color-danger)]" aria-hidden>
                     <IconX />
                   </span>
-                  {item}
+                  {item.text}
                 </li>
               ))}
             </ul>
@@ -161,32 +218,24 @@ export function LandingSections() {
           Real bassists. Real progress.
         </h2>
         <div className="grid gap-4 lg:grid-cols-3">
-          {[
-            ["I've been looking for something exactly like this. Finally, practice material that's actually fun and keeps coming.", "Club member — TikTok"],
-            ["Bro you need to make a course or something. I'd pay for more content like this every week.", "Club member — TikTok"],
-            ["This is making me actually practice consistently for the first time in years. The grooves are addictive.", "Club member — Instagram"],
-          ].map(([quote, author], index) => (
+          {testimonials.map((item, index) => (
             <Card
-              key={author}
+              key={item.id}
               className={cn(
                 "landing-interactive-card landing-rise motion-reduce:hover:translate-y-0",
                 testimonialDelays[index],
               )}
             >
-              <p className="mb-4 text-[var(--color-text-muted)]">&ldquo;{quote}&rdquo;</p>
-              <p className="text-sm text-[var(--color-text-dim)]">{author}</p>
+              <p className="mb-4 text-[var(--color-text-muted)]">&ldquo;{item.quote}&rdquo;</p>
+              <p className="text-sm text-[var(--color-text-dim)]">{item.author}</p>
             </Card>
           ))}
         </div>
         <div className="mt-8 grid grid-cols-3 gap-6">
-          {[
-            ["90,000+", "TikTok followers"],
-            ["10,000+", "Instagram followers"],
-            ["20k–400k", "Avg. video views"],
-          ].map(([value, label]) => (
-            <div key={label} className="text-center lg:text-left">
-              <p className="font-[family-name:var(--font-display)] text-2xl font-bold">{value}</p>
-              <p className="text-sm text-[var(--color-text-dim)]">{label}</p>
+          {socialProofStats.map((stat) => (
+            <div key={stat.id} className="text-center lg:text-left">
+              <p className="font-[family-name:var(--font-display)] text-2xl font-bold">{stat.value}</p>
+              <p className="text-sm text-[var(--color-text-dim)]">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -210,22 +259,17 @@ export function LandingSections() {
           <div>
             <SectionLabel>Price comparison</SectionLabel>
             <ul className="mt-4 space-y-3">
-              {[
-                ["Typical bass masterclass", "$20–$50/mo"],
-                ["One-on-one bass lesson", "$40–$80/hr"],
-                ["Bass tab subscription", "$10–$15/mo"],
-                ["Basscally Club", "$1.50/mo"],
-              ].map(([label, price], i) => (
+              {priceComparisonRows.map((row, i) => (
                 <li
-                  key={label}
+                  key={row.id}
                   className={`flex justify-between gap-4 rounded-[var(--radius-md)] border px-4 py-3 text-sm ${
-                    i === 3
+                    i === priceComparisonRows.length - 1
                       ? "border-[rgba(255,69,0,0.35)] bg-[var(--color-brand-muted)] text-[var(--color-text)]"
                       : "border-[var(--color-border)] text-[var(--color-text-muted)]"
                   }`}
                 >
-                  <span>{label}</span>
-                  <span className="font-semibold">{price}</span>
+                  <span>{row.label}</span>
+                  <span className="font-semibold">{row.price}</span>
                 </li>
               ))}
             </ul>
