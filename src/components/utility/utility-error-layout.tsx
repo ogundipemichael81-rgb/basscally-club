@@ -20,7 +20,7 @@ export function UtilityErrorLayout({
     <div className="flex min-h-full items-center justify-center px-6 py-12">
       <div className="w-full max-w-[1120px]">
         <p className="mb-3 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">
-          Screen {code === "404" ? "24" : "25"} · Utility state
+          {code === "404" ? "Page not found" : "Something went wrong"}
         </p>
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="utility-hero-card relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border)] p-8 lg:p-9">

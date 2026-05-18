@@ -15,8 +15,9 @@ const ROUTES = [
   "/terms",
   "/privacy",
   "/refund-policy",
+  "/account/cancel",
 ];
-const WIDTHS = [320, 375, 390, 768, 1024, 1280];
+const WIDTHS = [320, 375, 390, 768, 1024, 1280, 1440];
 const STRESS_WIDTHS = [280, 1440];
 
 function runPageChecks(route) {

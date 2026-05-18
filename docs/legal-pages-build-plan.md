@@ -1,6 +1,6 @@
 # Basscally Club — Legal pages build plan
 
-**Status:** **Implemented** (2026-05-17)  
+**Status:** **Implemented** (2026-05-17); public-route audit **PASS** (2026-05-17)  
 **Created:** 2026-05-17  
 **Purpose:** Define routes, components, content structure, styling, QA, and solicitor workflow for public legal pages.
 
@@ -21,7 +21,9 @@
 | **Content audit** | `scripts/legal-audit.mjs` — **PASS** |
 | **Public copy status** | **Draft** pending final solicitor review (see `docs/legal-public-content-draft.md`) |
 | **Footer placeholder P1** | **Resolved** |
-| **Next build phase** | **Phase B** — backend + Lemon Squeezy integration (`docs/launch-mvp-scope.md`) |
+| **Public dev-language audit** | **PASS** — `scripts/public-route-audit.mjs` (no MVP/webhook/placeholder UI on public routes; processor names on legal pages only) |
+| **Footer / legal wording** | Unchanged in this pass — still `basscally.enquiry@gmail.com`, Lemon Squeezy only, no Stripe/PayPal |
+| **Next build phase** | **Phase B** — backend + Lemon Squeezy integration + billing portal (`docs/launch-mvp-scope.md`) |
 
 ---
 
@@ -285,8 +287,14 @@ Legal routes are **new public surfaces** and must pass the same gates as other p
 **Still open (not footer P1):**
 
 - Solicitor sign-off on public wording (internal — §10)  
-- Phase B payment integration (Lemon Squeezy checkout + webhooks)  
-- Manual keyboard/focus walkthrough (recommended)
+- Phase B payment integration (Lemon Squeezy checkout + webhooks + **customer billing portal** for real cancellation)  
+- Manual keyboard/focus walkthrough (recommended)  
+- Re-run `public-route-audit.mjs` after any legal footer or public copy change
+
+**Related (outside legal scope, same audit pass):**
+
+- `/account/cancel` — pre–Phase B **cancellation information** page (not a fake cancellation success screen)  
+- Homepage subtle motion on `/` — see `docs/motion-audit-rules.md` §6
 
 ---
 
@@ -332,7 +340,7 @@ Use this checklist before treating legal copy as “launch final”:
 7. ~~QA~~ — `responsive-audit.mjs`, `legal-audit.mjs`; typecheck/lint/build PASS  
 8. ~~Docs~~ — gate docs + this plan updated  
 
-**Next:** Phase B per `docs/launch-mvp-scope.md` (Supabase, Lemon Squeezy webhooks, auth). Re-run `node scripts/legal-audit.mjs` after any legal copy change.
+**Next:** Phase B per `docs/launch-mvp-scope.md` (Supabase, Lemon Squeezy webhooks, auth, billing portal) — **only after public-route P0 remains green**. Re-run `node scripts/legal-audit.mjs` and `node scripts/public-route-audit.mjs` after any legal or public UI change.
 
 ---
 
@@ -349,4 +357,6 @@ Use this checklist before treating legal copy as “launch final”:
 - `src/lib/routes.ts`  
 - `src/content/legal.ts`  
 - `scripts/legal-audit.mjs`  
-- `docs/legal-public-content-draft.md`
+- `scripts/public-route-audit.mjs`  
+- `docs/legal-public-content-draft.md`  
+- `src/components/account/account-cancel-content.tsx` — cancellation info (portal in Phase B)

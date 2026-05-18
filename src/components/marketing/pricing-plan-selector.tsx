@@ -79,11 +79,11 @@ function PricingOrbitPanel() {
           </div>
         </div>
         <h3 className="relative z-[2] mt-2 font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-          Simple billing rule
+          How billing works
         </h3>
         <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
-          One active subscription per user. Access follows webhook status. Dashboard,
-          play, and downloads unlock only for active or grace-period members.
+          One active membership per account. Access updates automatically after payment.
+          Play and downloads stay available while your membership is active.
         </p>
         <hr className="my-[18px] border-[var(--color-border)]" />
         <div className="decorative-motion relative isolate h-11 overflow-hidden" aria-hidden>
@@ -169,25 +169,25 @@ export function PricingPlanSelector() {
                 Later tier
               </Badge>
               <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-                Club Plus stays hidden for MVP
+                Club Plus — coming later
               </h3>
               <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
-                The $9/month tier should wait until feedback, live challenges, or premium
-                coaching becomes real. Do not show it in public checkout yet.
+                A higher tier with live challenges and premium drops is on the way. Founding
+                and annual plans include full Club access today.
               </p>
             </div>
           </MotionDiv>
           <MotionDiv delayMs={320} className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
             <div className="basscally-panel-content">
               <Badge variant="brand" className="mb-4 text-[10px]">
-                Checkout flow
+                After you pay
               </Badge>
               <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-                After payment
+                What happens next
               </h3>
               <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
-                Lemon Squeezy confirms payment, webhook updates Supabase, user receives
-                welcome email, then magic link opens the dashboard.
+                We confirm payment through Lemon Squeezy, activate your membership, email your
+                receipt, and send a magic link so you can sign in and open the dashboard.
               </p>
             </div>
           </MotionDiv>

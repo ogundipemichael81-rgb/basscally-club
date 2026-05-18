@@ -8,7 +8,6 @@ import {
   CheckoutHeroGrid,
   CheckoutLede,
   CheckoutPassCard,
-  CheckoutStateGrid,
   CheckoutStepCards,
 } from "@/components/checkout/checkout-flow-page";
 import { IconCheck } from "@/components/icons";
@@ -20,7 +19,7 @@ const passRows = [
   { label: "Plan", value: "Club monthly" },
   { label: "Price", value: "$1.50/month" },
   { label: "Status", value: "Magic link sent" },
-  { label: "Next renewal", value: "June 15, 2026" },
+  { label: "Next renewal", value: "Shown in your account" },
 ];
 
 export function CheckoutSuccessContent() {
@@ -33,9 +32,8 @@ export function CheckoutSuccessContent() {
             Your Club pass is <span className="text-[var(--color-brand)]">live.</span>
           </CheckoutHeadline>
           <CheckoutLede>
-            Payment received. We sent your magic link to{" "}
-            <strong className="text-[var(--color-text)]">you@example.com</strong>. Open it,
-            land in the dashboard, and start with the latest drop.
+            Payment received. We sent your magic link to the email you used at checkout. Open
+            it, land in the dashboard, and start with the latest drop.
           </CheckoutLede>
           <CheckoutCtaRow>
             <ButtonLink href={routes.auth.login} className="max-[680px]:w-full">
@@ -129,19 +127,20 @@ export function CheckoutSuccessContent() {
         ]}
       />
 
-      <CheckoutStateGrid
+      <CheckoutControlRoom
+        aria-label="Need help"
         items={[
           {
-            title: "Processing state",
-            body: "Used while the webhook confirms payment and access is being created.",
+            title: "Payment still processing?",
+            body: "It can take a minute for your membership to activate. Access updates automatically after payment.",
           },
           {
-            title: "Email delay state",
-            body: "Used when payment is live but the magic link has not arrived yet.",
+            title: "No email yet?",
+            body: "Check spam and promotions. Use Resend magic link above or sign in with the same email you used at checkout.",
           },
           {
-            title: "Error state",
-            body: "Used if payment succeeded but access sync fails. Support CTA stays visible.",
+            title: "Still stuck?",
+            body: "Email basscally.enquiry@gmail.com with your checkout email and we will help you in.",
           },
         ]}
       />

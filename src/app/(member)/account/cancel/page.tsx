@@ -1,14 +1,13 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { routes } from "@/lib/routes";
+import { AccountCancelContent } from "@/components/account/account-cancel-content";
+import { PageShell } from "@/components/layout/page-shell";
 
-/** Screen 18 */
 export default function AccountCancelPage() {
   return (
-    <PlaceholderPage
-      screenNumber={18}
+    <PageShell
       title="Cancel membership"
-      description="Cancel flow and period-end clarity."
-      route={routes.member.accountCancel}
-    />
+      description="Understand how cancellation works before you change your plan. You stay in control — cancel anytime."
+    >
+      <AccountCancelContent />
+    </PageShell>
   );
 }

@@ -1,14 +1,11 @@
 import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { routes } from "@/lib/routes";
 
-/** Screen 22 */
 export default function BillingPortalPage() {
   return (
     <PlaceholderPage
-      screenNumber={22}
       title="Billing portal"
-      description="Redirect to Lemon Squeezy customer portal."
-      route={routes.member.accountBillingPortal}
+      description="Update your card and invoices through our secure payment partner."
+      body="The billing portal will open here once your membership is connected."
     />
   );
 }

@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <UtilityErrorLayout
       code="404"
-      kicker="// Wrong route"
+      kicker="Page not found"
       title="This page missed the groove."
       description="The link may be old, mistyped, or no longer live. The safest next step is to head back to the dashboard or return to the latest drop."
       actions={
@@ -36,7 +36,7 @@ export default function NotFound() {
             <p className="mb-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">
               Common causes
             </p>
-            Expired signed URL · deleted draft link · typo in route
+            Expired link · old bookmark · mistyped address
           </div>
         </>
       }

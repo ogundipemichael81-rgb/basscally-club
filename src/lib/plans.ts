@@ -52,7 +52,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     priceLabel: "$2.99/month",
     priceAmount: "$2.99",
     pricePeriod: "/ month",
-    description: "Default public plan after the launch window.",
+    description: "Standard monthly membership after the founding offer ends.",
     badge: "Public price",
     badgeTone: "info",
     features: [

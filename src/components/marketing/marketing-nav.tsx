@@ -4,8 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { ButtonLink } from "@/components/marketing/button-link";
+import { LEGAL_SUPPORT_EMAIL } from "@/content/legal";
 import { APP_NAME } from "@/lib/constants";
 import { routes } from "@/lib/routes";
+
+const SUPPORT_MAILTO = `mailto:${LEGAL_SUPPORT_EMAIL}`;
 
 type MarketingNavProps = {
   hideGhostOnMobile?: boolean;
@@ -40,7 +43,7 @@ function navFromPath(pathname: string | null): Partial<MarketingNavProps> | null
   }
   if (pathname === routes.checkout.success) {
     return {
-      ghostHref: "mailto:hello@basscally.club",
+      ghostHref: SUPPORT_MAILTO,
       ghostLabel: "Need help?",
       primaryHref: routes.home,
       primaryLabel: "Home",
@@ -49,7 +52,7 @@ function navFromPath(pathname: string | null): Partial<MarketingNavProps> | null
   }
   if (pathname === routes.checkout.cancelled) {
     return {
-      ghostHref: "mailto:hello@basscally.club",
+      ghostHref: SUPPORT_MAILTO,
       ghostLabel: "Need help?",
       primaryHref: routes.home,
       primaryLabel: "Home",
@@ -58,7 +61,7 @@ function navFromPath(pathname: string | null): Partial<MarketingNavProps> | null
   }
   if (pathname?.startsWith("/checkout")) {
     return {
-      ghostHref: "mailto:hello@basscally.club",
+      ghostHref: SUPPORT_MAILTO,
       ghostLabel: "Need help?",
       primaryHref: routes.home,
       primaryLabel: "Home",

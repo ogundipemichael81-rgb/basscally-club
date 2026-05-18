@@ -1,32 +1,35 @@
-import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/marketing/button-link";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageShell } from "@/components/layout/page-shell";
+import { routes } from "@/lib/routes";
 
 export function PlaceholderPage({
-  screenNumber,
   title,
   description,
-  route,
+  body,
 }: {
-  screenNumber: number;
   title: string;
   description: string;
-  route: string;
+  body?: string;
 }) {
   return (
     <PageShell title={title} description={description}>
       <Card>
         <CardHeader>
-          <Badge variant="brand">Screen {String(screenNumber).padStart(2, "0")}</Badge>
-          <CardTitle>Placeholder — not built yet</CardTitle>
+          <CardTitle>Coming soon</CardTitle>
           <CardDescription>
-            Route: <code className="text-[var(--color-text)]">{route}</code>
+            {body ??
+              "This area is not available yet. Sign in to check your membership, or return home."}
           </CardDescription>
         </CardHeader>
-        <p className="text-[length:var(--text-body-sm)] text-[var(--color-text-muted)]">
-          Phase 1 scaffold only. Full UI will match the locked HTML reference in a later
-          phase.
-        </p>
+        <div className="flex flex-wrap gap-3 px-6 pb-6">
+          <ButtonLink href={routes.auth.login} variant="secondary" size="sm">
+            Sign in
+          </ButtonLink>
+          <ButtonLink href={routes.home} variant="ghost" size="sm">
+            Back to home
+          </ButtonLink>
+        </div>
       </Card>
     </PageShell>
   );

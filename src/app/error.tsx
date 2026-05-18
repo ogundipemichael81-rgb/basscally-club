@@ -16,7 +16,7 @@ export default function Error({
   return (
     <UtilityErrorLayout
       code="500"
-      kicker="// System fault"
+      kicker="Something went wrong"
       title={
         <>
           The amp clipped.
@@ -24,7 +24,7 @@ export default function Error({
           <span className="italic text-[var(--color-brand)]">Try again?</span>
         </>
       }
-      description="Something broke on our side. Save your place, retry the action, or return to a stable screen. This page is for production confidence, not panic."
+      description="Something broke on our side. Try again, or head back to the dashboard or home page."
       actions={
         <>
           <Button type="button" onClick={reset} className="min-h-11">
@@ -52,9 +52,16 @@ export default function Error({
               />
             ))}
           </div>
-          <h3 className="mb-2 font-semibold text-[var(--color-text)]">Recovery behavior</h3>
+          <h3 className="mb-2 font-semibold text-[var(--color-text)]">What you can do</h3>
           <p className="text-sm text-[var(--color-text-muted)]">
-            Offer retry, safe fallback, and a support route. Do not trap the user on a dead screen.
+            Tap Retry, open the dashboard, or email{" "}
+            <a
+              href="mailto:basscally.enquiry@gmail.com"
+              className="text-[var(--color-brand)] underline decoration-[var(--color-brand)]/40 underline-offset-2"
+            >
+              basscally.enquiry@gmail.com
+            </a>{" "}
+            if the problem continues.
           </p>
         </>
       }

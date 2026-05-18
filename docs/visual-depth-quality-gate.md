@@ -3,7 +3,7 @@
 **Status:** Addendum to the locked design system  
 **Parent doc:** `docs/basscally-build-pack/03_DESIGN_MD/04_basscally_design_system.md` (v1.0 — do not replace)  
 **Applies to:** Phase A selling-path React screens and all future production UI  
-**Last updated:** 2026-05-17 (navigation and CTA ownership)
+**Last updated:** 2026-05-17 (homepage motion, public copy cleanup, `/account/cancel`)
 
 This document defines **how Basscally achieves depth on dark surfaces**. It extends §2 (color), §6 (shadows), and §9 (components). If this addendum conflicts with the locked system on tokens or the 60-30-10 rule, **the design system wins**.
 
@@ -14,15 +14,19 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 | Field | Value |
 | --- | --- |
 | **Visual depth pass completed** | **2026-05-17** |
-| **Routes tested** | Selling path + legal: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy` |
-| **Breakpoints spot-checked** | 320, 375, 390, 768, 1024, 1280, 280 (stress), 1440+ (stress) |
-| **P0 result** | **PASS** (selling path + legal routes) |
+| **Homepage motion + depth** | **2026-05-17** — `.landing-*` motion layered on existing depth cards (see `docs/motion-audit-rules.md` §6) |
+| **Routes tested** | Public set: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` |
+| **Breakpoints spot-checked** | 320, 375, 390, 768, 1024, 1280, 1440; stress 280, 1440+ |
+| **P0 result** | **PASS** — `scripts/public-route-audit.mjs` 70/70 |
 | **Legal pages** | Calmer than landing — `.basscally-legal-page`, section `.basscally-depth-card`, no decorative motion; max-width prose column |
-| **Implementation** | `src/app/globals.css` (atmosphere, `.basscally-depth-card`, `.basscally-legal-page`); `src/components/legal/*`; `src/content/legal.ts` |
+| **Cancel info page** | `/account/cancel` — `Card` + `.basscally-depth-card` pattern; no cinematic motion; honest disabled portal |
+| **Implementation** | `src/app/globals.css` (atmosphere, depth cards, landing motion); `src/components/legal/*`, `src/components/account/account-cancel-content.tsx` |
 
 ### Resolved P1 (2026-05-17)
 
 - **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy`; Contact `basscally.enquiry@gmail.com`.
+- **Public dev-language cleanup** — Product-facing copy on public routes; no placeholder/MVP/webhook UI strings.
+- **Homepage subtle motion pass** — Premium, slow, contained motion on `/` only.
 
 ### Remaining P1 (non-blocking)
 
@@ -38,7 +42,7 @@ This document defines **how Basscally achieves depth on dark surfaces**. It exte
 4. **Checkout pages use checkout-specific CTAs only** — nav shows support/navigation labels (e.g. Need help?, Home); hero/card owns recovery actions.
 5. **Legal pages stay calm and readable** — nav: Sign in only (no Join); body has contact/footer links, not aggressive conversion blocks.
 6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way (e.g. landing: hero Join hidden below `lg`; sticky bar owns mobile conversion).
-7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` (see `docs/mobile-responsive-quality-gate.md`).
+7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs` (see `docs/mobile-responsive-quality-gate.md`). **Remains mandatory** for every phase.
 
 ---
 
@@ -189,7 +193,7 @@ Before merging depth work on any route:
 - [ ] Passes `docs/mobile-responsive-quality-gate.md` P0 layout checks
 - [ ] Passes navigation and CTA ownership rules (§ Phase A sign-off — Navigation and CTA ownership)
 
-**Routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
+**Routes (signed off 2026-05-17):** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` (info page).
 
 ---
 
@@ -201,9 +205,9 @@ Before any new route or major UI surface merges:
 2. **Responsive collision check** — `docs/mobile-responsive-quality-gate.md` + `node scripts/responsive-audit.mjs`.
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`.
 4. **Touch target check** — Primary actions ≥44×44px; inputs ≥16px font-size on mobile.
-5. **Duplicate CTA audit** — Navigation and CTA ownership rules (Phase A sign-off above) + `node scripts/cta-nav-qa.mjs`.
+5. **Duplicate CTA audit** — Navigation and CTA ownership rules (Phase A sign-off above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`.
 
-**Backend phase rule:** Do **not** start Phase B (or later backend/integration work) while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs. P1 items may ship with documented follow-up.
+**Backend phase rule:** Do **not** start Phase B until **all public-route P0 items pass**. **P0 cleared** 2026-05-17. Duplicate CTA audit **remains required** before every phase sign-off. P1 items may ship with documented follow-up.
 
 ---
 
@@ -215,5 +219,7 @@ Before any new route or major UI surface merges:
 - `docs/mobile-responsive-quality-gate.md` — breakpoint QA
 - `docs/legal-pages-build-plan.md` — legal pages implementation
 - `scripts/responsive-audit.mjs` — automated responsive gate (selling path + legal)
-- `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit (selling path + legal)
+- `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit (public routes)
+- `scripts/public-route-audit.mjs` — combined public-route gate
 - `scripts/legal-audit.mjs` — legal content smoke tests
+- `src/components/marketing/landing-hero.tsx`, `landing-sections.tsx` — homepage depth + motion

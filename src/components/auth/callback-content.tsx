@@ -14,7 +14,7 @@ export function CallbackContent() {
     <main className="basscally-callback-page flex min-h-[calc(100vh-65px)] flex-col justify-center py-12 lg:py-16">
       <section className="basscally-container grid items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_420px] lg:gap-16">
         <div className="basscally-rise-in">
-          <SectionLabel>Auth callback</SectionLabel>
+          <SectionLabel>Signing you in</SectionLabel>
           <h1 className="mt-2 font-[family-name:var(--font-display)] text-[clamp(2.5rem,7vw,4.875rem)] font-extrabold leading-[0.94] tracking-tight">
             Signing you into the Club.
           </h1>
@@ -89,32 +89,24 @@ export function CallbackContent() {
         </div>
       </section>
 
-      <section className="basscally-container mt-8 basscally-rise-in basscally-rise-in-delay-3">
-        <div className="grid gap-3 md:grid-cols-3" aria-label="Designed states">
-          {[
-            {
-              title: "Loading state",
-              body: "Use this default view while the callback route exchanges the magic link.",
-            },
-            {
-              title: "Success state",
-              body: "Swap title to “You are in” and redirect to dashboard after 900ms.",
-            },
-            {
-              title: "Error state",
-              body: "Show “This link expired” with Send new magic link as the primary CTA.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="basscally-depth-card min-h-[92px] rounded-[var(--radius-lg)] p-4"
+      <section
+        className="basscally-container mt-8 basscally-rise-in basscally-rise-in-delay-3"
+        aria-label="Need help signing in"
+      >
+        <div className="basscally-depth-card rounded-[var(--radius-lg)] p-6">
+          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--color-text)]">
+            Taking longer than expected?
+          </h2>
+          <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+            If this page does not move on, request a new magic link from the sign-in page or email{" "}
+            <a
+              href="mailto:basscally.enquiry@gmail.com"
+              className="text-[var(--color-brand)] underline decoration-[var(--color-brand)]/40 underline-offset-2 hover:text-[var(--color-text)]"
             >
-              <h4 className="text-sm font-semibold text-[var(--color-text)]">{item.title}</h4>
-              <p className="mt-1.5 text-[13px] leading-[1.45] text-[var(--color-text-muted)]">
-                {item.body}
-              </p>
-            </div>
-          ))}
+              basscally.enquiry@gmail.com
+            </a>
+            .
+          </p>
         </div>
       </section>
     </main>

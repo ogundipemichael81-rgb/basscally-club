@@ -2,7 +2,7 @@
 
 **Status:** Active build strategy (supersedes “all 33 screens before launch”)  
 **Source of truth:** `docs/basscally-build-pack/` (PRD v1.1, `09_routes_wiring_screen_map_and_components.md`, `08_architecture_backend_auth_payments_email_logic.md`, `06_locked_screen_designs_UPDATED_01_33.md`)  
-**Last updated:** 2026-05-17 (navigation and CTA ownership)
+**Last updated:** 2026-05-17 (public route audit, cancel info page, homepage motion, copy cleanup)
 
 ---
 
@@ -120,7 +120,7 @@ Needed for a **stable public beta**, not necessarily the very first founding che
 | 10 | Admin Metrics | `/admin` |
 | 14 | Admin Content List | `/admin/content` |
 | 15 | Admin Subscribers | `/admin/subscribers` |
-| 18 | Cancel Confirmation | `/account/cancel` |
+| 18 | Cancel Confirmation (post-cancel state UI) | `/account/cancel` |
 | 19 | Admin Content Edit | `/admin/content/[id]` |
 | 22 | Billing Portal Transition | `/account/billing/portal` |
 | 23 | Toast System (full showcase) | Global component |
@@ -190,7 +190,7 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | `/admin/email-templates` | 31 | Post-launch |
 | `/account/billing` | 33 | Post-launch |
 | `/account/billing/portal` | 22 | Post-launch |
-| `/account/cancel` | 18 | Post-launch |
+| `/account/cancel` | 18 (info page shipped; confirmation state post-launch) | **Pre–Phase B info** (see below) |
 | `POST /api/webhooks/resend` | — | Later automation |
 | `GET /api/cron/*` | — | Later automation |
 
@@ -207,6 +207,26 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 | 09, 20 | Placeholder pages only |
 | 24, 25 | Done (Phase 2); classified as beta polish tier |
 | Legal (Terms, Privacy, Refund) | **Done** — `/terms`, `/privacy`, `/refund-policy` (2026-05-17) |
+| 18 (cancel — information) | **Done** — `/account/cancel` explains policy; disabled portal until Phase B (2026-05-17) |
+| Public copy cleanup | **Done** — no dev/placeholder language on public routes (2026-05-17) |
+| Homepage subtle motion | **Done** — `.landing-*` motion on `/` only (2026-05-17) |
+
+---
+
+## Cancellation information page (pre–Phase B)
+
+**Route:** `/account/cancel`  
+**Screen reference:** 18 (Cancel Confirmation) — **information-only** slice for launch prep.
+
+| What ships now | What waits for Phase B |
+| --- | --- |
+| How cancellation works (access until period end, no pro-rata refunds, Lemon Squeezy billing) | **Real cancellation action** via Lemon Squeezy customer billing portal |
+| Disabled **Open billing portal** button with honest helper copy | Wire portal URL + active subscription state |
+| Links to Terms / Refund Policy, View plans, support email | Post-cancel confirmation UI (Screen 18 “cancelled” state) if product wants a dedicated success screen |
+
+**Rule:** The page must **not** fake a completed cancellation (no “subscription cancelled” success state without webhook-verified status).
+
+**QA:** Included in `scripts/public-route-audit.mjs`, `scripts/cta-nav-qa.mjs`, and `scripts/responsive-audit.mjs` at 320–1440px — **PASS** (2026-05-17).
 
 ---
 
@@ -232,24 +252,30 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 
 **Footer placeholder P1:** **Resolved** — marketing footer and auth login footer link to real legal routes; Contact uses `mailto:basscally.enquiry@gmail.com`.
 
-**Next build step:** **Phase B — Backend foundation** (Supabase, Lemon Squeezy webhooks, auth wiring) after legal route audit passes. Legal wording sign-off remains a parallel doc/counsel task, not a code blocker for Phase B.
+**Next build step:** **Phase B — Backend foundation** (Supabase, Lemon Squeezy webhooks, auth wiring, billing portal) — **unblocked** after public-route P0 audit (2026-05-17). Legal wording sign-off remains a parallel doc/counsel task, not a code blocker for Phase B.
 
 ---
 
-## Phase A quality gates (selling path)
+## Phase A quality gates (public routes)
 
 **Visual depth pass date:** 2026-05-17  
-**Responsive deep audit date:** 2026-05-17  
-**Motion stabilization date:** 2026-05-17  
-**CTA / navigation audit date:** 2026-05-17
+**Responsive deep audit date:** 2026-05-17 (updated with `/account/cancel`)  
+**Motion stabilization date:** 2026-05-17 (updated with homepage `/` landing motion)  
+**CTA / navigation audit date:** 2026-05-17  
+**Public copy cleanup date:** 2026-05-17  
+**Public route audit date:** 2026-05-17  
 
 | Gate | Doc / tool | Result |
 |------|------------|--------|
 | Visual depth | `docs/visual-depth-quality-gate.md` | **PASS** (P0) |
-| Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (72/72 incl. legal routes) |
-| Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36) |
-| Navigation & CTA ownership | `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownership) + `scripts/cta-nav-qa.mjs` | **PASS** (63/63 route×width rows) |
+| Responsive | `docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs` | **PASS** (90/90 incl. `/account/cancel`, stress 280px) |
+| Motion | `docs/motion-audit-rules.md` + `scripts/motion-qa.mjs` | **PASS** (36/36 selling path) |
+| Homepage subtle motion | `docs/motion-audit-rules.md` §6 + `/` in `scripts/public-route-audit.mjs` | **PASS** (2026-05-17) |
+| Public dev-language copy | `scripts/public-route-audit.mjs` | **PASS** (70/70 route×width; no placeholder/MVP/webhook UI copy) |
+| Navigation & CTA ownership | `docs/mobile-responsive-quality-gate.md` + `scripts/cta-nav-qa.mjs` | **PASS** (70/70 incl. `/account/cancel`) |
+| Cancel page (accessible, honest) | `/account/cancel` in `scripts/public-route-audit.mjs` | **PASS** — info only; portal disabled |
 | Build | `typecheck`, `lint`, `build` | **PASS** |
+| **Combined public route audit** | `scripts/public-route-audit.mjs` | **PASS** (70/70 at 320, 375, 390, 768, 1024, 1280, 1440) |
 
 ### Navigation and CTA ownership
 
@@ -259,24 +285,28 @@ Keep scaffold/placeholders; do not polish before launch unless noted.
 4. **Checkout pages use checkout-specific CTAs only** (support nav + in-content recovery; no marketing Join cluster).
 5. **Legal pages stay calm and readable** (Sign in in nav only; contact/footer links in body).
 6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way.
-7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` on all selling-path and legal routes at 320, 375, 390, 768, 1024, 1280, 1440.
+7. **A duplicate CTA audit is required before every phase sign-off** — `node scripts/cta-nav-qa.mjs` (or `scripts/public-route-audit.mjs`) on all public routes at 320, 375, 390, 768, 1024, 1280, 1440. **Remains mandatory** for every future phase sign-off.
 
 Full rules: `docs/mobile-responsive-quality-gate.md` (Navigation and CTA ownership) and `docs/visual-depth-quality-gate.md` (Phase A sign-off record).
 
-**Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`.
+**Routes covered:** `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel`.
 
 **Breakpoints covered:** 320, 375, 390, 768, 1024, 1280, 280 (stress), 1440+ (stress); motion automation also at 1440.
 
 ### Resolved P1 (2026-05-17)
 
 - **Legal footer placeholders** — `/terms`, `/privacy`, `/refund-policy` live; marketing + login footers updated; support email `basscally.enquiry@gmail.com`.
+- **Public dev-language cleanup** — placeholder/MVP/webhook/Phase copy removed from public UI; vendor names on legal pages only where required (e.g. Supabase in Privacy Policy).
+- **Homepage subtle motion** — landing wave, glow drift, card hover, staggered rise (see `docs/motion-audit-rules.md` §6).
+- **`/account/cancel` information page** — policy + disabled portal; no fake cancellation state.
+- **Public-route P0 audit** — `scripts/public-route-audit.mjs` 70/70 PASS.
 
 ### Remaining P1 (does not block Phase B)
 
-- Manual keyboard/focus walkthrough on selling-path and legal routes.
+- Manual keyboard/focus walkthrough on selling-path, legal, and `/account/cancel` routes.
 - Optional device check: landing sticky CTA at 375×667.
 - **Solicitor review** of public legal copy (`docs/legal-public-content-draft.md` internal section).
-- Re-run `cta-nav-qa.mjs`, `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any selling-path or legal UI change.
+- Re-run `public-route-audit.mjs`, `cta-nav-qa.mjs`, `responsive-audit.mjs`, `legal-audit.mjs`, and `motion-qa.mjs` after any public-route UI change.
 
 ### Mandatory checks for every new screen
 
@@ -286,9 +316,9 @@ Before merge, every new route or major surface must pass:
 2. Responsive collision check (`docs/mobile-responsive-quality-gate.md` + `scripts/responsive-audit.mjs`)  
 3. Motion containment check (`docs/motion-audit-rules.md` + `scripts/motion-qa.mjs`)  
 4. Touch target check (responsive gate §5)  
-5. Duplicate CTA audit (Navigation and CTA ownership + `scripts/cta-nav-qa.mjs`)
+5. Duplicate CTA audit (Navigation and CTA ownership + `scripts/cta-nav-qa.mjs` or `scripts/public-route-audit.mjs`)
 
-**No backend phase rule:** Do **not** start **Phase B** (or later backend/integration work) if any selling-path route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs.
+**No backend phase rule:** Do **not** start **Phase B** until **all public-route P0 items pass** (visual depth, responsive layout, motion, touch, duplicate CTAs, public copy, cancel-page honesty). **Status: P0 cleared** (2026-05-17). Re-run audits after any public-route change before merging.
 
 ---
 
@@ -296,7 +326,7 @@ Before merge, every new route or major surface must pass:
 
 ### Phase A — Launch marketing & checkout
 
-**Quality gates:** **Cleared** (2026-05-17) — see table above.
+**Quality gates:** **Cleared** (2026-05-17) — see table above. **Phase B is next** for backend/integration only after maintaining P0 on public routes.
 
 **Functional work still in Phase A** (product scope; not gate blockers):
 
@@ -304,13 +334,14 @@ Before merge, every new route or major surface must pass:
 2. Screens **11, 12** — ensure success/cancelled copy and access rules match real subscription state (no fake unlock).  
 3. Screen **08** paywall state on `/pricing` for expired/anonymous.
 
-### Phase B — Backend foundation (**next — after legal route audit PASS**)
+### Phase B — Backend foundation (**next**)
 
-Legal pages and footer links are implemented and audited (2026-05-17). Proceed with payment integration:
+Public routes, legal pages, footer links, copy cleanup, homepage motion, and `/account/cancel` information page are implemented and audited (2026-05-17). Proceed with payment integration:
 
 4. Supabase project, schema (`users`, `subscriptions`, `content`), Storage bucket.  
 5. Lemon Squeezy webhook + subscription access helpers (hosted checkout only — not Stripe/PayPal).  
-6. Wire auth login/callback (replace UI-only login).
+6. Wire auth login/callback (replace UI-only login).  
+7. **Lemon Squeezy customer billing portal** — enable **Open billing portal** on `/account/cancel` and `/account/billing/portal` (Screen 22); real cancellation action lives here, not on the pre–Phase B info page alone.
 
 ### Phase C — Member core
 
@@ -342,6 +373,8 @@ Legal pages and footer links are implemented and audited (2026-05-17). Proceed w
 - `docs/mobile-responsive-quality-gate.md` — official responsive QA gate (includes Navigation and CTA ownership)  
 - `docs/motion-audit-rules.md` — motion containment and reduced-motion rules  
 - `scripts/cta-nav-qa.mjs` — duplicate navigation and CTA audit  
+- `scripts/public-route-audit.mjs` — combined public-route audit (copy, CTA, motion, responsive)  
+- `src/components/account/account-cancel-content.tsx` — pre–Phase B cancellation information page  
 - `docs/basscally-build-pack/00_START_HERE/BUILD_SEQUENCE_GUIDE.md` — original phase prompts (still useful per-tier)  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/09_routes_wiring_screen_map_and_components.md` — full route table  
 - `docs/basscally-build-pack/04_BACKEND_DOCUMENTATION/08_architecture_backend_auth_payments_email_logic.md` — data model and access rules  

@@ -17,6 +17,7 @@ const ROUTES = [
   "/terms",
   "/privacy",
   "/refund-policy",
+  "/account/cancel",
 ];
 const WIDTHS = [320, 375, 390, 768, 1024, 1280, 1440];
 

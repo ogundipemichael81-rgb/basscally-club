@@ -2,8 +2,8 @@
 
 **Status:** Official QA gate for layout, touch, and collision prevention  
 **Companion docs:** `docs/motion-audit-rules.md`, `docs/visual-depth-quality-gate.md`  
-**Last updated:** 2026-05-17 (navigation and CTA ownership)  
-**Source audits:** Phase A responsive deep audit (`scripts/responsive-audit.mjs`), motion QA (`scripts/motion-qa.mjs`), legal content audit (`scripts/legal-audit.mjs`)
+**Last updated:** 2026-05-17 (public route audit, `/account/cancel`, homepage motion)  
+**Source audits:** `scripts/public-route-audit.mjs`, `scripts/responsive-audit.mjs`, `scripts/motion-qa.mjs`, `scripts/cta-nav-qa.mjs`, `scripts/legal-audit.mjs`
 
 Convert every selling-path screen from “desktop shrunk” to **intentionally mobile** before Phase B backend work.
 
@@ -13,16 +13,20 @@ Convert every selling-path screen from “desktop shrunk” to **intentionally m
 
 | Field | Value |
 | --- | --- |
-| **Responsive deep audit completed** | **2026-05-17** |
-| **Routes tested** | Selling path + legal: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy` |
-| **Required breakpoints** | 320, 375, 390, 768, 1024, 1280 |
+| **Responsive deep audit completed** | **2026-05-17** (updated with `/account/cancel`) |
+| **Public route audit completed** | **2026-05-17** — `scripts/public-route-audit.mjs` 70/70 PASS |
+| **Routes tested** | Public set: `/`, `/pricing`, `/auth/login`, `/auth/callback`, `/checkout/success`, `/checkout/cancelled`, `/terms`, `/privacy`, `/refund-policy`, `/account/cancel` |
+| **Required breakpoints** | 320, 375, 390, 768, 1024, 1280, 1440 |
 | **Stress breakpoints** | 280, 1440+ |
-| **P0 result** | **PASS** — 72/72 automated rows (Collision, Motion, Touch, Depth columns) |
+| **P0 result** | **PASS** — 90/90 `responsive-audit.mjs`; 70/70 `public-route-audit.mjs` |
 | **Build** | `npm run typecheck`, `npm run lint`, `npm run build` — PASS |
 
 ### Resolved P1 (2026-05-17)
 
 - **Legal footer placeholders** — Marketing footer links to `/terms`, `/privacy`, `/refund-policy`; Contact → `mailto:basscally.enquiry@gmail.com`; login footer links to `/privacy`, `/terms`.
+- **Public dev-language copy** — No placeholder/MVP/webhook UI strings on public routes (`public-route-audit.mjs`).
+- **Homepage subtle motion** — Landing checks in §4 + `docs/motion-audit-rules.md` §6; no deco/CTA collision at required widths.
+- **`/account/cancel`** — Member sidebar stacks on narrow widths; tap targets ≥44px; accessible info page (no fake cancellation).
 
 ### Remaining P1 (non-blocking)
 
@@ -43,9 +47,9 @@ These rules apply to every Phase A route and are enforced before phase sign-off.
 4. **Checkout pages use checkout-specific CTAs only** — route-aware nav (support + Home); primary recovery CTAs live in the checkout hero/card, not duplicated in nav.
 5. **Legal pages stay calm and readable** — nav shows Sign in only (no Join); document body uses footer contact and related legal links, not conversion banners.
 6. **Mobile sticky CTAs must not duplicate visible primary CTAs** in a confusing way — when a bottom sticky bar is present, hide or defer competing hero/nav Join buttons on the same viewport (landing: hero Join ≥`lg`, sticky owns &lt;`lg`).
-7. **A duplicate CTA audit is required before every phase sign-off** — run `node scripts/cta-nav-qa.mjs` at widths 320, 375, 390, 768, 1024, 1280, 1440 on all selling-path and legal routes; must be **PASS** with `typecheck`, `lint`, and `build`.
+7. **A duplicate CTA audit is required before every phase sign-off** — run `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs` at widths 320, 375, 390, 768, 1024, 1280, 1440 on all public routes; must be **PASS** with `typecheck`, `lint`, and `build`. **This gate remains mandatory** for every future phase sign-off.
 
-**CTA audit signed off:** 2026-05-17 — 63/63 route×width rows PASS (`scripts/cta-nav-qa.mjs`).
+**CTA audit signed off:** 2026-05-17 — 70/70 route×width rows PASS (`scripts/cta-nav-qa.mjs` / `public-route-audit.mjs`).
 
 ---
 
@@ -144,6 +148,8 @@ Full rules: `docs/motion-audit-rules.md`.
 | Drop preview cards | Stack or scroll cleanly; play affordance not cut off |
 | Sticky mobile CTA | Visible ≤1023px; hidden ≥1024px; full-width button ≥44px tall; does not duplicate visible hero Join (hero Join hidden &lt;`lg`) |
 | Live status dot | Contained in overflow box; pulse does not expand into nav |
+| Drops visual panel | Wave + vinyl in `.landing-drops-stage`; rail shimmer `max-lg:hidden`; no overlap with sticky CTA |
+| Subtle motion | Wave, glow drift, or live dot active under `prefers-reduced-motion: no-preference` |
 | Section rhythm | `--space-8` between sections on mobile |
 | FAQ / footer | Links tappable; no horizontal overflow |
 
@@ -174,8 +180,9 @@ Full rules: `docs/motion-audit-rules.md`.
 | Terms of Service | `/terms` | PASS | PASS | PASS | PASS | PASS |
 | Privacy Policy | `/privacy` | PASS | PASS | PASS | PASS | PASS |
 | Refund Policy | `/refund-policy` | PASS | PASS | PASS | PASS | PASS |
+| Cancel membership (info) | `/account/cancel` | PASS | PASS | PASS | PASS | PASS |
 
-**Gate rule:** All Phase A and legal rows must be **PASS** on Collision, Motion, and Touch before Phase B payment integration. Depth follows `docs/visual-depth-quality-gate.md`.
+**Gate rule:** All public-route rows must be **PASS** on Collision, Motion, and Touch before Phase B. **P0 cleared** 2026-05-17. Depth follows `docs/visual-depth-quality-gate.md`. Do **not** start Phase B until public-route P0 passes; re-run audits after UI changes.
 
 ---
 
@@ -187,21 +194,19 @@ Before any new route or major UI surface merges:
 2. **Responsive collision check** — This document §2–§5 + `node scripts/responsive-audit.mjs`
 3. **Motion containment check** — `docs/motion-audit-rules.md` + `node scripts/motion-qa.mjs`
 4. **Touch target check** — §5; buttons/inputs ≥44px / 16px body font on mobile
-5. **Duplicate CTA audit** — Navigation and CTA ownership (above) + `node scripts/cta-nav-qa.mjs`
+5. **Duplicate CTA audit** — Navigation and CTA ownership (above) + `node scripts/cta-nav-qa.mjs` or `node scripts/public-route-audit.mjs`
 
-**Backend phase rule:** Do **not** start Phase B while any **selling-path** route has a **P0** fail on visual depth, responsive layout, motion, touch, or duplicate CTAs.
+**Backend phase rule:** Do **not** start Phase B until **all public-route P0 items pass**. **Status: cleared** 2026-05-17. Duplicate CTA audit **remains required** before every phase sign-off.
 
 ---
 
 ## 7. Automated + manual workflow
 
 1. Start dev server: `npm run dev`
-2. Run `node scripts/cta-nav-qa.mjs` (navigation + duplicate CTA audit at 320–1440)
-3. Run `node scripts/responsive-audit.mjs` (selling path + `/terms`, `/privacy`, `/refund-policy`)
-4. Run `node scripts/legal-audit.mjs` (content, footer links, forbidden providers)
-5. Run `node scripts/motion-qa.mjs` (motion regression at 375, 390, 768, 1024, 1280, 1440)
-6. Manually spot-check landing items in §4 if copy or layout changed
-7. Record results in §6 table (store in PR description or QA ticket)
+2. Run `node scripts/public-route-audit.mjs` (combined copy, CTA, motion, responsive at 320–1440 + tooling)
+3. Or run individually: `cta-nav-qa.mjs`, `responsive-audit.mjs`, `motion-qa.mjs`, `legal-audit.mjs`
+4. Manually spot-check landing items in §4 if copy, motion, or layout changed
+5. Record results in §6 table (store in PR description or QA ticket)
 
 ---
 
@@ -226,5 +231,6 @@ Before any new route or major UI surface merges:
 - `docs/legal-pages-build-plan.md` — legal routes implementation record  
 - `scripts/legal-audit.mjs` — legal content and footer smoke tests  
 - `scripts/cta-nav-qa.mjs` — headless navigation and duplicate CTA audit
-- `scripts/responsive-audit.mjs` — headless responsive deep audit (selling path + legal)
+- `scripts/responsive-audit.mjs` — headless responsive deep audit (public routes + stress widths)
+- `scripts/public-route-audit.mjs` — combined public-route gate (copy, CTA, motion, responsive)
 - `scripts/motion-qa.mjs` — headless motion/collision regression

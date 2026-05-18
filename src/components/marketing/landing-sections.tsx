@@ -5,20 +5,36 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
 import { SectionLabel } from "@/components/marketing/section-label";
 import { routes } from "@/lib/routes";
+import { cn } from "@/lib/utils";
+
+const valueCardDelays = [
+  "landing-rise-delay-1",
+  "landing-rise-delay-2",
+  "landing-rise-delay-3",
+  "landing-rise-delay-4",
+] as const;
+
+const testimonialDelays = [
+  "landing-rise-delay-1",
+  "landing-rise-delay-2",
+  "landing-rise-delay-3",
+] as const;
 
 function MarketingSection({
   id,
   children,
+  riseClassName = "landing-rise",
 }: {
   id: string;
   children: ReactNode;
+  riseClassName?: string;
 }) {
   return (
     <section
       id={id}
       className="border-t border-[var(--color-border)] py-12 lg:py-[var(--space-10)]"
     >
-      <div className="basscally-container">{children}</div>
+      <div className={cn("basscally-container", riseClassName)}>{children}</div>
     </section>
   );
 }
@@ -51,8 +67,14 @@ export function LandingSections() {
           What you get, every 3 days
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {valueCards.map((card) => (
-            <Card key={card.title}>
+          {valueCards.map((card, index) => (
+            <Card
+              key={card.title}
+              className={cn(
+                "landing-interactive-card landing-rise motion-reduce:hover:translate-y-0",
+                valueCardDelays[index],
+              )}
+            >
               <h3 className="mb-2 font-semibold text-[var(--color-text)]">{card.title}</h3>
               <p className="text-[length:var(--text-body-sm)] text-[var(--color-text-muted)]">
                 {card.desc}
@@ -62,7 +84,7 @@ export function LandingSections() {
         </div>
       </MarketingSection>
 
-      <MarketingSection id="how-it-works">
+      <MarketingSection id="how-it-works" riseClassName="landing-rise">
         <SectionLabel>How it works</SectionLabel>
         <h2 className="mb-8 font-[family-name:var(--font-display)] text-[clamp(1.75rem,4vw,2.25rem)] font-bold tracking-tight">
           How it works
@@ -75,7 +97,7 @@ export function LandingSections() {
           ].map((item) => (
             <li
               key={item.step}
-              className="basscally-depth-card rounded-[var(--radius-lg)] p-6"
+              className="landing-interactive-card basscally-depth-card rounded-[var(--radius-lg)] p-6 motion-reduce:hover:translate-y-0"
             >
               <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-brand)]">
                 {item.step}
@@ -140,11 +162,17 @@ export function LandingSections() {
         </h2>
         <div className="grid gap-4 lg:grid-cols-3">
           {[
-            ["I've been looking for something exactly like this. Finally, practice material that's actually fun and keeps coming.", "@placeholder_user1 — TikTok"],
-            ["Bro you need to make a course or something. I'd pay for more content like this every week.", "@placeholder_user2 — TikTok"],
-            ["This is making me actually practice consistently for the first time in years. The grooves are addictive.", "@placeholder_user3 — Instagram"],
-          ].map(([quote, author]) => (
-            <Card key={author}>
+            ["I've been looking for something exactly like this. Finally, practice material that's actually fun and keeps coming.", "Club member — TikTok"],
+            ["Bro you need to make a course or something. I'd pay for more content like this every week.", "Club member — TikTok"],
+            ["This is making me actually practice consistently for the first time in years. The grooves are addictive.", "Club member — Instagram"],
+          ].map(([quote, author], index) => (
+            <Card
+              key={author}
+              className={cn(
+                "landing-interactive-card landing-rise motion-reduce:hover:translate-y-0",
+                testimonialDelays[index],
+              )}
+            >
               <p className="mb-4 text-[var(--color-text-muted)]">&ldquo;{quote}&rdquo;</p>
               <p className="text-sm text-[var(--color-text-dim)]">{author}</p>
             </Card>
@@ -205,20 +233,25 @@ export function LandingSections() {
         </div>
       </MarketingSection>
 
-      <MarketingSection id="founding">
-        <div className="rounded-[var(--radius-xl)] border border-[rgba(255,69,0,0.25)] bg-[var(--color-brand-muted)] p-8 text-center lg:p-12">
+      <MarketingSection id="founding" riseClassName="landing-rise">
+        <div className="relative overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(255,69,0,0.25)] bg-[var(--color-brand-muted)] p-8 text-center lg:p-12">
+          <div className="landing-rail-shimmer absolute inset-x-6 top-0 lg:inset-x-12" aria-hidden />
           <SectionLabel>Limited offer</SectionLabel>
-          <h2 className="mb-4 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight lg:text-4xl">
+          <h2 className="relative z-[1] mb-4 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight lg:text-4xl">
             Founding Member Offer
           </h2>
-          <p className="mx-auto mb-8 max-w-xl text-[var(--color-text-muted)]">
+          <p className="relative z-[1] mx-auto mb-8 max-w-xl text-[var(--color-text-muted)]">
             The first 500 members lock in <strong className="text-[var(--color-text)]">$1.50/month for life</strong>. After that, the price goes up.
           </p>
-          <ButtonLink href={routes.pricing} size="lg" className="group mx-auto w-full max-w-md sm:w-auto">
+          <ButtonLink
+            href={routes.pricing}
+            size="lg"
+            className="landing-cta-glow group relative z-[1] mx-auto w-full max-w-md sm:w-auto"
+          >
             Become a Founding Member — $1.50/month
-            <IconArrowRight className="group-hover:translate-x-0.5 motion-reduce:transition-none" />
+            <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
           </ButtonLink>
-          <p className="mt-4 font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-dim)]">
+          <p className="relative z-[1] mt-4 font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-dim)]">
             Founding member spots remaining: 500
           </p>
         </div>
@@ -232,7 +265,7 @@ export function LandingSections() {
         <FaqAccordion />
       </MarketingSection>
 
-      <MarketingSection id="join">
+      <MarketingSection id="join" riseClassName="landing-rise">
         <div className="py-8 text-center">
           <h2 className="font-[family-name:var(--font-display)] text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight tracking-tight">
             Stop scrolling.
@@ -242,9 +275,13 @@ export function LandingSections() {
           <p className="mx-auto mt-4 max-w-lg text-lg text-[var(--color-text-muted)]">
             For less than a coffee, get a new bass practice drop every 3 days.
           </p>
-          <ButtonLink href={routes.pricing} size="lg" className="group mx-auto mt-8 w-full max-w-md sm:w-auto">
+          <ButtonLink
+            href={routes.pricing}
+            size="lg"
+            className="landing-cta-glow group mx-auto mt-8 w-full max-w-md sm:w-auto"
+          >
             Join Basscally Club — $1.50/month
-            <IconArrowRight className="group-hover:translate-x-0.5 motion-reduce:transition-none" />
+            <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
           </ButtonLink>
         </div>
       </MarketingSection>

@@ -36,6 +36,9 @@ async function snapshotPage(page) {
       ".checkout-vinyl",
       ".hero-live-dot",
       ".callback-stage-card",
+      ".landing-vinyl-pulse-wrap",
+      ".landing-wave span",
+      ".landing-rail-shimmer",
     ].join(",");
     const PROTECTED_SELECTORS = [
       "header",
