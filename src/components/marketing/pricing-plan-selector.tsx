@@ -113,9 +113,9 @@ export function PricingPlanSelector() {
             className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-9 max-[680px]:p-[26px]"
           >
             <div className="relative z-[1]">
-              <SectionLabel>Basscally Club pricing</SectionLabel>
+              <SectionLabel>Basscally Hub pricing</SectionLabel>
               <h1 className="font-[family-name:var(--font-display)] text-[clamp(28px,4vw,36px)] font-black tracking-[-0.03em] text-[var(--color-text)]">
-                Choose your Club plan
+                Choose your Hub plan
               </h1>
               <h2 className="mt-4 font-[family-name:var(--font-display)] text-[clamp(42px,6.5vw,82px)] font-black leading-[0.9] tracking-[-0.055em]">
                 Lock your groove.
@@ -169,11 +169,11 @@ export function PricingPlanSelector() {
                 Later tier
               </Badge>
               <h3 className="font-[family-name:var(--font-display)] text-[23px] font-black tracking-[-0.03em]">
-                Club Plus — coming later
+                Hub Plus — coming later
               </h3>
               <p className="mt-1.5 text-sm text-[var(--color-text-muted)]">
                 A higher tier with live challenges and premium drops is on the way. Founding
-                and annual plans include full Club access today.
+                and annual plans include full Hub access today.
               </p>
             </div>
           </MotionDiv>

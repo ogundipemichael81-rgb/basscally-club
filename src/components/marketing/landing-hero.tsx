@@ -121,7 +121,7 @@ export function LandingHero() {
             <strong className="font-medium text-[var(--color-text)]">
               bass-less covers, grooves, fills, and challenges
             </strong>{" "}
-            — delivered to your inbox every 3 days. Practice on your time, from anywhere.
+            — from Chris and world-class bassists, delivered to your inbox weekly. Practice on your time, from anywhere.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
@@ -130,7 +130,7 @@ export function LandingHero() {
               size="lg"
               className="landing-cta-glow group hidden w-full sm:w-auto lg:inline-flex"
             >
-              Join the Club — $1.50/month
+              Join Basscally Hub — $1.50/month
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>
             <span className="text-sm text-[var(--color-text-dim)]">

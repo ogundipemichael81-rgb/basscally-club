@@ -37,15 +37,15 @@ export type LegalDocument = {
 export const privacyPolicy: LegalDocument = {
   slug: "privacy",
   title: "Privacy Policy",
-  metaTitle: "Privacy Policy — Basscally Club",
+  metaTitle: "Privacy Policy — Basscally Hub",
   metaDescription:
-    "How Basscally Ltd collects, uses, and protects your personal information when you use Basscally Club.",
+    "How Basscally Ltd collects, uses, and protects your personal information when you use Basscally Hub.",
   lastUpdated: LEGAL_LAST_UPDATED,
   effectiveDate: LEGAL_EFFECTIVE_DATE,
   intro: [
     {
       type: "paragraph",
-      text: `This Privacy Policy explains how **${LEGAL_COMPANY_NAME}** (“**Basscally**”, “**we**”, “**us**”) collects and uses personal information when you use **Basscally Club** (the “**Service**”) — our membership website for bass practice content.`,
+      text: `This Privacy Policy explains how **${LEGAL_COMPANY_NAME}** (“**Basscally**”, “**we**”, “**us**”) collects and uses personal information when you use **Basscally Hub** (the “**Service**”) — our membership website for bass practice content.`,
     },
     {
       type: "paragraph",
@@ -344,15 +344,15 @@ export const privacyPolicy: LegalDocument = {
 export const termsOfService: LegalDocument = {
   slug: "terms",
   title: "Terms of Service",
-  metaTitle: "Terms of Service — Basscally Club",
+  metaTitle: "Terms of Service — Basscally Hub",
   metaDescription:
-    "Terms for using Basscally Club, including subscriptions, payments through Lemon Squeezy, and member access.",
+    "Terms for using Basscally Hub, including subscriptions, payments through Lemon Squeezy, and member access.",
   lastUpdated: LEGAL_LAST_UPDATED,
   effectiveDate: LEGAL_EFFECTIVE_DATE,
   intro: [
     {
       type: "paragraph",
-      text: `These Terms of Service (“**Terms**”) are a contract between you and **${LEGAL_COMPANY_NAME}** (company number **${LEGAL_COMPANY_NUMBER}**) for use of **Basscally Club** (the “**Service**”).`,
+      text: `These Terms of Service (“**Terms**”) are a contract between you and **${LEGAL_COMPANY_NAME}** (company number **${LEGAL_COMPANY_NUMBER}**) for use of **Basscally Hub** (the “**Service**”).`,
     },
     {
       type: "paragraph",
@@ -370,7 +370,7 @@ export const termsOfService: LegalDocument = {
       blocks: [
         {
           type: "paragraph",
-          text: "Basscally Club is a paid online membership that gives you access to digital bass practice content (for example audio drops, grooves, and related materials) through our website.",
+          text: "Basscally Hub is a paid online membership that gives you access to digital bass practice content (for example audio drops, grooves, and related materials) through our website.",
         },
         {
           type: "paragraph",
@@ -635,15 +635,15 @@ export const termsOfService: LegalDocument = {
 export const refundPolicy: LegalDocument = {
   slug: "refund-policy",
   title: "Refund Policy",
-  metaTitle: "Refund Policy — Basscally Club",
+  metaTitle: "Refund Policy — Basscally Hub",
   metaDescription:
-    "How refunds and cancellations work for Basscally Club subscriptions billed through Lemon Squeezy.",
+    "How refunds and cancellations work for Basscally Hub subscriptions billed through Lemon Squeezy.",
   lastUpdated: LEGAL_LAST_UPDATED,
   effectiveDate: LEGAL_EFFECTIVE_DATE,
   intro: [
     {
       type: "paragraph",
-      text: `This Refund Policy explains how refunds work for **Basscally Club** subscriptions operated by **${LEGAL_COMPANY_NAME}**.`,
+      text: `This Refund Policy explains how refunds work for **Basscally Hub** subscriptions operated by **${LEGAL_COMPANY_NAME}**.`,
     },
     {
       type: "paragraph",
@@ -661,7 +661,7 @@ export const refundPolicy: LegalDocument = {
       blocks: [
         {
           type: "paragraph",
-          text: "Basscally Club is a **digital membership** with **immediate access** to online content after payment. Because of that:",
+          text: "Basscally Hub is a **digital membership** with **immediate access** to online content after payment. Because of that:",
         },
         {
           type: "list",

@@ -16,7 +16,7 @@ export function CallbackContent() {
         <div className="basscally-rise-in">
           <SectionLabel>Signing you in</SectionLabel>
           <h1 className="mt-2 font-[family-name:var(--font-display)] text-[clamp(2.5rem,7vw,4.875rem)] font-extrabold leading-[0.94] tracking-tight">
-            Signing you into the Club.
+            Signing you into Basscally Hub.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-[var(--color-text-muted)] lg:text-xl">
             Hold on. We are checking your magic link, creating your session, and opening your

@@ -78,7 +78,7 @@ export function LoginForm() {
     <div className="relative z-[1] flex w-full max-w-[400px] flex-col items-center">
       <BrandMark size="lg" className="mb-6" />
       <h1 className="mb-3 text-center font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
-        Sign in to Basscally Club
+        Sign in to Basscally Hub
       </h1>
       <p className="mb-8 text-center text-[length:var(--text-body-sm)] text-[var(--color-text-muted)]">
         Enter your email and we&apos;ll send you a magic link. No password needed.

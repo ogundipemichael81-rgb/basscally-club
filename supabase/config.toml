@@ -1,0 +1,26 @@
+# Basscally Hub — Supabase local CLI config
+# Production: create project in Supabase Dashboard with region = EU (Frankfurt) — EU region
+
+project_id = "basscally-hub"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.migrations]
+schema_paths = ["./migrations/*.sql"]
+
+[db.seed]
+sql_paths = ["./seed.sql"]
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"

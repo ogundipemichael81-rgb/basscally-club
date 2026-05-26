@@ -43,12 +43,12 @@ const valueCards = [
   {
     id: "value-bassless-covers",
     title: "Bass-less Covers",
-    desc: "The songs you see Chris cover on TikTok — without the bass. Drop in, play the part, sound huge.",
+    desc: "The songs you see Chris and world-class bassists cover — without the bass. Drop in, play the part, sound huge.",
   },
   {
     id: "value-grooves",
     title: "Grooves",
-    desc: "Short, looped patterns to lock in your pocket. New ones every 3 days. Easy on day one, addictive by day ten.",
+    desc: "Short, looped patterns to lock in your pocket. Fresh grooves weekly. Easy on day one, addictive by day ten.",
   },
   {
     id: "value-fills",
@@ -58,16 +58,16 @@ const valueCards = [
   {
     id: "value-weekly-challenges",
     title: "Weekly Challenges",
-    desc: "A bass goal to hit every week. Record it, share it, level up. Recognition in the Club.",
+    desc: "A bass goal to hit every week. Record it, share it, level up. Recognition in the Hub.",
   },
 ] as const;
 
 const howItWorksSteps = [
-  { id: "how-join", step: "Step 01", strong: "Join the Club", rest: " for $1.50/month." },
+  { id: "how-join", step: "Step 01", strong: "Join Basscally Hub", rest: " for $1.50/month." },
   {
     id: "how-email",
     step: "Step 02",
-    strong: "Get an email every 3 days",
+    strong: "Get a weekly email",
     rest: " when a new drop lands.",
   },
   {
@@ -99,19 +99,19 @@ const testimonials = [
     id: "testimonial-tiktok-1",
     quote:
       "I've been looking for something exactly like this. Finally, practice material that's actually fun and keeps coming.",
-    author: "Club member — TikTok",
+    author: "Hub member — TikTok",
   },
   {
     id: "testimonial-tiktok-2",
     quote:
       "Bro you need to make a course or something. I'd pay for more content like this every week.",
-    author: "Club member — TikTok",
+    author: "Hub member — TikTok",
   },
   {
     id: "testimonial-instagram-1",
     quote:
       "This is making me actually practice consistently for the first time in years. The grooves are addictive.",
-    author: "Club member — Instagram",
+    author: "Hub member — Instagram",
   },
 ] as const;
 
@@ -125,7 +125,7 @@ const priceComparisonRows = [
   { id: "compare-masterclass", label: "Typical bass masterclass", price: "$20–$50/mo" },
   { id: "compare-lesson", label: "One-on-one bass lesson", price: "$40–$80/hr" },
   { id: "compare-tabs", label: "Bass tab subscription", price: "$10–$15/mo" },
-  { id: "compare-club", label: "Basscally Club", price: "$1.50/mo" },
+  { id: "compare-hub", label: "Basscally Hub", price: "$1.50/mo" },
 ] as const;
 
 export function LandingSections() {
@@ -134,7 +134,7 @@ export function LandingSections() {
       <MarketingSection id="what-you-get">
         <SectionLabel>What&apos;s inside</SectionLabel>
         <h2 className="mb-8 font-[family-name:var(--font-display)] text-[clamp(1.75rem,4vw,2.25rem)] font-bold tracking-tight text-[var(--color-text)]">
-          What you get, every 3 days
+          What you get, every week
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {valueCards.map((card, index) => (
@@ -183,7 +183,7 @@ export function LandingSections() {
       <MarketingSection id="who-its-for">
         <SectionLabel>Who it&apos;s for</SectionLabel>
         <h2 className="mb-8 font-[family-name:var(--font-display)] text-[clamp(1.75rem,4vw,2.25rem)] font-bold tracking-tight">
-          Who Basscally Club is for
+          Who Basscally Hub is for
         </h2>
         <div className="grid gap-10 lg:grid-cols-2">
           <ul className="space-y-4">
@@ -250,7 +250,7 @@ export function LandingSections() {
             </h2>
             <p className="mb-5 text-[var(--color-text-muted)]">Because practice shouldn&apos;t cost a meal.</p>
             <p className="mb-5 text-[var(--color-text-muted)]">
-              Most bass platforms cost $20, $30, $50 a month — gatekeeping serious players behind serious money. We built Basscally Club for every bassist with internet, anywhere on Earth.
+              Most bass platforms cost $20, $30, $50 a month — gatekeeping serious players behind serious money. We built Basscally Hub for every bassist with internet, anywhere on Earth.
             </p>
             <p className="text-[var(--color-text-muted)]">
               Cancel anytime. Keep everything you&apos;ve already downloaded.
@@ -317,14 +317,14 @@ export function LandingSections() {
             Start practicing.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-lg text-[var(--color-text-muted)]">
-            For less than a coffee, get a new bass practice drop every 3 days.
+            For less than a coffee, get a new bass practice drop every week.
           </p>
           <ButtonLink
             href={routes.pricing}
             size="lg"
             className="landing-cta-glow group mx-auto mt-8 w-full max-w-md sm:w-auto"
           >
-            Join Basscally Club — $1.50/month
+            Join Basscally Hub — $1.50/month
             <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
           </ButtonLink>
         </div>

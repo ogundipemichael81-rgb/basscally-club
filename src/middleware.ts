@@ -1,18 +1,21 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
 /**
- * Phase 1 skeleton — no Supabase session checks yet.
- * Member/admin protection will be added when auth is wired.
+ * Refreshes Supabase sessions on matched routes. Member/admin protection and
+ * mock-auth simulator cookies are unchanged until BH-04.
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const response = await updateSession(request);
 
   if (pathname.startsWith("/api/cron")) {
     // Cron auth will validate CRON_SECRET in Phase 7
-    return NextResponse.next();
+    return response;
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
@@ -21,6 +24,7 @@ export const config = {
     "/account/:path*",
     "/c/:path*",
     "/admin/:path*",
+    "/auth/:path*",
     "/api/cron/:path*",
   ],
 };

@@ -1,4 +1,6 @@
-# Basscally Club — Design System
+# Basscally Hub — Design System
+
+> **BH-01 (2026-05-25):** User-facing product name is **Basscally Hub**. Content cadence is **weekly**. Drops are from **Chris and world-class bassists**. Prefer microcopy: “Join Basscally Hub — $1.50/month”, not “Join the Club”.
 
 **Version:** 1.0
 **Date:** 15 May 2026
@@ -21,7 +23,7 @@ Paste this entire file into:
 
 ## 1. Design Direction (the one-line vision)
 
-**Basscally Club is a dark, premium, music-first practice membership for bassists worldwide. The aesthetic is "Spotify-grade clarity meets vinyl-record warmth" — modern, confident, never sterile, never gamer-loud.**
+**Basscally Hub is a dark, premium, music-first practice membership for bassists worldwide. The aesthetic is "Spotify-grade clarity meets vinyl-record warmth" — modern, confident, never sterile, never gamer-loud.**
 
 Reference points (the good kind):
 - **Spotify** — dark canvas, generous spacing, content-first hierarchy
@@ -287,7 +289,7 @@ Three variants. No more.
 - Disabled: opacity 0.4, no pointer
 ```
 
-Use for: "Join Basscally Club — $1.50/month", "Become a Founding Member", "Publish"
+Use for: "Join Basscally Hub — $1.50/month", "Become a Founding Member", "Publish"
 
 #### Secondary
 ```
@@ -405,17 +407,17 @@ This is part of the design system. Words are visual.
 | Bad | Good |
 |---|---|
 | "Welcome to your dashboard" | "Latest drop just landed" |
-| "Sign up for our service" | "Join the Club — $1.50/month" |
+| "Sign up for our service" | "Join Basscally Hub — $1.50/month" |
 | "Manage your subscription" | "Membership" |
 | "An error occurred" | "Something broke. Try again?" |
-| "You don't have access to this content" | "This drop is for Club members. Join for $1.50/month." |
+| "You don't have access to this content" | "This drop is for Hub members. Join Basscally Hub — $1.50/month." |
 | "Loading..." | "Tuning up..." (sparingly) |
 | "No content yet" | "First drop lands soon." |
 | "Logout" | "Sign out" |
 
 ### Button label rules
 
-- **Always include the action.** "Join Basscally Club — $1.50/month" beats "Subscribe."
+- **Always include the action.** "Join Basscally Hub — $1.50/month" beats "Subscribe."
 - **First-person where it fits.** "Take me to the Club" works on a final CTA.
 - **Never use ALL CAPS** in button labels. Sentence case only.
 

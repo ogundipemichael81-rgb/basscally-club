@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 
 /** Screen 11 */
 export const metadata: Metadata = {
-  title: "Checkout success — Basscally Club",
+  title: "Checkout success — Basscally Hub",
   description:
-    "Your Basscally Club membership is live. Check your email for a magic link and start practicing.",
+    "Your Basscally Hub membership is live. Check your email for a magic link and start practicing.",
 };
 
 export default function CheckoutSuccessPage() {

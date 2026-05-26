@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 
 /** Screen 32 — plan selector */
 export const metadata: Metadata = {
-  title: "Choose your Club plan — Basscally Club",
+  title: "Choose your Hub plan — Basscally Hub",
   description:
-    "Founding member, annual, and monthly plans. Lock your groove and join Basscally Club.",
+    "Founding member, annual, and monthly plans. Lock your groove and join Basscally Hub.",
 };
 
 export default function PricingPage() {

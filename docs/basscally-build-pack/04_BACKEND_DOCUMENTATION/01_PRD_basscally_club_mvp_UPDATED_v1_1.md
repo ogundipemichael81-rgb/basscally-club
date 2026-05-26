@@ -1,10 +1,12 @@
-# Basscally Club — Product Requirements Document v1.1
+# Basscally Hub — Product Requirements Document v1.1
+
+> **BH-01:** Product name **Basscally Hub**; release cadence **weekly**; drops from **Chris and world-class bassists**.
 
 Status: Updated after full screen design package 01 to 33
 Owner: Michael, COO/co-founder
 
 ## Product promise
-Basscally Club is a bass practice membership. Members pay for habit, rhythm, downloadable practice material, identity, and progress. Audio is the engine. The product should never feel like a file dump.
+Basscally Hub is a bass practice membership. Members pay for habit, rhythm, downloadable practice material, identity, and progress. Audio is the engine. The product should never feel like a file dump.
 
 ## Pricing ladder
 

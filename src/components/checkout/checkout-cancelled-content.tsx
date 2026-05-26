@@ -31,7 +31,7 @@ export function CheckoutCancelledContent() {
             No stress. Your spot is still <span className="text-[var(--color-brand)]">here.</span>
           </CheckoutHeadline>
           <CheckoutLede>
-            You left checkout before payment finished. The Club is still open, and the founding
+            You left checkout before payment finished. Basscally Hub is still open, and the founding
             member price is still waiting.
           </CheckoutLede>
           <CheckoutCtaRow>
@@ -79,7 +79,7 @@ export function CheckoutCancelledContent() {
             </div>
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-black tracking-[-0.02em]">
-            Practice material every 3 days
+            Practice material every week
           </h2>
           <p className="mt-2 text-sm text-[var(--color-text-muted)]">
             Bass-less covers, grooves, fills, and challenges. Built for players who want reps, not

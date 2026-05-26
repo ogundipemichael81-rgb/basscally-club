@@ -40,7 +40,7 @@ export function AccountCancelContent() {
             How cancellation works
           </CardTitle>
           <CardDescription className="text-[length:var(--text-body)] leading-relaxed">
-            You can cancel your Basscally Club membership at any time. There are no
+            You can cancel your Basscally Hub membership at any time. There are no
             long-term contracts.
           </CardDescription>
         </CardHeader>

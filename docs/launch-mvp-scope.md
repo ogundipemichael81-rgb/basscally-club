@@ -1,4 +1,4 @@
-# Basscally Club — Launch MVP Scope
+# Basscally Hub — Launch MVP Scope
 
 **Status:** Active build strategy (supersedes “all 33 screens before launch”)  
 **Source of truth:** `docs/basscally-build-pack/` (PRD v1.1, `09_routes_wiring_screen_map_and_components.md`, `08_architecture_backend_auth_payments_email_logic.md`, `06_locked_screen_designs_UPDATED_01_33.md`)  

@@ -24,7 +24,7 @@ export type PlanDefinition = {
   features: string[];
   ctaLabel: string;
   highlighted?: boolean;
-  /** Hidden until product offers Club Plus */
+  /** Hidden until product offers Hub Plus */
   hidden?: boolean;
 };
 
@@ -48,7 +48,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
   },
   standard_monthly: {
     code: "standard_monthly",
-    label: "Monthly club",
+    label: "Monthly Hub",
     priceLabel: "$2.99/month",
     priceAmount: "$2.99",
     pricePeriod: "/ month",
@@ -73,7 +73,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
     badge: "Recommended",
     badgeTone: "success",
     features: [
-      "Same full Club access",
+      "Same full Hub access",
       "Lower effective monthly cost",
       "Fewer payment failures",
       "Better for serious practice habit",
@@ -83,7 +83,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
   },
   club_plus: {
     code: "club_plus",
-    label: "Club Plus",
+    label: "Hub Plus",
     priceLabel: "$9/month",
     priceAmount: "$9",
     pricePeriod: "/ month",

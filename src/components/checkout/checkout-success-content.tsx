@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { routes } from "@/lib/routes";
 
 const passRows = [
-  { id: "pass-plan", label: "Plan", value: "Club monthly" },
+  { id: "pass-plan", label: "Plan", value: "Hub monthly" },
   { id: "pass-price", label: "Price", value: "$1.50/month" },
   { id: "pass-status", label: "Status", value: "Magic link sent" },
   { id: "pass-renewal", label: "Next renewal", value: "Shown in your account" },
@@ -29,7 +29,7 @@ export function CheckoutSuccessContent() {
         <div>
           <CheckoutEyebrow>Checkout complete</CheckoutEyebrow>
           <CheckoutHeadline id="success-title">
-            Your Club pass is <span className="text-[var(--color-brand)]">live.</span>
+            Your Hub pass is <span className="text-[var(--color-brand)]">live.</span>
           </CheckoutHeadline>
           <CheckoutLede>
             Payment received. We sent your magic link to the email you used at checkout. Open
@@ -91,7 +91,7 @@ export function CheckoutSuccessContent() {
             id: "success-step-payment",
             label: "Step 01",
             title: "Payment received",
-            body: "Lemon Squeezy confirmed your membership and created your Club access.",
+            body: "Lemon Squeezy confirmed your membership and created your Hub access.",
           },
           {
             id: "success-step-magic-link",
@@ -118,8 +118,8 @@ export function CheckoutSuccessContent() {
           },
           {
             id: "success-next-schedule",
-            title: "Every 3 days",
-            body: "New practice material lands on schedule. No searching. No noise.",
+            title: "Weekly drops",
+            body: "New practice material from Chris and world-class bassists lands every week. No searching. No noise.",
           },
           {
             id: "success-next-download",

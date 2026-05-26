@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 /**
- * Phase 1: validated env with safe defaults so build/lint pass without production secrets.
- * Real integrations read these in later phases.
+ * Validated env with safe defaults so build/lint pass without production secrets.
+ * Supabase publishable key is client-safe; service role is server-only (see admin client).
  */
 
 const optionalString = z
@@ -13,6 +13,8 @@ const optionalString = z
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   NEXT_PUBLIC_SUPABASE_URL: optionalString,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optionalString,
+  /** @deprecated Use NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY */
   NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: optionalString,
 });
@@ -23,6 +25,7 @@ const serverEnvSchema = z.object({
     .default("development"),
   SUPABASE_SERVICE_ROLE_KEY: optionalString,
   DATABASE_URL: optionalString,
+  DIRECT_URL: optionalString,
   LEMONSQUEEZY_API_KEY: optionalString,
   LEMONSQUEEZY_WEBHOOK_SECRET: optionalString,
   LEMONSQUEEZY_STORE_ID: optionalString,
@@ -43,16 +46,19 @@ function parseClientEnv(): ClientEnv {
   return clientEnvSchema.parse({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
   });
 }
 
-function parseServerEnv(): ServerEnv {
+function parseServerEnvFromProcess(): ServerEnv {
   return serverEnvSchema.parse({
     NODE_ENV: process.env.NODE_ENV,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
+    DIRECT_URL: process.env.DIRECT_URL,
     LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
@@ -76,9 +82,37 @@ export const clientEnv = parseClientEnv();
 
 /** Server-only — never import from client components. */
 export function getServerEnv(): ServerEnv {
-  return parseServerEnv();
+  return parseServerEnvFromProcess();
+}
+
+export function getSupabaseUrl(): string {
+  return clientEnv.NEXT_PUBLIC_SUPABASE_URL;
+}
+
+/** Publishable (anon) key — safe for browser and cookie-based server clients. */
+export function getSupabasePublishableKey(): string {
+  return (
+    clientEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
+
+export function isSupabaseClientConfigured(): boolean {
+  return getSupabaseUrl().length > 0 && getSupabasePublishableKey().length > 0;
+}
+
+export function hasSupabaseServiceRole(): boolean {
+  return getServerEnv().SUPABASE_SERVICE_ROLE_KEY.length > 0;
 }
 
 export function hasDatabaseUrl(): boolean {
   return getServerEnv().DATABASE_URL.length > 0;
+}
+
+export function hasDirectDatabaseUrl(): boolean {
+  return getServerEnv().DIRECT_URL.length > 0;
+}
+
+export function hasLemonSqueezyWebhookSecret(): boolean {
+  return getServerEnv().LEMONSQUEEZY_WEBHOOK_SECRET.length > 0;
 }

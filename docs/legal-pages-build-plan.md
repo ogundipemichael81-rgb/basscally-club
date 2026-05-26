@@ -1,4 +1,4 @@
-# Basscally Club — Legal pages build plan
+# Basscally Hub — Legal pages build plan
 
 **Status:** **Implemented** (2026-05-17); public-route audit **PASS** (2026-05-17)  
 **Created:** 2026-05-17  

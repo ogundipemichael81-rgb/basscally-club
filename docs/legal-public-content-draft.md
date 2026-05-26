@@ -1,4 +1,4 @@
-# Basscally Club — Public legal content draft (internal)
+# Basscally Hub — Public legal content draft (internal)
 
 **Status:** **Implemented in app** (2026-05-17) — live at `/terms`, `/privacy`, `/refund-policy`  
 **Last updated:** 17 May 2026  
@@ -17,7 +17,7 @@
 | **Support email** | `basscally.enquiry@gmail.com` |
 | **Address display** | Registered in England & Wales, Company No. 16656420. Registered office address available on request. |
 | **Payment provider in copy** | Lemon Squeezy only |
-| **Inactive providers** | **Stripe and PayPal are not active** for Basscally Club and **must not** appear in public legal pages |
+| **Inactive providers** | **Stripe and PayPal are not active** for Basscally Hub and **must not** appear in public legal pages |
 | **Footer P1** | **Resolved** — marketing + login footers link to legal routes |
 | **QA** | `scripts/legal-audit.mjs`, `scripts/responsive-audit.mjs` — PASS |
 | **Next build phase** | Phase B (Supabase + Lemon Squeezy) per `docs/launch-mvp-scope.md` |
@@ -30,7 +30,7 @@ When counsel approves final wording, update `src/content/legal.ts` and bump Last
 
 | Field | Value |
 | --- | --- |
-| **Service name** | Basscally Club |
+| **Service name** | Basscally Hub |
 | **Operator** | Basscally Ltd (company number 16656420) |
 | **Support email** | basscally.enquiry@gmail.com |
 | **Public address line** | Registered in England & Wales, Company No. 16656420. Registered office address available on request. |
@@ -43,7 +43,7 @@ When counsel approves final wording, update `src/content/legal.ts` and bump Last
 
 **Last updated:** 17 May 2026
 
-This Privacy Policy explains how **Basscally Ltd** (“**Basscally**”, “**we**”, “**us**”) collects and uses personal information when you use **Basscally Club** (the “**Service**”) — our membership website for bass practice content.
+This Privacy Policy explains how **Basscally Ltd** (“**Basscally**”, “**we**”, “**us**”) collects and uses personal information when you use **Basscally Hub** (the “**Service**”) — our membership website for bass practice content.
 
 We are the data controller for personal information described in this policy. If you have questions, contact us at **basscally.enquiry@gmail.com**.
 
@@ -230,7 +230,7 @@ Registered in England & Wales, Company No. 16656420. Registered office address a
 
 **Last updated:** 17 May 2026
 
-These Terms of Service (“**Terms**”) are a contract between you and **Basscally Ltd** (company number **16656420**) for use of **Basscally Club** (the “**Service**”).
+These Terms of Service (“**Terms**”) are a contract between you and **Basscally Ltd** (company number **16656420**) for use of **Basscally Hub** (the “**Service**”).
 
 By creating an account, subscribing, or using the Service, you agree to these Terms. If you do not agree, do not use the Service.
 
@@ -240,7 +240,7 @@ By creating an account, subscribing, or using the Service, you agree to these Te
 
 ## 1. About the Service
 
-Basscally Club is a paid online membership that gives you access to digital bass practice content (for example audio drops, grooves, and related materials) through our website.
+Basscally Hub is a paid online membership that gives you access to digital bass practice content (for example audio drops, grooves, and related materials) through our website.
 
 We aim to publish **regular practice drops** on an **intended release schedule**. The schedule may change for operational, creative, or technical reasons. We do not guarantee a fixed number of releases per week or month.
 
@@ -409,7 +409,7 @@ Registered in England & Wales, Company No. 16656420. Registered office address a
 
 **Last updated:** 17 May 2026
 
-This Refund Policy explains how refunds work for **Basscally Club** subscriptions operated by **Basscally Ltd**.
+This Refund Policy explains how refunds work for **Basscally Hub** subscriptions operated by **Basscally Ltd**.
 
 **Payments and refunds are processed through Lemon Squeezy** (merchant of record where applicable to the checkout). Basscally does not store your card details.
 
@@ -419,7 +419,7 @@ This Refund Policy explains how refunds work for **Basscally Club** subscription
 
 ## 1. General approach
 
-Basscally Club is a **digital membership** with **immediate access** to online content after payment. Because of that:
+Basscally Hub is a **digital membership** with **immediate access** to online content after payment. Because of that:
 
 - We generally **do not offer pro-rata refunds** for unused days or weeks in a billing period if you cancel mid-period.
 - When you **cancel**, you **keep access until the end of the current paid period** you have already been charged for, unless the law requires different treatment.

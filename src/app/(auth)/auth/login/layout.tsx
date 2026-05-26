@@ -13,7 +13,7 @@ export default function LoginLayout({ children }: { children: ReactNode }) {
           href={routes.home}
           className="inline-flex min-h-11 items-center hover:text-[var(--color-text-muted)]"
         >
-          Basscally Club
+          Basscally Hub
         </Link>
         {" · "}
         <Link

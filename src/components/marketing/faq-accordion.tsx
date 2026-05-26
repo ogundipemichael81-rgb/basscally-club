@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 
 const faqItems = [
   {
-    q: "What exactly do I get in the Club?",
-    a: "A new bass practice drop every 3 days — either a bass-less cover, a groove, a fill, or a challenge. Plus the weekly bass-less version of whatever song we covered that week on TikTok. All audio files, downloadable.",
+    q: "What exactly do I get in Basscally Hub?",
+    a: "A new bass practice drop every week — either a bass-less cover, a groove, a fill, or a challenge — from Chris and world-class bassists. Plus the weekly bass-less version of whatever song we covered that week on TikTok. All audio files, downloadable.",
   },
   {
     q: "How often is new content released?",
-    a: "Every 3 days, like clockwork. About 10 new drops per month.",
+    a: "Weekly, like clockwork. About four new drops per month.",
   },
   {
     q: "Can I cancel anytime?",
@@ -30,7 +30,7 @@ const faqItems = [
   },
   {
     q: "Is this taught by Chris?",
-    a: "Yes. Chris produces every drop. Same player you see on TikTok, just now with structured practice material.",
+    a: "Chris leads the Hub and produces core drops. Guest drops come from world-class bassists too — same energy you see on TikTok, with structured practice material.",
   },
   {
     q: "What if I don't like it?",

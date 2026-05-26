@@ -10,7 +10,7 @@ const memberNav: SidebarNavItem[] = [
 
 export function MemberShell({ children }: { children: ReactNode }) {
   return (
-    <SidebarShell navItems={memberNav} brand="Basscally Club">
+    <SidebarShell navItems={memberNav} brand="Basscally Hub">
       {children}
     </SidebarShell>
   );
