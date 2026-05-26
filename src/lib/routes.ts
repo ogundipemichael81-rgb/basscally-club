@@ -38,6 +38,9 @@ export const routes = {
     emailTemplates: "/admin/email-templates",
   },
   api: {
+    auth: {
+      magicLink: "/api/auth/magic-link",
+    },
     webhooks: {
       lemonSqueezy: "/api/webhooks/lemonsqueezy",
       resend: "/api/webhooks/resend",

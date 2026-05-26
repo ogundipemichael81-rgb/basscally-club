@@ -1,7 +1,7 @@
-# CONTINUE BASSCALLY HUB AUTOPILOT — BH-03
+# CONTINUE BASSCALLY HUB AUTOPILOT — BH-04
 
-## Active step: BH-03 — Lemon Squeezy Webhook and Subscription Access
-**Status:** `pending`
+## Active step: BH-04 — Magic Link Auth
+**Status:** `needs_fix`
 
 ## Hard rules — read before touching anything
 
@@ -22,7 +22,7 @@
 4. docs/basscally-full-button-function-audit.md
 5. 04_basscally_design_system.md
 6. 01_PRD_basscally_club_mvp_UPDATED_v1_1.md
-7. docs/AUTO-REPORTS/BH-03-WEBHOOK-COMPLETE.md (produce this)
+7. docs/AUTO-REPORTS/BH-04-AUTH-COMPLETE.md (produce this)
 
 ## Locked decisions — do not re-open
 
@@ -42,30 +42,29 @@
 - WhatsApp community link in checkout success and welcome email
 - Resource Centre (was Walkthrough)
 
-## This step: BH-03
+## This step: BH-04
 
-Build /api/webhooks/lemonsqueezy. Handle: subscription_created, subscription_updated, subscription_cancelled, subscription_expired, subscription_payment_failed, subscription_payment_success. HMAC SHA256 signature verification. Idempotent. Set is_founding_member if subscriber count < 500. Trigger magic-link email on subscription_created. Wire /api/content/[id]/download — verify subscription server-side before returning signed Storage URL.
+Build /auth/login (email field, send magic link, loading, error, success states). Build /auth/callback (Supabase session confirm, redirect to /dashboard). Middleware protecting /(member) and /(admin) routes. Rate-limit magic link resend.
 
 ## Artifact to produce
 
-`docs/AUTO-REPORTS/BH-03-WEBHOOK-COMPLETE.md`
+`docs/AUTO-REPORTS/BH-04-AUTH-COMPLETE.md`
 
 This file must contain ALL of the following (checked by controller):
 
-- subscription_created
-- subscription_cancelled
-- subscription_payment_failed
-- HMAC SHA256
-- idempotent
-- is_founding_member
-- download API
-- subscription check server-side
+- magic link
+- auth callback
+- middleware
+- rate limit
+- member routes protected
+- admin routes protected
 
 ## Completed steps so far
 
 - ✅ BH-00 — Repo Scan and Docs Truth
 - ✅ BH-01 — Global Naming Pass
 - ✅ BH-02 — Supabase Schema and Storage
+- ✅ BH-03 — Lemon Squeezy Webhook and Subscription Access
 
 ## After IDE work
 
@@ -83,6 +82,11 @@ Do not run bh:next until bh:complete passes.
 - Mobile audit spec: docs/mobile-responsive-quality-gate.md
 - Legal drafts: docs/basscally-legal-document-drafts.md
 - Depth/color fix: docs/codex-depth-color-fix-prompt.md
+
+## ⚠️ This step previously failed verification
+
+The markers that were missing are listed in docs/AUTO-REPORTS/BH-LATEST-RUN.md.
+Fix only the missing markers. Do not redo completed work.
 
 ---
 

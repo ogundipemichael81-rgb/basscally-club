@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { IconCheck } from "@/components/icons";
@@ -20,8 +20,37 @@ export function LoginForm() {
   const [error, setError] = useState<string | undefined>();
   const [state, setState] = useState<FormState>("idle");
   const [sentEmail, setSentEmail] = useState("");
+  const [retryAfterSeconds, setRetryAfterSeconds] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (retryAfterSeconds <= 0) return;
+    const timer = window.setInterval(() => {
+      setRetryAfterSeconds((v) => (v > 0 ? v - 1 : 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [retryAfterSeconds]);
+
+  const requestMagicLink = async (emailValue: string) => {
+    const res = await fetch(routes.api.auth.magicLink, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailValue }),
+    });
+
+    const json = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      retryAfterSeconds?: number;
+    };
+
+    if (!res.ok) {
+      if (res.status === 429 && json.retryAfterSeconds) {
+        setRetryAfterSeconds(json.retryAfterSeconds);
+      }
+      throw new Error(json.error || "Could not send magic link.");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
 
@@ -30,13 +59,37 @@ export function LoginForm() {
       return;
     }
 
+    if (retryAfterSeconds > 0) {
+      setError(`Please wait ${retryAfterSeconds}s before requesting another link.`);
+      return;
+    }
+
     setError(undefined);
     setState("loading");
 
-    window.setTimeout(() => {
+    try {
+      await requestMagicLink(trimmed);
       setSentEmail(trimmed);
       setState("success");
-    }, 1500);
+      setRetryAfterSeconds(60);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send magic link.");
+      setState("idle");
+    }
+  };
+
+  const handleResend = async () => {
+    if (!sentEmail || retryAfterSeconds > 0) return;
+    setError(undefined);
+    setState("loading");
+    try {
+      await requestMagicLink(sentEmail);
+      setState("success");
+      setRetryAfterSeconds(60);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not resend magic link.");
+      setState("success");
+    }
   };
 
   if (state === "success") {
@@ -60,16 +113,17 @@ export function LoginForm() {
           Didn&apos;t get it? Check spam, or{" "}
           <button
             type="button"
-            className="inline-flex min-h-11 items-center underline hover:text-[var(--color-text-muted)]"
-            onClick={() => {
-              setState("idle");
-              setEmail(sentEmail);
-            }}
+            className="inline-flex min-h-11 items-center underline hover:text-[var(--color-text-muted)] disabled:opacity-50"
+            disabled={state === "loading" || retryAfterSeconds > 0}
+            onClick={handleResend}
           >
-            resend
+            {retryAfterSeconds > 0 ? `resend in ${retryAfterSeconds}s` : "resend"}
           </button>
           .
         </p>
+        {error ? (
+          <p className="mt-3 text-[length:var(--text-caption)] text-[var(--color-danger)]">{error}</p>
+        ) : null}
       </div>
     );
   }

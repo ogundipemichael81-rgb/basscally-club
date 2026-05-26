@@ -1,10 +1,10 @@
 {
   "current_step": "BH-04",
   "current_step_title": "Magic Link Auth",
-  "current_step_status": "pending",
+  "current_step_status": "pushed",
   "next_action": "run bh:next",
   "after_current_step": "BH-05",
-  "last_check_result": "passed",
+  "last_check_result": "failed",
   "completed_steps": [
     "BH-00",
     "BH-01",
@@ -13,5 +13,5 @@
   ],
   "blocked_steps": [],
   "blocked_reason": null,
-  "last_run_at": "2026-05-26T00:48:52Z"
+  "last_run_at": "2026-05-26T01:45:15Z"
 }

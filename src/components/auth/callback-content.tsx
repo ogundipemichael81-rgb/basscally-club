@@ -1,15 +1,107 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ButtonLink } from "@/components/marketing/button-link";
 import { SectionLabel } from "@/components/marketing/section-label";
+import { createClient } from "@/lib/supabase/client";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
-const steps = [
-  { num: "01", title: "Link checked", desc: "Your secure sign-in link is valid.", active: true },
-  { num: "02", title: "Session opening", desc: "Preparing your member session.", active: true },
-  { num: "03", title: "Dashboard next", desc: "You will land on the latest drop when the session is ready.", active: false },
-];
+type CallbackState = "loading" | "success" | "error";
 
 export function CallbackContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [state, setState] = useState<CallbackState>("loading");
+  const [message, setMessage] = useState(
+    "We are checking your magic link, creating your session, and opening your dashboard.",
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      try {
+        const supabase = createClient();
+        const code = searchParams.get("code");
+        const tokenHash = searchParams.get("token_hash");
+        const type = searchParams.get("type");
+        const errorCode = searchParams.get("error");
+        const errorDescription = searchParams.get("error_description");
+
+        if (errorCode) {
+          throw new Error(errorDescription || "Magic link is invalid or expired.");
+        }
+
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+        } else if (tokenHash && type) {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type as
+              | "magiclink"
+              | "recovery"
+              | "invite"
+              | "email_change"
+              | "email",
+          });
+          if (error) throw error;
+        } else {
+          const { data } = await supabase.auth.getSession();
+          if (!data.session) {
+            throw new Error("No auth token found in callback URL.");
+          }
+        }
+
+        if (cancelled) return;
+        setState("success");
+        setMessage("Session is ready. Sending you to your dashboard now.");
+        window.setTimeout(() => {
+          router.replace(routes.member.dashboard);
+        }, 900);
+      } catch (err) {
+        if (cancelled) return;
+        const fallback = "We could not verify this magic link. Please request a new one.";
+        setState("error");
+        setMessage(err instanceof Error ? err.message : fallback);
+      }
+    }
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [router, searchParams]);
+
+  const steps = useMemo(
+    () => [
+      {
+        num: "01",
+        title: "Link checked",
+        desc: state === "error" ? "Link invalid or expired." : "Your secure sign-in link is valid.",
+        active: true,
+      },
+      {
+        num: "02",
+        title: "Session opening",
+        desc: state === "error" ? "Session could not be created." : "Preparing your member session.",
+        active: state !== "error",
+      },
+      {
+        num: "03",
+        title: "Dashboard next",
+        desc:
+          state === "success"
+            ? "Redirecting to dashboard."
+            : "You will land on the latest drop when the session is ready.",
+        active: state === "success",
+      },
+    ],
+    [state],
+  );
+
   return (
     <main className="basscally-callback-page flex min-h-[calc(100vh-65px)] flex-col justify-center py-12 lg:py-16">
       <section className="basscally-container grid items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_420px] lg:gap-16">
@@ -19,8 +111,7 @@ export function CallbackContent() {
             Signing you into Basscally Hub.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-[var(--color-text-muted)] lg:text-xl">
-            Hold on. We are checking your magic link, creating your session, and opening your
-            dashboard.
+            Hold on. {message}
           </p>
           <div className="mt-8 flex flex-wrap gap-3 max-[1023px]:flex-col">
             <ButtonLink href={routes.auth.login} variant="secondary" className="max-[1023px]:w-full">
@@ -61,8 +152,19 @@ export function CallbackContent() {
           </div>
 
           <p className="callback-stage-status relative z-10 flex items-center gap-2.5 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
-            <span className="callback-status-dot h-2 w-2 rounded-full bg-[var(--color-success)] shadow-[0_0_12px_rgba(52,211,153,0.7)]" />
-            Magic link verified
+            <span
+              className={cn(
+                "callback-status-dot h-2 w-2 rounded-full shadow-[0_0_12px_rgba(52,211,153,0.7)]",
+                state === "error"
+                  ? "bg-[var(--color-danger)] shadow-[0_0_12px_rgba(220,38,38,0.5)]"
+                  : "bg-[var(--color-success)]",
+              )}
+            />
+            {state === "error"
+              ? "Magic link failed"
+              : state === "success"
+                ? "Magic link verified"
+                : "Checking magic link"}
           </p>
         </div>
       </section>

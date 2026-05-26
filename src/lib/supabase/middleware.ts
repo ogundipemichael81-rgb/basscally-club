@@ -6,9 +6,22 @@ import {
   isSupabaseClientConfigured,
 } from "@/lib/env";
 
+function createMiddlewareClient(request: NextRequest) {
+  return createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll() {
+        // Session writes happen in updateSession response flow.
+      },
+    },
+  });
+}
+
 /**
  * Refreshes the Supabase Auth session and returns a response with updated cookies.
- * No route protection — BH-04 will add auth checks. Mock simulator cookies are untouched.
+ * Route protection stays in src/middleware.ts.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -41,4 +54,15 @@ export async function updateSession(request: NextRequest) {
   await supabase.auth.getUser();
 
   return supabaseResponse;
+}
+
+export async function getUserFromRequest(request: NextRequest) {
+  if (!isSupabaseClientConfigured()) {
+    return null;
+  }
+  const supabase = createMiddlewareClient(request);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
 }
