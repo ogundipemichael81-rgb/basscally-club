@@ -1,3 +1,4 @@
+import { FoundingMemberOffer } from "@/components/marketing/founding-member-offer";
 import { LandingHero } from "@/components/marketing/landing-hero";
 import { LandingMotionGate } from "@/components/marketing/landing-motion-gate";
 import { LandingSections } from "@/components/marketing/landing-sections";
@@ -10,6 +11,7 @@ export default function LandingPage() {
     <LandingMotionGate>
       <LandingHero />
       <LandingSections />
+      <FoundingMemberOffer />
       <MarketingFooter />
       <MobileCtaBar />
     </LandingMotionGate>

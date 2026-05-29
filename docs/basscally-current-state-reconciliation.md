@@ -182,7 +182,9 @@ Screens **04–07**, **09–10**, **06** content detail, admin lists, email tool
 4. **Pricing UX alignment** — founding member centre/highlight per locked decision (before LS variant wiring).
 5. **Do not start** Supabase / Lemon Squeezy until BH-00 and BH-01 are complete and patch plan applied.
 
-**Not P0 for starting BH-02 prep docs:** solicitor sign-off, WhatsApp link, style page creative from Chris.
+**Not P0 for starting BH-02 prep docs:** solicitor sign-off, style page creative from Chris.
+
+**Resolved (post-BH-08):** WhatsApp community link — official invite wired via `src/lib/social-links.ts` and checkout success CTA.
 
 ---
 

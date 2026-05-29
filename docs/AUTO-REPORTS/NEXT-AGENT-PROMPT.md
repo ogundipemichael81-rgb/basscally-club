@@ -1,7 +1,7 @@
-# CONTINUE BASSCALLY HUB AUTOPILOT — BH-04
+# CONTINUE BASSCALLY HUB AUTOPILOT — BH-15
 
-## Active step: BH-04 — Magic Link Auth
-**Status:** `needs_fix`
+## Active step: BH-15 — Email Automation
+**Status:** `pushed`
 
 ## Hard rules — read before touching anything
 
@@ -22,7 +22,7 @@
 4. docs/basscally-full-button-function-audit.md
 5. 04_basscally_design_system.md
 6. 01_PRD_basscally_club_mvp_UPDATED_v1_1.md
-7. docs/AUTO-REPORTS/BH-04-AUTH-COMPLETE.md (produce this)
+7. docs/AUTO-REPORTS/BH-15-EMAIL-COMPLETE.md (produce this)
 
 ## Locked decisions — do not re-open
 
@@ -42,22 +42,23 @@
 - WhatsApp community link in checkout success and welcome email
 - Resource Centre (was Walkthrough)
 
-## This step: BH-04
+## This step: BH-15
 
-Build /auth/login (email field, send magic link, loading, error, success states). Build /auth/callback (Supabase session confirm, redirect to /dashboard). Middleware protecting /(member) and /(admin) routes. Rate-limit magic link resend.
+Build email templates via Resend: welcome (with magic link + WhatsApp community link), new-drop notification (with play + download link), payment failed (with update billing link). All non-transactional emails must include working unsubscribe link. Cron/queue job: when content published, send to 100% active subscribers within 5 minutes. Magic link email within 60 seconds of subscription_created webhook.
 
 ## Artifact to produce
 
-`docs/AUTO-REPORTS/BH-04-AUTH-COMPLETE.md`
+`docs/AUTO-REPORTS/BH-15-EMAIL-COMPLETE.md`
 
 This file must contain ALL of the following (checked by controller):
 
-- magic link
-- auth callback
-- middleware
-- rate limit
-- member routes protected
-- admin routes protected
+- welcome email
+- new-drop notification
+- payment failed email
+- unsubscribe link
+- 100% active subscribers
+- within 5 minutes
+- 60 seconds
 
 ## Completed steps so far
 
@@ -65,6 +66,17 @@ This file must contain ALL of the following (checked by controller):
 - ✅ BH-01 — Global Naming Pass
 - ✅ BH-02 — Supabase Schema and Storage
 - ✅ BH-03 — Lemon Squeezy Webhook and Subscription Access
+- ✅ BH-04 — Magic Link Auth
+- ✅ BH-05 — Landing Page and Waitlist
+- ✅ BH-06 — Artist and Style Page — The Conversion Engine
+- ✅ BH-07 — Pricing Page — Three-Tier
+- ✅ BH-08 — Checkout Success and Cancelled
+- ✅ BH-09 — Member Dashboard
+- ✅ BH-10 — Content Detail and Download API
+- ✅ BH-11 — Account and Billing Management
+- ✅ BH-12 — Paywall and Re-subscribe
+- ✅ BH-13 — Admin Upload Form and Content Management
+- ✅ BH-14 — Admin Metrics Dashboard
 
 ## After IDE work
 
@@ -82,11 +94,6 @@ Do not run bh:next until bh:complete passes.
 - Mobile audit spec: docs/mobile-responsive-quality-gate.md
 - Legal drafts: docs/basscally-legal-document-drafts.md
 - Depth/color fix: docs/codex-depth-color-fix-prompt.md
-
-## ⚠️ This step previously failed verification
-
-The markers that were missing are listed in docs/AUTO-REPORTS/BH-LATEST-RUN.md.
-Fix only the missing markers. Do not redo completed work.
 
 ---
 

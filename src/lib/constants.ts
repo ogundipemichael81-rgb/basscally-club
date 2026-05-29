@@ -18,3 +18,9 @@ export const COVERS_STORAGE_BUCKET = "covers";
 
 /** Locked founding-member cap (enforced in BH-03 webhook). */
 export const FOUNDING_MEMBER_CAP = 500;
+
+/** Public preview length on style / marketing pages (seconds). */
+export const PREVIEW_MAX_SECONDS = 30;
+
+/** Default style slug for three-click flow (click 1 → click 2). */
+export const DEFAULT_STYLE_SLUG = "makossa-tribe-fuego";

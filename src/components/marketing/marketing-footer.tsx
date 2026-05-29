@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SocialFollowLinks } from "@/components/social/social-follow-links";
 import { APP_NAME } from "@/lib/constants";
 import { LEGAL_SUPPORT_EMAIL } from "@/content/legal";
 import { routes } from "@/lib/routes";
@@ -12,7 +13,8 @@ export function MarketingFooter() {
             {APP_NAME}
           </p>
           <p className="mt-1 text-sm text-[var(--color-text-muted)]">A bass practice membership.</p>
-          <p className="mt-4 text-sm text-[var(--color-text-dim)]">
+          <SocialFollowLinks layout="icons" className="mt-4" />
+          <p className="mt-2 text-sm text-[var(--color-text-dim)]">
             <a
               href={`mailto:${LEGAL_SUPPORT_EMAIL}`}
               className="inline-flex min-h-11 items-center hover:text-[var(--color-text)]"

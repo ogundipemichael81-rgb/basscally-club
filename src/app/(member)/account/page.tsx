@@ -1,11 +1,19 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { redirect } from "next/navigation";
+import { AccountMembershipView } from "@/components/account/account-membership-view";
+import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summary";
+import { routes } from "@/lib/routes";
+import type { Metadata } from "next";
 
-export default function AccountPage() {
-  return (
-    <PlaceholderPage
-      title="Membership"
-      description="Your plan, renewal date, and account actions."
-      body="Membership details will appear here after you sign in."
-    />
-  );
+export const metadata: Metadata = {
+  title: "Membership — Basscally Hub",
+  description: "Your Basscally Hub plan, renewal date, and account actions.",
+};
+
+export default async function AccountPage() {
+  const summary = await getAccountSubscriptionSummary();
+  if (!summary) {
+    redirect(routes.auth.login);
+  }
+
+  return <AccountMembershipView summary={summary} />;
 }

@@ -1,17 +1,26 @@
-import type { ReactNode } from "react";
-import { SidebarShell, type SidebarNavItem } from "@/components/layout/sidebar-shell";
-import { routes } from "@/lib/routes";
+import { Suspense, type ReactNode } from "react";
+import { MemberMobileNav } from "@/components/layout/member-mobile-nav";
+import { MemberSidebarNav } from "@/components/layout/member-sidebar-nav";
+import { cn } from "@/lib/utils";
 
-const memberNav: SidebarNavItem[] = [
-  { href: routes.member.dashboard, label: "Dashboard" },
-  { href: routes.member.account, label: "Membership" },
-  { href: routes.member.accountBilling, label: "Billing" },
-];
-
-export function MemberShell({ children }: { children: ReactNode }) {
+export function MemberShell({
+  children,
+  brand = "Basscally Hub",
+  className,
+}: {
+  children: ReactNode;
+  brand?: string;
+  className?: string;
+}) {
   return (
-    <SidebarShell navItems={memberNav} brand="Basscally Hub">
-      {children}
-    </SidebarShell>
+    <div className={cn("flex min-h-[calc(100vh-4rem)] flex-col lg:flex-row", className)}>
+      <Suspense fallback={null}>
+        <MemberSidebarNav brand={brand} />
+      </Suspense>
+      <main className="flex-1 p-4 pb-24 lg:p-6 lg:pb-6">{children}</main>
+      <Suspense fallback={null}>
+        <MemberMobileNav />
+      </Suspense>
+    </div>
   );
 }

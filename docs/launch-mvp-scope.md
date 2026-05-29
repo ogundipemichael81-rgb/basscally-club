@@ -55,6 +55,7 @@ The build pack remains authoritative for **design, routes, data model, and behav
 | Capability | Required at launch |
 |------------|-------------------|
 | Supabase Auth | Magic link, server session |
+| Auth UX | **Remember email and persistent session** — localStorage email prefill; Supabase SSR session refresh; signed-in users skip `/auth/login` |
 | Supabase Postgres | `users`, `subscriptions`, `content` (minimum columns per architecture doc) |
 | Supabase Storage | Private `audio` bucket; `audio_storage_key` on content |
 | Lemon Squeezy checkout | Hosted checkout from `/pricing` CTAs |
@@ -370,6 +371,18 @@ Public routes, legal pages, footer links, copy cleanup, homepage motion, and `/a
 ### Post-launch / automation
 
 - Follow sections 3 and 4 above; ignore BUILD_SEQUENCE_GUIDE “all 33 before complete” audit for launch sign-off.
+
+---
+
+## Official launch links
+
+| Channel | URL | Wired in |
+|---------|-----|----------|
+| WhatsApp community | `https://chat.whatsapp.com/DJBtxeOSjoX8coymswNbvY?mode=ems_copy_c` | Checkout success (`src/lib/social-links.ts`; override via `NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL`) |
+| TikTok | `https://www.tiktok.com/@basscally?_r=1&_t=ZS-92en0E5NZ0a` | Marketing footer, checkout success follow-along |
+| Instagram | `https://www.instagram.com/basscally?igsh=bGJ4NzNnNWVjem04` | Marketing footer, checkout success follow-along |
+
+Resource Centre (`/resources`) is post-MVP — social CTAs are not duplicated there yet.
 
 ---
 

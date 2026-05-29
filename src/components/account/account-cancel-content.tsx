@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ButtonLink } from "@/components/marketing/button-link";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LEGAL_SUPPORT_EMAIL } from "@/content/legal";
 import { routes } from "@/lib/routes";
@@ -24,7 +23,7 @@ const cancellationPoints = [
   {
     id: "cancel-lemon-squeezy",
     title: "Billing through Lemon Squeezy",
-    body: "Payments, invoices, and subscription changes are handled by Lemon Squeezy. The customer billing portal will open here once billing is connected.",
+    body: "Payments, invoices, and subscription changes are handled by Lemon Squeezy via the customer billing portal.",
   },
 ];
 
@@ -85,32 +84,21 @@ export function AccountCancelContent() {
         <CardHeader>
           <CardTitle className="text-[length:var(--text-h4)]">Manage your plan</CardTitle>
           <CardDescription>
-            When billing is connected, you will cancel through the Lemon Squeezy customer
-            portal. Until then, use the options below.
+            Cancel through the Lemon Squeezy customer portal linked from your account.
           </CardDescription>
         </CardHeader>
 
         <div className="flex flex-col gap-3">
-          <div>
-            <Button
-              type="button"
-              disabled
-              className="w-full sm:w-auto"
-              aria-describedby="billing-portal-helper"
-            >
-              Open billing portal
-            </Button>
-            <p
-              id="billing-portal-helper"
-              className="mt-2 text-[length:var(--text-body-sm)] text-[var(--color-text-dim)]"
-            >
-              Available once billing is connected.
-            </p>
-          </div>
+          <ButtonLink
+            href={routes.member.accountBillingPortal}
+            className="w-full sm:w-auto"
+          >
+            Open billing portal
+          </ButtonLink>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
-            <ButtonLink href={routes.pricing} variant="secondary" className="w-full sm:w-auto">
-              View plans
+            <ButtonLink href={routes.member.account} variant="secondary" className="w-full sm:w-auto">
+              Membership
             </ButtonLink>
             <ButtonLink href={routes.home} variant="ghost" className="w-full sm:w-auto">
               Back to home

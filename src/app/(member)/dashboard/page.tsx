@@ -1,11 +1,51 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { DashboardPageView } from "@/components/dashboard/dashboard-page-view";
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { getDashboardData } from "@/lib/dashboard/queries";
+import { parseDashboardFilter } from "@/lib/dashboard/filters";
+import { getMemberSession } from "@/lib/subscriptions/member-session";
+import { routes } from "@/lib/routes";
+import type { Metadata } from "next";
 
-export default function DashboardPage() {
+export const metadata: Metadata = {
+  title: "Dashboard — Basscally Hub",
+  description: "Your latest drops, practice library, and upcoming releases.",
+};
+
+type Props = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+async function DashboardContent({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
+  const session = await getMemberSession();
+  if (!session) {
+    redirect(routes.auth.login);
+  }
+
+  if (!session.hasAccess) {
+    redirect(routes.paywall({ reason: "lapsed" }));
+  }
+
+  const filterParam = searchParams.filter;
+  const filterValue = Array.isArray(filterParam) ? filterParam[0] : filterParam;
+  const filter = parseDashboardFilter(filterValue);
+
+  const data = await getDashboardData(session.userId);
+
+  return <DashboardPageView session={session} data={data} filter={filter} />;
+}
+
+export default async function DashboardPage({ searchParams }: Props) {
+  const resolved = await searchParams;
+
   return (
-    <PlaceholderPage
-      title="Dashboard"
-      description="Your latest drops and practice queue live here."
-      body="Sign in to open your dashboard once your membership is active."
-    />
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardContent searchParams={resolved} />
+    </Suspense>
   );
 }

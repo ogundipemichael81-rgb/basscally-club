@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/components/marketing/brand-mark";
 import { IconCheck } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  clearRememberedEmail,
+  getRememberedEmailSnapshot,
+  saveRememberedEmail,
+  subscribeRememberedEmail,
+} from "@/lib/auth/remember-email";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +22,16 @@ function isValidEmail(value: string) {
 }
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
+  const rememberedEmail = useSyncExternalStore(
+    subscribeRememberedEmail,
+    getRememberedEmailSnapshot,
+    () => "",
+  );
+  const [emailOverride, setEmailOverride] = useState<string | undefined>();
+  const [rememberOverride, setRememberOverride] = useState<boolean | undefined>();
+  const email = emailOverride ?? rememberedEmail;
+  const rememberEmail = rememberOverride ?? Boolean(rememberedEmail);
+  const hasSavedEmail = Boolean(rememberedEmail);
   const [error, setError] = useState<string | undefined>();
   const [state, setState] = useState<FormState>("idle");
   const [sentEmail, setSentEmail] = useState("");
@@ -50,6 +65,20 @@ export function LoginForm() {
     }
   };
 
+  const persistRememberPreference = (trimmed: string) => {
+    if (rememberEmail) {
+      saveRememberedEmail(trimmed);
+    } else {
+      clearRememberedEmail();
+    }
+  };
+
+  const handleForgetSavedEmail = () => {
+    clearRememberedEmail();
+    setEmailOverride("");
+    setRememberOverride(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
@@ -69,6 +98,7 @@ export function LoginForm() {
 
     try {
       await requestMagicLink(trimmed);
+      persistRememberPreference(trimmed);
       setSentEmail(trimmed);
       setState("success");
       setRetryAfterSeconds(60);
@@ -114,7 +144,7 @@ export function LoginForm() {
           <button
             type="button"
             className="inline-flex min-h-11 items-center underline hover:text-[var(--color-text-muted)] disabled:opacity-50"
-            disabled={state === "loading" || retryAfterSeconds > 0}
+            disabled={retryAfterSeconds > 0}
             onClick={handleResend}
           >
             {retryAfterSeconds > 0 ? `resend in ${retryAfterSeconds}s` : "resend"}
@@ -154,10 +184,35 @@ export function LoginForm() {
           value={email}
           error={error}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setEmailOverride(e.target.value);
             if (error) setError(undefined);
           }}
         />
+
+        <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm text-[var(--color-text-muted)]">
+          <input
+            type="checkbox"
+            checked={rememberEmail}
+            onChange={(event) => setRememberOverride(event.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-brand)]"
+          />
+          <span>Remember my email on this device</span>
+        </label>
+
+        <p className="text-xs leading-relaxed text-[var(--color-text-dim)]">
+          Your login stays active on this device unless you sign out.
+        </p>
+
+        {hasSavedEmail ? (
+          <button
+            type="button"
+            onClick={handleForgetSavedEmail}
+            className="text-xs text-[var(--color-text-dim)] underline hover:text-[var(--color-text-muted)]"
+          >
+            Forget saved email
+          </button>
+        ) : null}
+
         <Button type="submit" className="relative w-full" disabled={state === "loading"}>
           <span className={cn(state === "loading" && "opacity-0")}>Send magic link</span>
           {state === "loading" ? (

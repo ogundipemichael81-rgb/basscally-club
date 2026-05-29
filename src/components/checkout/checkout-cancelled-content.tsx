@@ -14,19 +14,25 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { Badge } from "@/components/ui/badge";
 import { routes } from "@/lib/routes";
 
-const passRows = [
-  { id: "cancel-pass-checkout", label: "Checkout", value: "Not completed" },
-  { id: "cancel-pass-access", label: "Access", value: "Not active yet" },
-  { id: "cancel-pass-files", label: "Files", value: "Ready after payment" },
-  { id: "cancel-pass-time", label: "Time", value: "Under 2 minutes" },
-];
+type Props = {
+  foundingCheckoutHref: string;
+  spotsRemaining: number | null;
+};
 
-export function CheckoutCancelledContent() {
+export function CheckoutCancelledContent({
+  foundingCheckoutHref,
+  spotsRemaining,
+}: Props) {
+  const spotsNote =
+    spotsRemaining !== null
+      ? `${spotsRemaining} founding spots left at $1.50/month`
+      : "Founding member price still $1.50/month";
+
   return (
     <CheckoutFlowPage>
       <CheckoutHeroGrid>
         <div>
-          <CheckoutEyebrow>Checkout paused</CheckoutEyebrow>
+          <CheckoutEyebrow>Checkout cancelled</CheckoutEyebrow>
           <CheckoutHeadline id="cancelled-title">
             No stress. Your spot is still <span className="text-[var(--color-brand)]">here.</span>
           </CheckoutHeadline>
@@ -35,11 +41,11 @@ export function CheckoutCancelledContent() {
             member price is still waiting.
           </CheckoutLede>
           <CheckoutCtaRow>
-            <ButtonLink href={routes.pricing} className="max-[680px]:w-full">
-              Return to checkout
+            <ButtonLink href={foundingCheckoutHref} className="landing-cta-glow max-[680px]:w-full">
+              Return to checkout — $1.50/mo
             </ButtonLink>
             <ButtonLink
-              href={`${routes.home}#faq`}
+              href={routes.defaultStyle}
               variant="secondary"
               className="max-[680px]:w-full"
             >
@@ -47,7 +53,7 @@ export function CheckoutCancelledContent() {
             </ButtonLink>
           </CheckoutCtaRow>
           <CheckoutFinePrint>
-            Cancel anytime · No contracts · Downloadable audio
+            {spotsNote} · Cancel anytime · No contracts
           </CheckoutFinePrint>
         </div>
 
@@ -63,19 +69,21 @@ export function CheckoutCancelledContent() {
           <div className="my-6 grid grid-cols-2 gap-4 max-[680px]:grid-cols-1">
             <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(6,6,7,0.42)] p-5">
               <small className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.08em] text-[var(--color-text-dim)]">
-                Today
+                Founding member
               </small>
-              <strong className="font-[family-name:var(--font-display)] text-[34px] leading-none tracking-[-0.03em]">
+              <strong className="font-[family-name:var(--font-display)] text-[34px] leading-none tracking-[-0.03em] text-[var(--color-brand)]">
                 $1.50
               </strong>
+              <span className="mt-1 block text-sm text-[var(--color-text-muted)]">/ month</span>
             </div>
             <div className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[rgba(6,6,7,0.42)] p-5">
               <small className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.08em] text-[var(--color-text-dim)]">
-                Later
+                Public monthly
               </small>
               <strong className="font-[family-name:var(--font-display)] text-[34px] leading-none tracking-[-0.03em]">
-                Goes up
+                $2.99
               </strong>
+              <span className="mt-1 block text-sm text-[var(--color-text-muted)]">after founding</span>
             </div>
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-black tracking-[-0.02em]">
@@ -87,7 +95,12 @@ export function CheckoutCancelledContent() {
           </p>
           <hr className="my-5 border-[var(--color-border)]" />
           <dl className="space-y-3">
-            {passRows.map((row) => (
+            {[
+              { id: "cancel-pass-checkout", label: "Checkout", value: "Not completed" },
+              { id: "cancel-pass-access", label: "Access", value: "Not active yet" },
+              { id: "cancel-pass-files", label: "Files", value: "Ready after payment" },
+              { id: "cancel-pass-time", label: "Time", value: "Under 2 minutes" },
+            ].map((row) => (
               <div key={row.id} className="flex justify-between gap-4 text-sm">
                 <dt className="text-[var(--color-text-muted)]">{row.label}</dt>
                 <dd className="font-semibold text-[var(--color-text)]">{row.value}</dd>
@@ -95,7 +108,7 @@ export function CheckoutCancelledContent() {
             ))}
           </dl>
           <p className="lost-note mt-5 border-l-2 border-[var(--color-brand)] pl-4 text-sm text-[var(--color-text-muted)]">
-            No account was charged on this page. Return to checkout when you are ready.
+            No account was charged. Return to Lemon Squeezy checkout when you are ready.
           </p>
         </CheckoutPassCard>
       </CheckoutHeroGrid>
@@ -106,7 +119,7 @@ export function CheckoutCancelledContent() {
             id: "cancelled-step-retry",
             label: "Option 01",
             title: "Try again",
-            body: "Return to Lemon Squeezy checkout and complete the same plan.",
+            body: "Return to Lemon Squeezy checkout and complete the founding member plan.",
           },
           {
             id: "cancelled-step-card",
@@ -129,7 +142,7 @@ export function CheckoutCancelledContent() {
           {
             id: "cancelled-value-covers",
             title: "Bass-less covers",
-            body: "The songs you see Chris cover, without the bass. Drop in and play the part.",
+            body: "The songs you see Chris and world-class bassists cover, without the bass.",
           },
           {
             id: "cancelled-value-grooves",
@@ -141,11 +154,6 @@ export function CheckoutCancelledContent() {
             title: "Fills",
             body: "Transitions you can steal, repeat, and make yours.",
           },
-          {
-            id: "cancelled-value-challenges",
-            title: "Challenges",
-            body: "A clear bass goal every week. Record it, share it, keep moving.",
-          },
         ]}
       />
 
@@ -155,7 +163,7 @@ export function CheckoutCancelledContent() {
           {
             id: "cancelled-help-payment",
             title: "Payment did not go through?",
-            body: "Return to checkout and try again with the same plan or a different card.",
+            body: "Return to checkout and try again with the founding member plan.",
           },
           {
             id: "cancelled-help-declined",
@@ -165,11 +173,10 @@ export function CheckoutCancelledContent() {
           {
             id: "cancelled-help-questions",
             title: "Questions before you join?",
-            body: "Read the FAQ on the home page or email basscally.enquiry@gmail.com — we are happy to help.",
+            body: "Read the FAQ on the home page or email basscally.enquiry@gmail.com.",
           },
         ]}
       />
-
     </CheckoutFlowPage>
   );
 }

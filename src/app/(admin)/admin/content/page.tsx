@@ -1,10 +1,14 @@
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
+import { AdminContentList } from "@/components/admin/admin-content-list";
+import { listAdminContent } from "@/lib/admin/content/queries";
+import type { Metadata } from "next";
 
-export default function AdminContentListPage() {
-  return (
-    <PlaceholderPage
-      title="Content list"
-      description="Content table, filters, and actions."
-    />
-  );
+export const metadata: Metadata = {
+  title: "Content list — Basscally Admin",
+  description: "Manage all Basscally Hub practice drops.",
+};
+
+export default async function AdminContentListPage() {
+  const rows = await listAdminContent();
+
+  return <AdminContentList rows={rows} />;
 }
