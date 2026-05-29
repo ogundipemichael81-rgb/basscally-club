@@ -17,6 +17,7 @@ const clientEnvSchema = z.object({
   /** @deprecated Use NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY */
   NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: optionalString,
+  NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL: optionalString,
 });
 
 const serverEnvSchema = z.object({
@@ -50,6 +51,8 @@ function parseClientEnv(): ClientEnv {
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL:
+      process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL,
   });
 }
 

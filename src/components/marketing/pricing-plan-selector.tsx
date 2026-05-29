@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/marketing/button-link";
+import { PricingFoundingCounter } from "@/components/marketing/pricing-founding-counter";
 import { SectionLabel } from "@/components/marketing/section-label";
 import { MotionDiv } from "@/components/ui/motion";
-import { PLANS, PRICING_DISPLAY_ORDER, type PlanDefinition } from "@/lib/plans";
-import { routes } from "@/lib/routes";
+import type { FoundingMemberStats } from "@/lib/founding/stats";
+import { PLANS, PRICING_DISPLAY_ORDER, type PlanCode, type PlanDefinition } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 const badgeVariantMap = {
@@ -13,15 +14,30 @@ const badgeVariantMap = {
   warn: "warning",
 } as const;
 
-function PlanPriceCard({ plan }: { plan: PlanDefinition }) {
+type PlanPriceCardProps = {
+  plan: PlanDefinition;
+  checkoutHref: string;
+  isCentre: boolean;
+};
+
+function PlanPriceCard({ plan, checkoutHref, isCentre }: PlanPriceCardProps) {
   return (
     <article
+      data-plan-code={plan.code}
       className={cn(
-        "basscally-panel-card relative overflow-hidden flex min-h-[420px] flex-col gap-[18px] rounded-[var(--radius-xl)] border p-6 transition-[transform,border-color,box-shadow] duration-200 ease-[var(--ease-out)] hover:-translate-y-1 hover:border-[rgba(255,69,0,0.45)] hover:shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_44px_rgba(255,69,0,0.1)] motion-reduce:hover:translate-y-0 max-[680px]:min-h-0",
+        "basscally-panel-card relative flex min-h-[420px] flex-col gap-[18px] overflow-hidden rounded-[var(--radius-xl)] border p-6 transition-[transform,border-color,box-shadow] duration-200 ease-[var(--ease-out)] hover:-translate-y-1 hover:border-[rgba(255,69,0,0.45)] hover:shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_44px_rgba(255,69,0,0.1)] motion-reduce:hover:translate-y-0 max-[680px]:min-h-0",
         plan.highlighted &&
           "border-[rgba(255,69,0,0.62)] shadow-[0_22px_70px_rgba(0,0,0,0.72),0_0_52px_rgba(255,69,0,0.18)]",
+        isCentre &&
+          "z-[2] lg:scale-[1.04] lg:border-[rgba(255,69,0,0.72)] lg:shadow-[0_28px_80px_rgba(0,0,0,0.78),0_0_60px_rgba(255,69,0,0.22)]",
       )}
     >
+      {isCentre ? (
+        <div
+          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-brand)] to-transparent"
+          aria-hidden
+        />
+      ) : null}
       <div className="relative z-[1] flex flex-1 flex-col gap-[18px]">
         <Badge variant={badgeVariantMap[plan.badgeTone]} className="w-fit text-[10px]">
           {plan.badge}
@@ -48,9 +64,9 @@ function PlanPriceCard({ plan }: { plan: PlanDefinition }) {
         </ul>
         <div className="mt-auto">
           <ButtonLink
-            href={routes.checkout.success}
+            href={checkoutHref}
             variant={plan.highlighted ? "primary" : "secondary"}
-            className="w-full"
+            className={cn("w-full", plan.highlighted && "landing-cta-glow")}
           >
             {plan.ctaLabel}
           </ButtonLink>
@@ -101,8 +117,17 @@ function PricingOrbitPanel() {
   );
 }
 
-export function PricingPlanSelector() {
+type PricingPlanSelectorProps = {
+  foundingStats: FoundingMemberStats;
+  checkoutByPlan: Record<PlanCode, string>;
+};
+
+export function PricingPlanSelector({
+  foundingStats,
+  checkoutByPlan,
+}: PricingPlanSelectorProps) {
   const displayPlans = PRICING_DISPLAY_ORDER.map((code) => PLANS[code]);
+  const centrePlanCode: PlanCode = "founding_monthly";
 
   return (
     <div className="basscally-pricing-page relative min-h-full overflow-x-hidden px-5 py-7 pb-16 lg:px-8 lg:py-7 lg:pb-16">
@@ -123,16 +148,20 @@ export function PricingPlanSelector() {
                 <span className="text-[var(--color-brand)] italic">Pay less yearly.</span>
               </h2>
               <p className="mt-[22px] max-w-[680px] text-[17px] leading-[1.55] text-[var(--color-text-muted)]">
-                Choose the plan that fits how you practice.{" "}
-                <strong className="text-[var(--color-text)]">Founding members</strong> keep
-                the early price. Annual members save the most and reduce payment friction.
+                Three-tier pricing: Monthly ($2.99), Founding Member ($1.50 — centre,
+                highlighted), and Annual ($18/year). Founding members keep the early price
+                while spots last.
               </p>
+              <PricingFoundingCounter
+                stats={foundingStats}
+                className="mt-4 font-[family-name:var(--font-mono)] text-xs text-[var(--color-brand)]"
+              />
               <hr className="my-[18px] border-[var(--color-border)]" />
               <div className="grid gap-[18px] sm:grid-cols-3">
                 {[
-                  { id: "pricing-stat-founding", label: "Founding price", value: "$1.50" },
-                  { id: "pricing-stat-monthly", label: "Public monthly", value: "$2.99" },
-                  { id: "pricing-stat-annual", label: "Annual lock-in", value: "$18" },
+                  { id: "pricing-stat-monthly", label: "Monthly", value: "$2.99" },
+                  { id: "pricing-stat-founding", label: "Founding", value: "$1.50" },
+                  { id: "pricing-stat-annual", label: "Annual", value: "$18" },
                 ].map((stat) => (
                   <div
                     key={stat.id}
@@ -154,16 +183,31 @@ export function PricingPlanSelector() {
           </MotionDiv>
         </div>
 
-        <section id="plans" className="grid gap-[18px] lg:grid-cols-3">
+        <section
+          id="plans"
+          className="grid items-center gap-[18px] lg:grid-cols-3"
+          aria-label="Three-tier pricing plans"
+        >
           {displayPlans.map((plan, index) => (
             <MotionDiv key={plan.code} delayMs={index * 80}>
-              <PlanPriceCard plan={plan} />
+              <PlanPriceCard
+                plan={plan}
+                checkoutHref={checkoutByPlan[plan.code]}
+                isCentre={plan.code === centrePlanCode}
+              />
             </MotionDiv>
           ))}
         </section>
 
+        <p className="mt-4 text-center font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wide text-[var(--color-text-dim)]">
+          Monthly variant · Founding member centre · Annual variant — Lemon Squeezy checkout
+        </p>
+
         <div className="mt-[18px] grid gap-[18px] lg:grid-cols-2">
-          <MotionDiv delayMs={240} className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
+          <MotionDiv
+            delayMs={240}
+            className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6"
+          >
             <div className="basscally-panel-content">
               <Badge variant="warning" className="mb-4 text-[10px]">
                 Later tier
@@ -177,7 +221,10 @@ export function PricingPlanSelector() {
               </p>
             </div>
           </MotionDiv>
-          <MotionDiv delayMs={320} className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6">
+          <MotionDiv
+            delayMs={320}
+            className="basscally-panel-card relative overflow-hidden rounded-[var(--radius-xl)] border p-6"
+          >
             <div className="basscally-panel-content">
               <Badge variant="brand" className="mb-4 text-[10px]">
                 After you pay

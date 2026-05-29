@@ -1,7 +1,9 @@
 import "server-only";
 
-import { clientEnv, getServerEnv } from "@/lib/env";
 import { FOUNDING_MEMBER_CAP } from "@/lib/constants";
+import { getServerEnv } from "@/lib/env";
+import { queuePaymentFailedEmail } from "@/lib/email/queue/enqueue";
+import { processEmailQueue, triggerWelcomeEmail } from "@/lib/email/queue/process";
 import { mapLemonSubscriptionStatus } from "@/lib/lemonsqueezy/map-status";
 import { planCodeFromVariantId } from "@/lib/lemonsqueezy/plan-from-variant";
 import type { LemonSqueezyWebhookPayload } from "@/lib/lemonsqueezy/types";
@@ -157,21 +159,6 @@ async function upsertSubscription(
   }
 }
 
-async function sendMagicLinkEmail(email: string): Promise<void> {
-  const admin = createAdminClient();
-  const redirectTo = `${clientEnv.NEXT_PUBLIC_APP_URL}/auth/callback`;
-
-  const { error } = await admin.auth.admin.generateLink({
-    type: "magiclink",
-    email: email.trim().toLowerCase(),
-    options: { redirectTo },
-  });
-
-  if (error) {
-    console.error("[lemonsqueezy] magic link generation failed:", error.message);
-  }
-}
-
 export type WebhookHandlerResult =
   | { ok: true; duplicate?: boolean; event: string }
   | { ok: false; error: string; status: number };
@@ -223,7 +210,12 @@ export async function handleLemonSqueezyWebhook(
   await upsertSubscription(userId, payload, planCode, status, eventKey);
 
   if (eventName === "subscription_created") {
-    await sendMagicLinkEmail(email);
+    await triggerWelcomeEmail(userId);
+  }
+
+  if (eventName === "subscription_payment_failed") {
+    await queuePaymentFailedEmail(userId);
+    await processEmailQueue({ limit: 5 });
   }
 
   await recordWebhookEvent(eventKey, payload);

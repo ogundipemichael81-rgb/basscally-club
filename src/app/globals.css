@@ -1253,3 +1253,26 @@ h4 {
       radial-gradient(circle at 92% 2%, rgba(255, 92, 31, 0.04), transparent 30%);
   }
 }
+
+/* BH-09 — member dashboard scroll reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .dashboard-reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 600ms var(--ease-out),
+      transform 600ms var(--ease-out);
+  }
+
+  .dashboard-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

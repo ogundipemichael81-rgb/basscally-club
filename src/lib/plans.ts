@@ -45,6 +45,7 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
       "Early member price stays locked",
     ],
     ctaLabel: "Join as founder",
+    highlighted: true,
   },
   standard_monthly: {
     code: "standard_monthly",
@@ -79,7 +80,6 @@ export const PLANS: Record<PlanCode, PlanDefinition> = {
       "Better for serious practice habit",
     ],
     ctaLabel: "Choose annual",
-    highlighted: true,
   },
   club_plus: {
     code: "club_plus",
@@ -100,9 +100,9 @@ export const VISIBLE_PLANS = PLAN_CODES.filter(
   (code) => !PLANS[code].hidden,
 ).map((code) => PLANS[code]);
 
-/** Display order on Screen 32 — founding, annual, monthly */
+/** Display order on Screen 32 — monthly, founding (centre), annual */
 export const PRICING_DISPLAY_ORDER: PlanCode[] = [
+  "standard_monthly",
   "founding_monthly",
   "annual_18",
-  "standard_monthly",
 ];

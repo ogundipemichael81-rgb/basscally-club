@@ -1,5 +1,6 @@
 import { IconArrowRight } from "@/components/icons";
 import { ButtonLink } from "@/components/marketing/button-link";
+import { HERO_CTA_SENTINEL_ID } from "@/components/marketing/mobile-cta-bar";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -124,9 +125,12 @@ export function LandingHero() {
             — from Chris and world-class bassists, delivered to your inbox weekly. Practice on your time, from anywhere.
           </p>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <div
+            id={HERO_CTA_SENTINEL_ID}
+            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+          >
             <ButtonLink
-              href={routes.pricing}
+              href={routes.defaultStyle}
               size="lg"
               className="landing-cta-glow group hidden w-full sm:w-auto lg:inline-flex"
             >

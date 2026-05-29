@@ -22,10 +22,30 @@ function isAuthedApiPath(pathname: string) {
   return pathname.startsWith("/api/content/");
 }
 
+function isAdminApiPath(pathname: string) {
+  return pathname.startsWith("/api/admin");
+}
+
 function loginRedirect(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = routes.auth.login;
   url.search = `next=${encodeURIComponent(`${request.nextUrl.pathname}${request.nextUrl.search}`)}`;
+  return url;
+}
+
+function paywallRedirect(
+  request: NextRequest,
+  options: { contentId?: string; reason?: string },
+) {
+  const url = request.nextUrl.clone();
+  url.pathname = "/paywall";
+  url.search = "";
+  if (options.contentId) {
+    url.searchParams.set("contentId", options.contentId);
+  }
+  if (options.reason) {
+    url.searchParams.set("reason", options.reason);
+  }
   return url;
 }
 
@@ -59,19 +79,40 @@ export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
 
   if (pathname.startsWith("/api/cron")) {
-    // Cron auth will validate CRON_SECRET in Phase 7
+    return response;
+  }
+
+  if (pathname === routes.auth.login) {
+    if (isMockAllowed(request)) {
+      return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+    }
+
+    const user = await getUserFromRequest(request);
+    if (user) {
+      return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+    }
+
     return response;
   }
 
   const needsMemberAuth =
-    isMemberPath(pathname) || isAdminPath(pathname) || isAuthedApiPath(pathname);
+    isMemberPath(pathname) ||
+    isAdminPath(pathname) ||
+    isAuthedApiPath(pathname) ||
+    isAdminApiPath(pathname);
 
   if (!needsMemberAuth) {
     return response;
   }
 
   if (isMockAllowed(request)) {
-    if (isAdminPath(pathname) && !isMockAdmin(request)) {
+    if (
+      (isAdminPath(pathname) || isAdminApiPath(pathname)) &&
+      !isMockAdmin(request)
+    ) {
+      if (isAdminApiPath(pathname)) {
+        return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+      }
       return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
     }
     return response;
@@ -79,11 +120,27 @@ export async function middleware(request: NextRequest) {
 
   const user = await getUserFromRequest(request);
   if (!user) {
+    if (isAdminApiPath(pathname)) {
+      return NextResponse.json({ error: "Admin access required." }, { status: 401 });
+    }
+    if (pathname.startsWith("/c/")) {
+      const segments = pathname.split("/").filter(Boolean);
+      const contentId = segments[1];
+      if (contentId) {
+        return NextResponse.redirect(
+          paywallRedirect(request, { contentId, reason: "anonymous" }),
+        );
+      }
+    }
     return NextResponse.redirect(loginRedirect(request));
   }
 
   if (isAdminPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {
     return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+  }
+
+  if (isAdminApiPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {
+    return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   }
 
   return response;
@@ -95,6 +152,7 @@ export const config = {
     "/account/:path*",
     "/c/:path*",
     "/admin/:path*",
+    "/api/admin/:path*",
     "/auth/:path*",
     "/api/cron/:path*",
   ],

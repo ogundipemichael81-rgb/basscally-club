@@ -1,13 +1,19 @@
 import { CheckoutCancelledContent } from "@/components/checkout/checkout-cancelled-content";
+import { getFoundingMemberStats } from "@/lib/founding/stats";
+import { getFoundingCheckoutUrl } from "@/lib/lemonsqueezy/checkout-url";
 import type { Metadata } from "next";
 
-/** Screen 12 */
 export const metadata: Metadata = {
   title: "Checkout paused — Basscally Hub",
-  description:
-    "Return to checkout and join Basscally Hub for $1.50/month.",
+  description: "Return to checkout and join Basscally Hub for $1.50/month.",
 };
 
-export default function CheckoutCancelledPage() {
-  return <CheckoutCancelledContent />;
+export default async function CheckoutCancelledPage() {
+  const stats = await getFoundingMemberStats();
+  return (
+    <CheckoutCancelledContent
+      foundingCheckoutHref={getFoundingCheckoutUrl()}
+      spotsRemaining={stats.live ? stats.spotsRemaining : null}
+    />
+  );
 }

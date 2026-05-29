@@ -1,17 +1,28 @@
 {
-  "current_step": "BH-04",
-  "current_step_title": "Magic Link Auth",
+  "current_step": "BH-15",
+  "current_step_title": "Email Automation",
   "current_step_status": "pushed",
   "next_action": "run bh:next",
-  "after_current_step": "BH-05",
-  "last_check_result": "failed",
+  "after_current_step": "BH-16",
+  "last_check_result": "passed",
   "completed_steps": [
     "BH-00",
     "BH-01",
     "BH-02",
-    "BH-03"
+    "BH-03",
+    "BH-04",
+    "BH-05",
+    "BH-06",
+    "BH-07",
+    "BH-08",
+    "BH-09",
+    "BH-10",
+    "BH-11",
+    "BH-12",
+    "BH-13",
+    "BH-14"
   ],
   "blocked_steps": [],
   "blocked_reason": null,
-  "last_run_at": "2026-05-26T01:45:15Z"
+  "last_run_at": "2026-05-29T00:22:07Z"
 }

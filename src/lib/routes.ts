@@ -2,9 +2,14 @@
  * Canonical route paths — mirrors 09_routes_wiring_screen_map_and_components.md
  */
 
+import { DEFAULT_STYLE_SLUG } from "@/lib/constants";
+
 export const routes = {
   home: "/",
   pricing: "/pricing",
+  waitlist: "/waitlist",
+  style: (slug: string) => `/style/${slug}` as const,
+  defaultStyle: `/style/${DEFAULT_STYLE_SLUG}` as const,
   auth: {
     login: "/auth/login",
     callback: "/auth/callback",
@@ -12,6 +17,13 @@ export const routes = {
   checkout: {
     success: "/checkout/success",
     cancelled: "/checkout/cancelled",
+  },
+  paywall: (options?: { contentId?: string; reason?: string }) => {
+    const params = new URLSearchParams();
+    if (options?.contentId) params.set("contentId", options.contentId);
+    if (options?.reason) params.set("reason", options.reason);
+    const query = params.toString();
+    return query ? (`/paywall?${query}` as const) : ("/paywall" as const);
   },
   legal: {
     terms: "/terms",
@@ -41,6 +53,12 @@ export const routes = {
     auth: {
       magicLink: "/api/auth/magic-link",
     },
+    waitlist: "/api/waitlist",
+    adminContent: "/api/admin/content",
+    adminContentById: (id: string) => `/api/admin/content/${id}` as const,
+    adminContentResend: (id: string) => `/api/admin/content/${id}/resend` as const,
+    adminSubscribersExport: "/api/admin/subscribers/export" as const,
+    contentPreview: (id: string) => `/api/content/${id}/preview` as const,
     webhooks: {
       lemonSqueezy: "/api/webhooks/lemonsqueezy",
       resend: "/api/webhooks/resend",
@@ -51,6 +69,7 @@ export const routes = {
       sendEmailQueue: "/api/cron/send-email-queue",
       sendReminders: "/api/cron/send-reminders",
     },
+    emailUnsubscribe: "/api/email/unsubscribe",
   },
 } as const;
 

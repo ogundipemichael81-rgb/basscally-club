@@ -510,7 +510,12 @@ def verify_git_diff(repo: Path) -> Tuple[bool, str]:
     try:
         result = subprocess.run(
             ["git", "diff", "--stat", "HEAD"],
-            capture_output=True, text=True, cwd=repo, timeout=15
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            cwd=repo,
+            timeout=15,
         )
         diff = result.stdout.strip()
         if diff:
@@ -518,7 +523,12 @@ def verify_git_diff(repo: Path) -> Tuple[bool, str]:
         # Check staged
         result2 = subprocess.run(
             ["git", "diff", "--cached", "--stat"],
-            capture_output=True, text=True, cwd=repo, timeout=15
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            cwd=repo,
+            timeout=15,
         )
         diff2 = result2.stdout.strip()
         return bool(diff2), diff2[:500] if diff2 else "no changes detected"
@@ -550,12 +560,19 @@ def run_health_checks(repo: Path) -> List[Dict[str, Any]]:
     for name, cmd, timeout in checks:
         try:
             r = subprocess.run(
-                cmd, capture_output=True, text=True, cwd=repo, timeout=timeout
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                cwd=repo,
+                timeout=timeout,
             )
+            out = (r.stdout or "") + (r.stderr or "")
             results.append({
                 "name": name,
                 "passed": r.returncode == 0,
-                "output": (r.stdout + r.stderr)[:400],
+                "output": out[:400],
             })
         except subprocess.TimeoutExpired:
             results.append({"name": name, "passed": False, "output": "timeout"})
