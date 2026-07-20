@@ -3,7 +3,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseServiceRole, isSupabaseClientConfigured } from "@/lib/env";
 import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
-import { resolveMemberFromRequest } from "@/lib/subscriptions/resolve-member";
+import { resolveMemberFromRequest, readMockPersonaId } from "@/lib/subscriptions/resolve-member";
 
 export type MemberSession = {
   userId: string;
@@ -19,12 +19,26 @@ export async function getMemberSession(): Promise<MemberSession | null> {
     return null;
   }
 
+  const mockId = await readMockPersonaId();
+  if (process.env.NODE_ENV === "development" && mockId === "mock-member-lapsed") {
+    return {
+      userId: member.userId,
+      email: member.email,
+      hasAccess: false,
+      isFoundingMember: false,
+      planLabel: null,
+    };
+  }
+
   if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
     return {
       userId: member.userId,
       email: member.email,
       hasAccess: true,
-      isFoundingMember: member.email.includes("founding") || member.email.includes("active"),
+      isFoundingMember:
+        mockId === "mock-member-active" ||
+        member.email.includes("founding") ||
+        member.email.includes("active"),
       planLabel: "Founding member",
     };
   }

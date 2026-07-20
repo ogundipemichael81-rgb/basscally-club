@@ -10,13 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import { routes } from "@/lib/routes";
 
+/** Screen 20 — cancel confirmation modal */
+
 type Props = {
   portalUrl: string | null;
   periodEndLabel: string;
 };
 
 export function CancelSubscriptionDialog({ portalUrl, periodEndLabel }: Props) {
-
   return (
     <Dialog>
       <DialogTrigger className="inline-flex min-h-11 items-center text-sm font-semibold text-[var(--color-text-muted)] underline-offset-4 hover:text-[var(--color-text)] hover:underline">

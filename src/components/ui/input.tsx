@@ -24,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            "min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-[length:var(--text-body)] text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus-visible:border-[var(--color-brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,69,0,0.4)] disabled:opacity-50",
+            "min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-base text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus-visible:border-[var(--color-brand)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,69,0,0.4)] disabled:opacity-50",
             error && "border-[var(--color-danger)]",
             className,
           )}
@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {error ? (
           <p
             id={`${inputId}-error`}
-            className="text-[length:var(--text-caption)] text-[var(--color-danger)]"
+            className="text-[length:var(--text-caption)] text-[var(--color-danger)] field__error"
             role="alert"
           >
             {error}

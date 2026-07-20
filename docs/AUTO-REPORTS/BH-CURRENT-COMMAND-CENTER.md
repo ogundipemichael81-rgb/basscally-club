@@ -1,9 +1,9 @@
 # Basscally Hub — Current Command Center
-*Updated: 2026-05-29T00:22:07Z*
+*Updated: 2026-07-20T22:09:11Z*
 
-## Current step: BH-15 — Email Automation
-**Status:** `pushed`
-**After this:** BH-16
+## Current step: BH-20 — Motion Audit and Depth Fix
+**Status:** `needs_fix`
+**After this:** BH-21
 
 ## What to do right now
 
@@ -16,7 +16,7 @@ Then tell your IDE agent to read `docs/AUTO-REPORTS/NEXT-AGENT-PROMPT.md`.
 After IDE finishes: `npm run bh:complete`
 
 ## Progress
-Completed: 15 / 23
+Completed: 20 / 23
 
 ✅ BH-00 — Repo Scan and Docs Truth
 ✅ BH-01 — Global Naming Pass
@@ -33,12 +33,12 @@ Completed: 15 / 23
 ✅ BH-12 — Paywall and Re-subscribe
 ✅ BH-13 — Admin Upload Form and Content Management
 ✅ BH-14 — Admin Metrics Dashboard
-▶️ BH-15 — Email Automation
-⬜ BH-16 — Legal Pages
-⬜ BH-17 — Utility States
-⬜ BH-18 — UI Simulator — Full Click Test
-⬜ BH-19 — Mobile Responsive Audit
-⬜ BH-20 — Motion Audit and Depth Fix
+✅ BH-15 — Email Automation
+✅ BH-16 — Legal Pages
+✅ BH-17 — Utility States
+✅ BH-18 — UI Simulator — Full Click Test
+✅ BH-19 — Mobile Responsive Audit
+▶️ BH-20 — Motion Audit and Depth Fix
 ⬜ BH-21 — Performance
 ⬜ BH-22 — Production Readiness
 

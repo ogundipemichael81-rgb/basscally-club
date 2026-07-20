@@ -8,13 +8,25 @@ import {
   isSupabaseClientConfigured,
 } from "@/lib/env";
 
-const MOCK_COOKIE = "basscally_mock_user_id";
+export const MOCK_COOKIE = "basscally_mock_user_id";
 
-const MOCK_EMAIL_BY_ID: Record<string, string> = {
-  "mock-member-active": "mock-member-active@basscally.club",
-  "mock-member-lapsed": "mock-member-lapsed@basscally.club",
-  "mock-admin-michael": "mock-admin-michael@basscally.club",
-};
+/** Seed-aligned mock personas for the UI simulator (BH-18). */
+export const MOCK_PERSONAS = {
+  "mock-member-active": {
+    userId: "c0000000-0000-4000-8000-000000000001",
+    email: "mock-member-active@basscally.club",
+  },
+  "mock-member-lapsed": {
+    userId: "c0000000-0000-4000-8000-000000000002",
+    email: "mock-member-lapsed@basscally.club",
+  },
+  "mock-admin-michael": {
+    userId: "c0000000-0000-4000-8000-000000000003",
+    email: "mock-admin-michael@basscally.club",
+  },
+} as const;
+
+export type MockPersonaId = keyof typeof MOCK_PERSONAS;
 
 export type ResolvedMember = {
   userId: string;
@@ -22,43 +34,61 @@ export type ResolvedMember = {
   source: "supabase_auth" | "mock_cookie";
 };
 
+export function isMockPersonaId(value: string | undefined): value is MockPersonaId {
+  return Boolean(value && value in MOCK_PERSONAS);
+}
+
+export async function readMockPersonaId(): Promise<MockPersonaId | null> {
+  if (process.env.NODE_ENV !== "development") {
+    return null;
+  }
+
+  const cookieStore = await cookies();
+  const mockId = cookieStore.get(MOCK_COOKIE)?.value;
+  return isMockPersonaId(mockId) ? mockId : null;
+}
+
 /**
  * Resolves app user from Supabase Auth session or dev mock cookie (simulator).
  */
 export async function resolveMemberFromRequest(): Promise<ResolvedMember | null> {
-  if (!isSupabaseClientConfigured()) {
+  if (isSupabaseClientConfigured()) {
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user?.email) {
+        const member = await lookupUserByEmail(user.email);
+        if (member) {
+          return { ...member, source: "supabase_auth" };
+        }
+      }
+    } catch {
+      // Auth not configured or session missing
+    }
+  }
+
+  const mockId = await readMockPersonaId();
+  if (!mockId) {
     return null;
   }
 
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const persona = MOCK_PERSONAS[mockId];
 
-    if (user?.email) {
-      const member = await lookupUserByEmail(user.email);
-      if (member) {
-        return { ...member, source: "supabase_auth" };
-      }
-    }
-  } catch {
-    // Auth not configured or session missing
-  }
-
-  if (process.env.NODE_ENV === "development" && hasSupabaseServiceRole()) {
-    const cookieStore = await cookies();
-    const mockId = cookieStore.get(MOCK_COOKIE)?.value;
-    const email = mockId ? MOCK_EMAIL_BY_ID[mockId] : undefined;
-    if (email) {
-      const member = await lookupUserByEmail(email);
-      if (member) {
-        return { ...member, source: "mock_cookie" };
-      }
+  if (hasSupabaseServiceRole() && isSupabaseClientConfigured()) {
+    const member = await lookupUserByEmail(persona.email);
+    if (member) {
+      return { ...member, source: "mock_cookie" };
     }
   }
 
-  return null;
+  return {
+    userId: persona.userId,
+    email: persona.email,
+    source: "mock_cookie",
+  };
 }
 
 async function lookupUserByEmail(

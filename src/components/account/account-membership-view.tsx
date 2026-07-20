@@ -21,7 +21,7 @@ export function AccountMembershipView({ summary }: Props) {
   const statusVariant = accountStatusBadgeVariant(summary);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
+    <div className="account-membership-view mx-auto max-w-4xl space-y-8">
       <PastDueBanner summary={summary} />
 
       <DashboardScrollReveal>

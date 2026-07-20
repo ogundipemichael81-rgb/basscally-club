@@ -3,7 +3,7 @@ import "server-only";
 import { PLANS, type PlanCode } from "@/lib/plans";
 import type { AccountSubscriptionSummary } from "@/lib/account/types";
 import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
-import { resolveMemberFromRequest } from "@/lib/subscriptions/resolve-member";
+import { resolveMemberFromRequest, readMockPersonaId } from "@/lib/subscriptions/resolve-member";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   hasSupabaseServiceRole,
@@ -64,6 +64,27 @@ export async function getAccountSubscriptionSummary(): Promise<AccountSubscripti
   const member = await resolveMemberFromRequest();
   if (!member) {
     return null;
+  }
+
+  const mockId = await readMockPersonaId();
+  if (process.env.NODE_ENV === "development" && mockId === "mock-member-lapsed") {
+    const plan = PLANS.standard_monthly;
+    return {
+      email: member.email,
+      isFoundingMember: false,
+      planCode: plan.code,
+      planLabel: plan.label,
+      priceLabel: plan.priceLabel,
+      status: "expired",
+      statusLabel: "Expired",
+      hasAccess: false,
+      isPastDue: false,
+      cancelAtPeriodEnd: false,
+      periodEndLabel: "—",
+      renewalLabel: "—",
+      customerPortalUrl: null,
+      updatePaymentUrl: null,
+    };
   }
 
   if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {

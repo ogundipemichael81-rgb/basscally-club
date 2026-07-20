@@ -82,7 +82,7 @@ export function MemberMobileNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[rgba(10,10,11,0.96)] px-2 py-2 backdrop-blur-sm lg:hidden"
+      className="member-mobile-nav mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[rgba(10,10,11,0.96)] px-2 py-2 backdrop-blur-sm lg:hidden"
       aria-label="Mobile bottom nav"
     >
       <ul className="grid grid-cols-4 gap-1">

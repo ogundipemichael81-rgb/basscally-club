@@ -80,7 +80,7 @@ export function AdminContentList({ rows }: Props) {
   };
 
   return (
-    <div>
+    <div className="admin-content-list">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">

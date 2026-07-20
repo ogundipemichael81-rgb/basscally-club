@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { PastDueBanner } from "@/components/account/past-due-banner";
 import { DashboardPageView } from "@/components/dashboard/dashboard-page-view";
 import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summary";
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { parseDashboardFilter } from "@/lib/dashboard/filters";
 import { getMemberSession } from "@/lib/subscriptions/member-session";
@@ -36,8 +38,14 @@ async function DashboardContent({
   const filter = parseDashboardFilter(filterValue);
 
   const data = await getDashboardData(session.userId);
+  const summary = await getAccountSubscriptionSummary();
 
-  return <DashboardPageView session={session} data={data} filter={filter} />;
+  return (
+    <>
+      {summary ? <PastDueBanner summary={summary} className="mb-8" /> : null}
+      <DashboardPageView session={session} data={data} filter={filter} />
+    </>
+  );
 }
 
 export default async function DashboardPage({ searchParams }: Props) {

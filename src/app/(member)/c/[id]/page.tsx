@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { PastDueBanner } from "@/components/account/past-due-banner";
 import { ContentDetailView } from "@/components/content/content-detail-view";
 import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summary";
 import { getContentDetail } from "@/lib/content/queries";
@@ -41,5 +42,10 @@ export default async function ContentDetailPage({ params }: Props) {
     notFound();
   }
 
-  return <ContentDetailView content={content} />;
+  return (
+    <>
+      {summary?.isPastDue ? <PastDueBanner summary={summary} className="mb-8" /> : null}
+      <ContentDetailView content={content} />
+    </>
+  );
 }

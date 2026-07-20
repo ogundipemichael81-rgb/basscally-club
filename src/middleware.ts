@@ -78,6 +78,19 @@ export async function middleware(request: NextRequest) {
 
   const response = await updateSession(request);
 
+  if (pathname === routes.admin.unauthorized) {
+    if (isMockAllowed(request)) {
+      return response;
+    }
+
+    const user = await getUserFromRequest(request);
+    if (!user) {
+      return NextResponse.redirect(loginRedirect(request));
+    }
+
+    return response;
+  }
+
   if (pathname.startsWith("/api/cron")) {
     return response;
   }
@@ -113,7 +126,7 @@ export async function middleware(request: NextRequest) {
       if (isAdminApiPath(pathname)) {
         return NextResponse.json({ error: "Admin access required." }, { status: 403 });
       }
-      return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+      return NextResponse.redirect(new URL(routes.admin.unauthorized, request.url));
     }
     return response;
   }
@@ -136,7 +149,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAdminPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {
-    return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+    return NextResponse.redirect(new URL(routes.admin.unauthorized, request.url));
   }
 
   if (isAdminApiPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {

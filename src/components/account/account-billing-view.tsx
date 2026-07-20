@@ -18,7 +18,7 @@ export function AccountBillingView({ summary }: Props) {
   const statusVariant = accountStatusBadgeVariant(summary);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="account-billing-view mx-auto max-w-3xl space-y-8">
       <PastDueBanner summary={summary} />
 
       <DashboardScrollReveal>

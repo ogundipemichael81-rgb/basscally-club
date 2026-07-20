@@ -1,7 +1,7 @@
-# CONTINUE BASSCALLY HUB AUTOPILOT — BH-15
+# CONTINUE BASSCALLY HUB AUTOPILOT — BH-19
 
-## Active step: BH-15 — Email Automation
-**Status:** `pushed`
+## Active step: BH-19 — Mobile Responsive Audit
+**Status:** `pending`
 
 ## Hard rules — read before touching anything
 
@@ -22,7 +22,7 @@
 4. docs/basscally-full-button-function-audit.md
 5. 04_basscally_design_system.md
 6. 01_PRD_basscally_club_mvp_UPDATED_v1_1.md
-7. docs/AUTO-REPORTS/BH-15-EMAIL-COMPLETE.md (produce this)
+7. docs/AUTO-REPORTS/BH-19-RESPONSIVE-AUDIT.md (produce this)
 
 ## Locked decisions — do not re-open
 
@@ -42,23 +42,24 @@
 - WhatsApp community link in checkout success and welcome email
 - Resource Centre (was Walkthrough)
 
-## This step: BH-15
+## This step: BH-19
 
-Build email templates via Resend: welcome (with magic link + WhatsApp community link), new-drop notification (with play + download link), payment failed (with update billing link). All non-transactional emails must include working unsubscribe link. Cron/queue job: when content published, send to 100% active subscribers within 5 minutes. Magic link email within 60 seconds of subscription_created webhook.
+Run basscally-responsive-audit.py and Node responsive/scroll audits. Breakpoints 320/375/390/768/1024/1280. Spec: docs/mobile-responsive-quality-gate.md. Zero P0 FAILs on public routes.
 
 ## Artifact to produce
 
-`docs/AUTO-REPORTS/BH-15-EMAIL-COMPLETE.md`
+`docs/AUTO-REPORTS/BH-19-RESPONSIVE-AUDIT.md`
 
 This file must contain ALL of the following (checked by controller):
 
-- welcome email
-- new-drop notification
-- payment failed email
-- unsubscribe link
-- 100% active subscribers
-- within 5 minutes
-- 60 seconds
+- 320px
+- 375px
+- 768px
+- 1024px
+- zero P0 FAILs
+- tap targets
+- no horizontal overflow
+- input font-size 16px
 
 ## Completed steps so far
 
@@ -77,6 +78,10 @@ This file must contain ALL of the following (checked by controller):
 - ✅ BH-12 — Paywall and Re-subscribe
 - ✅ BH-13 — Admin Upload Form and Content Management
 - ✅ BH-14 — Admin Metrics Dashboard
+- ✅ BH-15 — Email Automation
+- ✅ BH-16 — Legal Pages
+- ✅ BH-17 — Utility States
+- ✅ BH-18 — UI Simulator — Full Click Test
 
 ## After IDE work
 

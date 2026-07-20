@@ -7,7 +7,7 @@ import {
 } from "@/lib/constants";
 import { storageObjectPath } from "@/lib/storage/audio-path";
 import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
-import { resolveMemberFromRequest } from "@/lib/subscriptions/resolve-member";
+import { resolveMemberFromRequest, readMockPersonaId } from "@/lib/subscriptions/resolve-member";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   hasSupabaseServiceRole,
@@ -21,17 +21,26 @@ export type DownloadResult =
 export async function createGuardedDownloadUrl(
   contentId: string,
 ): Promise<DownloadResult> {
+  const member = await resolveMemberFromRequest();
+  if (!member) {
+    return { ok: false, status: 401, error: "Sign in required." };
+  }
+
+  const mockId = await readMockPersonaId();
+  if (process.env.NODE_ENV === "development" && mockId === "mock-member-lapsed") {
+    return {
+      ok: false,
+      status: 403,
+      error: "Active membership required to download this drop.",
+    };
+  }
+
   if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
     return {
       ok: false,
       status: 503,
       error: "Download service is not configured.",
     };
-  }
-
-  const member = await resolveMemberFromRequest();
-  if (!member) {
-    return { ok: false, status: 401, error: "Sign in required." };
   }
 
   const admin = createAdminClient();

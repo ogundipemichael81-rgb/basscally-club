@@ -105,7 +105,7 @@ export function ContentAudioPlayer({ contentId, title, className }: Props) {
   return (
     <section
       className={cn(
-        "basscally-depth-card rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6",
+        "content-audio-player basscally-depth-card rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6",
         className,
       )}
       aria-label="Audio player"

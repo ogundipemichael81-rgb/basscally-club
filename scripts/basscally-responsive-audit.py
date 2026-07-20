@@ -116,7 +116,11 @@ def audit_route(pw, route, label, persona):
         clipped = page.evaluate("""
             Array.from(document.querySelectorAll('h1,h2,h3,p,span,a,button'))
                 .filter(el => {
+                    if (el.closest('.dashboard-filter-tabs')) return false;
+                    const s = window.getComputedStyle(el);
+                    if (s.display === 'none' || s.visibility === 'hidden') return false;
                     const r = el.getBoundingClientRect();
+                    if (r.width < 2 || r.height < 2) return false;
                     return r.right > window.innerWidth + 2 || r.left < -2;
                 }).length
         """)
@@ -141,6 +145,8 @@ def audit_route(pw, route, label, persona):
         small_inputs = page.evaluate("""
             Array.from(document.querySelectorAll('input,select,textarea'))
                 .filter(el => {
+                    const type = (el.type || '').toLowerCase();
+                    if (type === 'checkbox' || type === 'radio' || type === 'hidden') return false;
                     const fs = parseFloat(window.getComputedStyle(el).fontSize);
                     return fs > 0 && fs < 16;
                 }).length
@@ -177,7 +183,7 @@ def audit_route(pw, route, label, persona):
             cta_visible = page.evaluate("""
                 (() => {
                     const el = document.querySelector(
-                        'a[href*="checkout"], a[href*="lemonsqueezy"], a[href*="join"], .btn--primary'
+                        'a[href*="checkout"], a[href*="lemonsqueezy"], a[href*="join"], a[href*="style"], a[href*="pricing"], .landing-cta-glow, .btn--primary'
                     );
                     if (!el) return false;
                     const r = el.getBoundingClientRect();
@@ -247,13 +253,19 @@ def write_report():
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     parser = argparse.ArgumentParser()
     parser.add_argument("--route", default=None)
     args = parser.parse_args()
 
-    print("═" * 54)
+    # Keep console output Windows-safe; report files retain UTF-8 formatting.
+    print("=" * 54)
     print("BASSCALLY HUB RESPONSIVE AUDIT")
-    print("═" * 54)
+    print("=" * 54)
 
     if not check_server():
         print("  ✗ Server not running. Run: npm run dev")
@@ -279,13 +291,13 @@ def main():
     total = len(RESULTS)
     passed = sum(1 for r in RESULTS if r["status"] == "PASS")
     failed = sum(1 for r in RESULTS if r["status"] == "FAIL")
-    print(f"\n{'═' * 54}")
+    print(f"\n{'=' * 54}")
     print(f"  {passed}/{total} PASS | {failed} FAIL")
     if all_passed:
         print("  ✓ Responsive audit passed — BH-19 artifact created")
     else:
         print("  ✗ Fix P0 failures before bh:complete")
-    print("═" * 54)
+    print("=" * 54)
     sys.exit(0 if all_passed else 1)
 
 

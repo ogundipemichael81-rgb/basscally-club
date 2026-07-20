@@ -3,7 +3,7 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[var(--radius-lg)] font-semibold text-[length:var(--text-body)] transition-[background,border,transform,box-shadow] duration-[var(--motion-fast)] ease-[var(--ease-out)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,69,0,0.3)] disabled:pointer-events-none disabled:opacity-40 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100",
+  "inline-flex min-h-11 min-w-[44px] items-center justify-center gap-2 rounded-[var(--radius-lg)] font-semibold text-[length:var(--text-body)] transition-[background,border,transform,box-shadow] duration-[var(--motion-fast)] ease-[var(--ease-out)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(255,69,0,0.3)] disabled:pointer-events-none disabled:opacity-40 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100",
   {
     variants: {
       variant: {
@@ -16,7 +16,7 @@ const buttonVariants = cva(
       },
       size: {
         default: "px-6 py-3",
-        sm: "min-h-11 min-w-11 px-4 py-2 text-[length:var(--text-body-sm)]",
+        sm: "min-h-11 min-w-[44px] px-4 py-2 text-[length:var(--text-body-sm)]",
         lg: "min-h-11 px-8 py-4",
       },
     },

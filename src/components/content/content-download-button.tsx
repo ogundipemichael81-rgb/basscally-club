@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { DownloadRateLimitState } from "@/components/utility/download-rate-limit-state";
 import { DOWNLOAD_RATE_LIMIT_PER_HOUR } from "@/lib/constants";
 import { routes } from "@/lib/routes";
 
@@ -64,22 +65,19 @@ export function ContentDownloadButton({ contentId, className }: Props) {
         variant="secondary"
         disabled={state === "loading" || state === "rate-limited"}
         onClick={handleDownload}
-        className="max-[680px]:w-full"
+        className="content-download-button max-[680px]:w-full"
       >
         {state === "loading" ? "Preparing…" : "Download audio"}
       </Button>
 
       {state === "rate-limited" ? (
-        <div
-          className="mt-4 rounded-[var(--radius-md)] border border-[rgba(251,191,36,0.35)] bg-[rgba(251,191,36,0.08)] p-4"
-          role="alert"
-          aria-live="polite"
-        >
-          <p className="text-sm font-semibold text-[var(--color-warning)]">Download blocked</p>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            {message ?? "You hit the hourly download limit. Stream this drop or try again later."}
-          </p>
-        </div>
+        <DownloadRateLimitState
+          className="mt-4"
+          message={
+            message ??
+            `You hit the hourly download limit (${DOWNLOAD_RATE_LIMIT_PER_HOUR}/hour). Stream this drop or try again later.`
+          }
+        />
       ) : null}
 
       {state === "error" && message ? (

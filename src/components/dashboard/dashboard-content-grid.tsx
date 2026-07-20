@@ -39,7 +39,7 @@ export function DashboardContentGrid({ items }: Props) {
           <article className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] transition-colors hover:border-[var(--color-border-strong)]">
             <Link
               href={routes.member.content(item.id)}
-              className="relative block aspect-[4/3] overflow-hidden bg-[var(--color-surface-raised)]"
+              className="content-card relative block aspect-[4/3] overflow-hidden bg-[var(--color-surface-raised)]"
             >
               {item.coverUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element

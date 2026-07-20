@@ -16,7 +16,8 @@ export function SocialFollowLinks({ layout = "icons", className }: SocialFollowL
           href={tiktokUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
+          className="flex min-h-11 min-w-[44px] items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
+          style={{ minWidth: 44 }}
           aria-label="Follow Basscally on TikTok"
         >
           <IconTikTok />
@@ -25,7 +26,8 @@ export function SocialFollowLinks({ layout = "icons", className }: SocialFollowL
           href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
+          className="flex min-h-11 min-w-[44px] items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
+          style={{ minWidth: 44 }}
           aria-label="Follow Basscally on Instagram"
         >
           <IconInstagram />

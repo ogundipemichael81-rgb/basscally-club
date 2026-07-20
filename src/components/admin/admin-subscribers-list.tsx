@@ -46,7 +46,7 @@ export function AdminSubscribersList({ data, query, status }: Props) {
   };
 
   return (
-    <div>
+    <div className="admin-subscribers-list">
       <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">

@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { UtilityErrorLayout } from "@/components/utility/utility-error-layout";
 import { routes } from "@/lib/routes";
 
-/** Screen 25 */
+/** Screen 15 — 500 page */
 export default function Error({
   reset,
   error: _error,

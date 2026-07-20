@@ -20,7 +20,11 @@ export function UtilityErrorLayout({
     <div className="flex min-h-full items-center justify-center px-6 py-12">
       <div className="w-full max-w-[1120px]">
         <p className="mb-3 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">
-          {code === "404" ? "Page not found" : "Something went wrong"}
+          {code === "404"
+            ? "Page not found"
+            : code === "403"
+              ? "Access denied"
+              : "Something went wrong"}
         </p>
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="utility-hero-card relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border)] p-8 lg:p-9">
@@ -42,8 +46,12 @@ export function UtilityErrorLayout({
               </p>
               <div className="mt-7 flex flex-wrap gap-3">{actions}</div>
               <div className="mt-6 border-t border-[var(--color-border)] pt-6">
-                <Badge variant={code === "404" ? "beginner" : "advanced"}>
-                  {code === "404" ? "Branded 404" : "Server error"}
+                <Badge variant={code === "404" ? "beginner" : code === "403" ? "warning" : "advanced"}>
+                  {code === "404"
+                    ? "Branded 404"
+                    : code === "403"
+                      ? "Admin unauthorized"
+                      : "Server error"}
                 </Badge>
               </div>
             </div>

@@ -12,7 +12,7 @@ type Props = {
 
 export function AdminMetricsDashboard({ metrics }: Props) {
   return (
-    <div>
+    <div className="admin-metrics-dashboard">
       <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">
@@ -101,7 +101,7 @@ function MetricCard({
   variant?: "brand" | "danger";
 }) {
   return (
-    <article className="basscally-depth-card flex min-h-[188px] flex-col justify-between rounded-[var(--radius-lg)] border border-[var(--color-border)] p-5">
+    <article className="admin-metric-card basscally-depth-card flex min-h-[188px] flex-col justify-between rounded-[var(--radius-lg)] border border-[var(--color-border)] p-5">
       <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">
         {label}
       </p>

@@ -40,6 +40,7 @@ export const routes = {
   },
   admin: {
     root: "/admin",
+    unauthorized: "/admin/unauthorized",
     content: "/admin/content",
     contentNew: "/admin/content/new",
     contentEdit: (id: string) => `/admin/content/${id}` as const,

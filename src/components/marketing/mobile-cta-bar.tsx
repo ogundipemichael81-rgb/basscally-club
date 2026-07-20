@@ -32,7 +32,7 @@ export function MobileCtaBar() {
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[rgba(10,10,11,0.96)] p-4 backdrop-blur-sm transition-transform duration-[var(--motion-default)] motion-reduce:transition-none lg:hidden",
+        "fixed bottom-0 left-0 right-0 z-40 border-t border-[var(--color-border)] bg-[rgba(10,10,11,0.98)] p-4 transition-transform duration-[var(--motion-default)] motion-reduce:transition-none lg:hidden",
         visible ? "translate-y-0" : "pointer-events-none translate-y-full",
       )}
       aria-hidden={!visible}

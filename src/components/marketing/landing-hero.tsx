@@ -77,7 +77,7 @@ function LandingDropsVisual() {
 export function LandingHero() {
   return (
     <section
-      className="basscally-hero basscally-landing-hero relative min-h-0 overflow-hidden px-6 py-16 pb-28 lg:min-h-[calc(100vh-65px)] lg:px-8 lg:py-[var(--space-10)] lg:pb-[var(--space-10)]"
+      className="basscally-hero basscally-landing-hero relative min-h-0 overflow-hidden scroll-mt-20 px-6 pb-28 pt-[calc(var(--space-6)+4rem)] lg:min-h-[calc(100vh-65px)] lg:scroll-mt-0 lg:px-8 lg:py-[var(--space-10)] lg:pb-[var(--space-10)] lg:pt-[var(--space-10)]"
       aria-labelledby="hero-headline"
     >
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-end gap-12 lg:min-h-[calc(100vh-65px-var(--space-10)-var(--space-12))] lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -101,7 +101,7 @@ export function LandingHero() {
 
           <h1
             id="hero-headline"
-            className="mb-6 font-[family-name:var(--font-display)] text-[clamp(2.5rem,11vw,9.25rem)] font-extrabold leading-[0.92] tracking-[-0.045em] text-[var(--color-text)]"
+            className="mb-4 font-[family-name:var(--font-display)] text-[clamp(2.5rem,11vw,9.25rem)] font-extrabold leading-[0.92] tracking-[-0.045em] text-[var(--color-text)] lg:mb-6"
           >
             <span className="block">Practice</span>
             <span className="block pl-[0.18em]">with</span>
@@ -117,7 +117,24 @@ export function LandingHero() {
             </span>
           </h1>
 
-          <p className="mb-8 max-w-[540px] text-[clamp(1.125rem,1.5vw,1.375rem)] leading-snug text-[var(--color-text-muted)]">
+          <div
+            id={HERO_CTA_SENTINEL_ID}
+            className="mb-6 flex flex-col gap-3 lg:mb-0 lg:hidden"
+          >
+            <ButtonLink
+              href={routes.defaultStyle}
+              size="lg"
+              className="landing-cta-glow group inline-flex w-full"
+            >
+              Join Basscally Hub — $1.50/month
+              <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
+            </ButtonLink>
+            <span className="text-sm text-[var(--color-text-dim)]">
+              Cancel anytime · No contracts
+            </span>
+          </div>
+
+          <p className="mb-6 max-w-[540px] text-[clamp(1.125rem,1.5vw,1.375rem)] leading-snug text-[var(--color-text-muted)] lg:mb-8">
             New{" "}
             <strong className="font-medium text-[var(--color-text)]">
               bass-less covers, grooves, fills, and challenges
@@ -125,14 +142,11 @@ export function LandingHero() {
             — from Chris and world-class bassists, delivered to your inbox weekly. Practice on your time, from anywhere.
           </p>
 
-          <div
-            id={HERO_CTA_SENTINEL_ID}
-            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
-          >
+          <div className="hidden flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center lg:flex">
             <ButtonLink
               href={routes.defaultStyle}
               size="lg"
-              className="landing-cta-glow group hidden w-full sm:w-auto lg:inline-flex"
+              className="landing-cta-glow group w-full sm:w-auto"
             >
               Join Basscally Hub — $1.50/month
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />

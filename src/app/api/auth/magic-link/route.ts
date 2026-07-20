@@ -23,13 +23,6 @@ function getClientIp(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isSupabaseClientConfigured()) {
-    return NextResponse.json(
-      { error: "Auth service is not configured." },
-      { status: 503 },
-    );
-  }
-
   let payload: Payload;
   try {
     payload = (await request.json()) as Payload;
@@ -58,6 +51,20 @@ export async function POST(request: NextRequest) {
         status: 429,
         headers: { "Retry-After": String(rate.retryAfterSeconds) },
       },
+    );
+  }
+
+  if (
+    process.env.NODE_ENV === "development" &&
+    email.endsWith("@basscally.club")
+  ) {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!isSupabaseClientConfigured()) {
+    return NextResponse.json(
+      { error: "Auth service is not configured." },
+      { status: 503 },
     );
   }
 
@@ -95,4 +102,3 @@ export async function POST(request: NextRequest) {
 
   return response;
 }
-

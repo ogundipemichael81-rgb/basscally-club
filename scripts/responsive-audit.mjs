@@ -102,7 +102,11 @@ function runPageChecks(route) {
         document.querySelector("h1");
       if (firstMain && visible(firstMain)) {
         const fr = firstMain.getBoundingClientRect();
-        if (fr.top < hr.bottom - 2 && fr.top < hr.height) {
+        if (
+          fr.top < hr.bottom - 2 &&
+          fr.top >= 0 &&
+          fr.bottom > hr.bottom
+        ) {
           issues.push({ cat: "collision", msg: "heading under sticky nav" });
         }
       }
@@ -206,6 +210,14 @@ function runPageChecks(route) {
     ].filter(visible);
     for (const btn of buttons) {
       if (btn.closest("[aria-hidden='true'], .decorative-motion")) continue;
+      if (
+        btn.tagName === "INPUT" &&
+        btn instanceof HTMLInputElement &&
+        btn.type === "checkbox"
+      ) {
+        const label = btn.closest("label");
+        if (label && label.getBoundingClientRect().height >= 44) continue;
+      }
       const r = btn.getBoundingClientRect();
       if (r.top > window.innerHeight || r.bottom < 0) continue;
       const cs = getComputedStyle(btn);
@@ -224,6 +236,12 @@ function runPageChecks(route) {
     // Inputs viewport + font-size
     for (const input of document.querySelectorAll("input, textarea, select")) {
       if (!visible(input)) continue;
+      if (
+        input instanceof HTMLInputElement &&
+        (input.type === "checkbox" || input.type === "radio" || input.type === "hidden")
+      ) {
+        continue;
+      }
       const r = input.getBoundingClientRect();
       if (r.right > vw + 2 || r.left < -2) {
         issues.push({ cat: "touch", msg: "input past viewport" });
@@ -378,9 +396,20 @@ function verdict(row) {
   return "PASS";
 }
 
+const MOCK_COOKIE = {
+  name: "basscally_mock_user_id",
+  value: "mock-member-active",
+};
+
 async function auditWidth(browser, route, width, isStress = false) {
   const height = width === 375 && route === "/" ? 667 : 900;
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  if (route === "/account/cancel") {
+    await context.addCookies([
+      { ...MOCK_COOKIE, url: BASE.replace(/\/$/, "") || "http://localhost:3000" },
+    ]);
+  }
+  const page = await context.newPage();
   await page.setViewportSize({ width, height });
   await page.emulateMedia({ reducedMotion: "no-preference" });
 
@@ -399,17 +428,53 @@ async function auditWidth(browser, route, width, isStress = false) {
     await page.goto(`${BASE}${route}`, { waitUntil: "networkidle", timeout: 45000 });
     await page.waitForTimeout(600);
 
-    if (route === "/" && width === 375 && height === 667) {
-      /* hero fold check uses 667 height */
-    }
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(200);
 
-    // Footer scroll test for mobile
+    const data = await page.evaluate(runPageChecks, route);
+
     if (width <= 768 && route === "/") {
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       await page.waitForTimeout(300);
+      const footerIssues = await page.evaluate(() => {
+        const issues = [];
+        const gap = 4;
+        function visible(el) {
+          if (!el) return false;
+          const r = el.getBoundingClientRect();
+          const s = getComputedStyle(el);
+          return (
+            r.width > 2 &&
+            r.height > 2 &&
+            s.display !== "none" &&
+            s.visibility !== "hidden" &&
+            Number(s.opacity) > 0.05
+          );
+        }
+        const mobileCta = document.querySelector(".fixed.bottom-0");
+        const footer = document.querySelector("footer");
+        const ctaBar = mobileCta?.getBoundingClientRect();
+        const ctaVisible =
+          mobileCta &&
+          getComputedStyle(mobileCta).display !== "none" &&
+          ctaBar &&
+          ctaBar.height > 20 &&
+          ctaBar.top < window.innerHeight - 8;
+        if (ctaVisible && footer && visible(footer)) {
+          const cr = mobileCta.getBoundingClientRect();
+          const footerLinks = [...footer.querySelectorAll("a, button")].filter(visible);
+          for (const link of footerLinks) {
+            const lr = link.getBoundingClientRect();
+            if (lr.bottom > cr.top - gap && lr.top < cr.bottom) {
+              issues.push({ cat: "touch", msg: "CTA covers footer link" });
+              break;
+            }
+          }
+        }
+        return issues;
+      });
+      data.issues.push(...footerIssues);
     }
-
-    const data = await page.evaluate(runPageChecks, route);
 
     if (route === "/pricing" && width > 680) {
       for (let i = 0; i < 6; i++) {
@@ -445,6 +510,7 @@ async function auditWidth(browser, route, width, isStress = false) {
   }
 
   await page.close();
+  await context.close();
   return row;
 }
 

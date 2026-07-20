@@ -89,11 +89,27 @@ export async function getDashboardData(userId?: string): Promise<DashboardData> 
   );
 
   if (published.length === 0 && upcoming.length === 0) {
+    if (process.env.NODE_ENV === "development") {
+      return {
+        ...DEMO_DASHBOARD_DATA,
+        downloadedIds,
+        source: "demo",
+      };
+    }
+
     return {
       source: "database",
       published: [],
       upcoming: [],
       downloadedIds,
+    };
+  }
+
+  if (published.length === 0 && process.env.NODE_ENV === "development") {
+    return {
+      ...DEMO_DASHBOARD_DATA,
+      downloadedIds,
+      source: "demo",
     };
   }
 

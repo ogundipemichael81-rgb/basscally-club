@@ -124,7 +124,7 @@ export function LoginForm() {
 
   if (state === "success") {
     return (
-      <div className="relative z-[1] flex w-full max-w-[400px] flex-col items-center text-center">
+      <div className="relative z-[1] flex w-full max-w-[400px] flex-col items-center text-center auth-email-sent">
         <div
           className="mb-6 flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(52,211,153,0.25)] bg-[rgba(52,211,153,0.12)] text-[var(--color-success)]"
           aria-hidden
@@ -189,14 +189,14 @@ export function LoginForm() {
           }}
         />
 
-        <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm text-[var(--color-text-muted)]">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-base text-[var(--color-text-muted)]">
           <input
             type="checkbox"
             checked={rememberEmail}
             onChange={(event) => setRememberOverride(event.target.checked)}
-            className="mt-1 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-brand)]"
+            className="h-5 w-5 shrink-0 rounded border-[var(--color-border)] accent-[var(--color-brand)]"
           />
-          <span>Remember my email on this device</span>
+          <span className="py-2">Remember my email on this device</span>
         </label>
 
         <p className="text-xs leading-relaxed text-[var(--color-text-dim)]">
@@ -207,7 +207,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={handleForgetSavedEmail}
-            className="text-xs text-[var(--color-text-dim)] underline hover:text-[var(--color-text-muted)]"
+            className="inline-flex min-h-11 items-center text-sm text-[var(--color-text-dim)] underline hover:text-[var(--color-text-muted)]"
           >
             Forget saved email
           </button>

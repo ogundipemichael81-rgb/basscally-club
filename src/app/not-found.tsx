@@ -2,7 +2,7 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { UtilityErrorLayout } from "@/components/utility/utility-error-layout";
 import { routes } from "@/lib/routes";
 
-/** Screen 24 */
+/** Screen 14 — 404 page */
 export default function NotFound() {
   return (
     <UtilityErrorLayout

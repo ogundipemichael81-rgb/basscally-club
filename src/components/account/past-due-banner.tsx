@@ -15,6 +15,7 @@ export function PastDueBanner({ summary, className }: Props) {
   }
 
   const portalUrl = resolveBillingPortalUrl(summary);
+  const inGracePeriod = summary.hasAccess;
 
   return (
     <div
@@ -24,11 +25,21 @@ export function PastDueBanner({ summary, className }: Props) {
     >
       <div className="rounded-[var(--radius-lg)] border border-[rgba(251,191,36,0.35)] bg-[rgba(251,191,36,0.08)] p-5">
         <p className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--color-warning)]">
-          Payment past due
+          {inGracePeriod ? "Past-due grace period" : "Payment past due"}
         </p>
         <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-          Your last payment did not go through. Update your card in the Lemon Squeezy billing
-          portal to keep Hub access through your current period.
+          {inGracePeriod ? (
+            <>
+              Your last payment did not go through, but you still have Hub access until{" "}
+              <strong className="text-[var(--color-text)]">{summary.periodEndLabel}</strong>.
+              Update your card in the Lemon Squeezy billing portal to avoid losing access.
+            </>
+          ) : (
+            <>
+              Your last payment did not go through. Update your card in the Lemon Squeezy billing
+              portal to restore Hub access.
+            </>
+          )}
         </p>
         <div className="mt-4">
           {portalUrl ? (
