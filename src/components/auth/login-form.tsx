@@ -17,11 +17,17 @@ import { cn } from "@/lib/utils";
 
 type FormState = "idle" | "loading" | "success";
 
+type MagicLinkFailureReason =
+  | "resend_cooldown"
+  | "ip_burst_limit"
+  | "provider_email_limit"
+  | "provider_error";
+
 function isValidEmail(value: string) {
   return value.includes("@") && value.includes(".");
 }
 
-export function LoginForm() {
+export function LoginForm({ initialError }: { initialError?: string }) {
   const rememberedEmail = useSyncExternalStore(
     subscribeRememberedEmail,
     getRememberedEmailSnapshot,
@@ -32,10 +38,11 @@ export function LoginForm() {
   const email = emailOverride ?? rememberedEmail;
   const rememberEmail = rememberOverride ?? Boolean(rememberedEmail);
   const hasSavedEmail = Boolean(rememberedEmail);
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<string | undefined>(initialError);
   const [state, setState] = useState<FormState>("idle");
   const [sentEmail, setSentEmail] = useState("");
   const [retryAfterSeconds, setRetryAfterSeconds] = useState(0);
+  const [providerLimited, setProviderLimited] = useState(false);
 
   useEffect(() => {
     if (retryAfterSeconds <= 0) return;
@@ -55,13 +62,17 @@ export function LoginForm() {
     const json = (await res.json().catch(() => ({}))) as {
       error?: string;
       retryAfterSeconds?: number;
+      reason?: MagicLinkFailureReason;
     };
 
     if (!res.ok) {
       if (res.status === 429 && json.retryAfterSeconds) {
         setRetryAfterSeconds(json.retryAfterSeconds);
       }
-      throw new Error(json.error || "Could not send magic link.");
+      if (json.reason === "provider_email_limit") {
+        setProviderLimited(true);
+      }
+      throw new Error(json.error || "Could not send a sign-in link.");
     }
   };
 
@@ -94,6 +105,7 @@ export function LoginForm() {
     }
 
     setError(undefined);
+    setProviderLimited(false);
     setState("loading");
 
     try {
@@ -111,6 +123,7 @@ export function LoginForm() {
   const handleResend = async () => {
     if (!sentEmail || retryAfterSeconds > 0) return;
     setError(undefined);
+    setProviderLimited(false);
     setState("loading");
     try {
       await requestMagicLink(sentEmail);
@@ -189,6 +202,18 @@ export function LoginForm() {
           }}
         />
 
+        {retryAfterSeconds > 0 ? (
+          <p className="text-sm leading-relaxed text-[var(--color-text-muted)]" aria-live="polite">
+            We just sent a sign-in link. You can request another in {retryAfterSeconds}s.
+          </p>
+        ) : null}
+
+        {providerLimited ? (
+          <p className="text-sm leading-relaxed text-[var(--color-text-muted)]" role="status">
+            Email delivery is temporarily at capacity. Please wait a little before trying again.
+          </p>
+        ) : null}
+
         <label className="flex min-h-11 cursor-pointer items-center gap-3 text-base text-[var(--color-text-muted)]">
           <input
             type="checkbox"
@@ -213,7 +238,11 @@ export function LoginForm() {
           </button>
         ) : null}
 
-        <Button type="submit" className="relative w-full" disabled={state === "loading"}>
+        <Button
+          type="submit"
+          className="relative w-full"
+          disabled={state === "loading" || retryAfterSeconds > 0}
+        >
           <span className={cn(state === "loading" && "opacity-0")}>Send magic link</span>
           {state === "loading" ? (
             <span

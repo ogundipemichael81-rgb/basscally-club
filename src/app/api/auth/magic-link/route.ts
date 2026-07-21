@@ -10,6 +10,12 @@ type Payload = {
   email?: string;
 };
 
+type MagicLinkFailure = {
+  error: string;
+  reason: "resend_cooldown" | "ip_burst_limit" | "provider_email_limit" | "provider_error";
+  retryAfterSeconds?: number;
+};
+
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -41,12 +47,13 @@ export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
   const rate = checkMagicLinkRateLimit(email, ip);
   if (!rate.allowed) {
+    const body: MagicLinkFailure = {
+      error: `We just sent a sign-in link. Please wait ${rate.retryAfterSeconds}s before requesting another.`,
+      reason: rate.reason,
+      retryAfterSeconds: rate.retryAfterSeconds,
+    };
     return NextResponse.json(
-      {
-        error: "Too many requests. Try again shortly.",
-        reason: rate.reason,
-        retryAfterSeconds: rate.retryAfterSeconds,
-      },
+      body,
       {
         status: 429,
         headers: { "Retry-After": String(rate.retryAfterSeconds) },
@@ -94,8 +101,26 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
+    const isProviderRateLimit =
+      error.status === 429 ||
+      /rate limit|too many requests/i.test(error.message);
+
+    if (isProviderRateLimit) {
+      const body: MagicLinkFailure = {
+        error:
+          "Email delivery is temporarily at capacity. Please wait a little before requesting another sign-in link.",
+        reason: "provider_email_limit",
+      };
+
+      return NextResponse.json(body, { status: 429 });
+    }
+
+    const body: MagicLinkFailure = {
+      error: "We could not send a sign-in link right now. Please try again shortly.",
+      reason: "provider_error",
+    };
     return NextResponse.json(
-      { error: error.message || "Could not send magic link." },
+      body,
       { status: 500 },
     );
   }
