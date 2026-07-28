@@ -1257,8 +1257,9 @@ h4 {
 /* BH-09 — member dashboard scroll reveal */
 @media (prefers-reduced-motion: no-preference) {
   .dashboard-reveal {
-    opacity: 0;
-    transform: translateY(14px);
+    /* Keep content visible if IntersectionObserver is unavailable or delayed. */
+    opacity: 1;
+    transform: none;
     transition:
       opacity 600ms var(--ease-out),
       transform 600ms var(--ease-out);
