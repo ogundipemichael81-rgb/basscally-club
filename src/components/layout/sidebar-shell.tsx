@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 
 export type SidebarNavItem = {
   href: string;
@@ -36,6 +37,7 @@ export function SidebarShell({
               {item.label}
             </Link>
           ))}
+          <SignOutButton />
         </nav>
       </aside>
       <main className="min-w-0 flex-1 p-4 lg:p-6">{children}</main>

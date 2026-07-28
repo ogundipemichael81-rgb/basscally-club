@@ -9,6 +9,7 @@ import { parseDashboardFilter } from "@/lib/dashboard/filters";
 import { getMemberSession } from "@/lib/subscriptions/member-session";
 import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
+import { ButtonLink } from "@/components/marketing/button-link";
 
 export const metadata: Metadata = {
   title: "Dashboard — Basscally Hub",
@@ -30,7 +31,23 @@ async function DashboardContent({
   }
 
   if (!session.hasAccess) {
-    redirect(routes.paywall({ reason: "lapsed" }));
+    return (
+      <div className="mx-auto max-w-3xl rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 lg:p-12">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">
+          Membership required
+        </p>
+        <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-black tracking-[-0.04em]">
+          Your practice room is ready.
+        </h1>
+        <p className="mt-4 max-w-xl text-[length:var(--text-body)] text-[var(--color-text-muted)]">
+          Your email is signed in, but there is no active membership attached yet. Choose a plan to unlock published drops, playback, and downloads.
+        </p>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <ButtonLink href={routes.pricing}>View membership plans</ButtonLink>
+          <ButtonLink href={routes.home} variant="secondary">Return home</ButtonLink>
+        </div>
+      </div>
+    );
   }
 
   const filterParam = searchParams.filter;
