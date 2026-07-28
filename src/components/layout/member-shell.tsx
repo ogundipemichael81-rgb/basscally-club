@@ -17,7 +17,7 @@ export function MemberShell({
       <Suspense fallback={null}>
         <MemberSidebarNav brand={brand} />
       </Suspense>
-      <main className="flex-1 p-4 pb-24 lg:p-6 lg:pb-6">{children}</main>
+      <main className="min-w-0 flex-1 p-4 pb-24 lg:p-6 lg:pb-6">{children}</main>
       <Suspense fallback={null}>
         <MemberMobileNav />
       </Suspense>
