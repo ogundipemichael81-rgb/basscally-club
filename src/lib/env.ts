@@ -38,6 +38,7 @@ const serverEnvSchema = z.object({
   RESEND_FROM_EMAIL: optionalString,
   CRON_SECRET: optionalString,
   ADMIN_EMAIL_ALLOWLIST: optionalString,
+  ADMIN_EMAILS: optionalString,
 });
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;
@@ -77,6 +78,7 @@ function parseServerEnvFromProcess(): ServerEnv {
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     CRON_SECRET: process.env.CRON_SECRET,
     ADMIN_EMAIL_ALLOWLIST: process.env.ADMIN_EMAIL_ALLOWLIST,
+    ADMIN_EMAILS: process.env.ADMIN_EMAILS,
   });
 }
 

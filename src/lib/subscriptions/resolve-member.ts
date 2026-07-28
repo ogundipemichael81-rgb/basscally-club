@@ -64,6 +64,15 @@ export async function resolveMemberFromRequest(): Promise<ResolvedMember | null>
         if (member) {
           return { ...member, source: "supabase_auth" };
         }
+
+        // Auth can succeed before the public users row is provisioned by a
+        // payment webhook. Preserve the authenticated identity so admins can
+        // enter the console and members receive a clear membership state.
+        return {
+          userId: user.id,
+          email: user.email,
+          source: "supabase_auth",
+        };
       }
     } catch {
       // Auth not configured or session missing

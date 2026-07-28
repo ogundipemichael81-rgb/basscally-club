@@ -10,8 +10,9 @@ export type AdminSession = {
 };
 
 function isAllowlistedAdmin(email: string): boolean {
-  const list = getServerEnv()
-    .ADMIN_EMAIL_ALLOWLIST.split(",")
+  const env = getServerEnv();
+  const list = `${env.ADMIN_EMAIL_ALLOWLIST},${env.ADMIN_EMAILS}`
+    .split(",")
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
 

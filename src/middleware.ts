@@ -62,8 +62,9 @@ function isMockAdmin(request: NextRequest) {
 
 function isAllowlistedAdmin(email: string | undefined) {
   if (!email) return false;
-  const list = getServerEnv()
-    .ADMIN_EMAIL_ALLOWLIST.split(",")
+  const env = getServerEnv();
+  const list = `${env.ADMIN_EMAIL_ALLOWLIST},${env.ADMIN_EMAILS}`
+    .split(",")
     .map((v) => v.trim().toLowerCase())
     .filter(Boolean);
   return list.includes(email.toLowerCase());
@@ -102,6 +103,9 @@ export async function middleware(request: NextRequest) {
 
     const user = await getUserFromRequest(request);
     if (user) {
+      if (isAllowlistedAdmin(user.email ?? undefined)) {
+        return NextResponse.redirect(new URL(routes.admin.root, request.url));
+      }
       return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
     }
 
