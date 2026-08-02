@@ -225,8 +225,14 @@ export async function createAdminContent(options: {
   await syncStyleTag(data.id, options.fields.styleId);
 
   if (options.publish.queueEmail) {
-    await fanOutNewDropEmails(data.id);
-    await processEmailQueue({ limit: 50 });
+    // Publishing must not fail because optional Resend/email tables are not configured.
+    // Queue delivery is best-effort and can be processed later by cron.
+    try {
+      await fanOutNewDropEmails(data.id);
+      await processEmailQueue({ limit: 50 });
+    } catch (error) {
+      console.error("[admin-content] email fan-out skipped:", error instanceof Error ? error.message : error);
+    }
   }
 
   return { id: data.id };
@@ -270,8 +276,12 @@ export async function updateAdminContent(options: {
   await syncStyleTag(options.id, options.fields.styleId);
 
   if (options.publish.queueEmail) {
-    await fanOutNewDropEmails(options.id);
-    await processEmailQueue({ limit: 50 });
+    try {
+      await fanOutNewDropEmails(options.id);
+      await processEmailQueue({ limit: 50 });
+    } catch (error) {
+      console.error("[admin-content] email fan-out skipped:", error instanceof Error ? error.message : error);
+    }
   }
 }
 

@@ -71,6 +71,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const pageTitle = mode === "create" ? "Upload drop" : "Edit drop";
   const saveLabel =
@@ -104,6 +105,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
+    setSuccess(null);
 
     const formData = new FormData();
     formData.set("title", title);
@@ -135,7 +137,8 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
         throw new Error(json.error || "Could not save drop.");
       }
 
-      router.push(routes.admin.content);
+      setSuccess(mode === "create" ? "Drop uploaded successfully." : "Drop updated successfully.");
+      router.push(`${routes.admin.content}?saved=${mode === "create" ? "created" : "updated"}`);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save drop.");
@@ -355,6 +358,11 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
               role="alert"
             >
               {error}
+            </div>
+          ) : null}
+          {success ? (
+            <div className="rounded-[var(--radius-md)] border border-[rgba(52,211,153,0.35)] bg-[rgba(52,211,153,0.08)] p-4 text-sm text-[var(--color-success)]" role="status">
+              {success}
             </div>
           ) : null}
 

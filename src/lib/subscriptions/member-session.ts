@@ -45,17 +45,20 @@ export async function getMemberSession(): Promise<MemberSession | null> {
 
   const admin = createAdminClient();
 
-  const { data: userRow } = await admin
-    .from("users")
-    .select("is_founding_member")
-    .eq("id", member.userId)
-    .maybeSingle();
+  const [userResult, subscriptionResult] = await Promise.all([
+    admin.from("users").select("is_founding_member").eq("id", member.userId).maybeSingle(),
+    admin
+      .from("subscriptions")
+      .select("status, current_period_end, ends_at, cancel_at_period_end, plan_code")
+      .eq("user_id", member.userId)
+      .order("updated_at", { ascending: false }),
+  ]);
 
-  const { data: subscriptions } = await admin
-    .from("subscriptions")
-    .select("status, current_period_end, ends_at, cancel_at_period_end, plan_code")
-    .eq("user_id", member.userId)
-    .order("updated_at", { ascending: false });
+  const userRow = userResult.data;
+  const subscriptions = subscriptionResult.data;
+  if (userResult.error || subscriptionResult.error) {
+    console.error("[member-session] membership lookup failed:", userResult.error?.message ?? subscriptionResult.error?.message);
+  }
 
   const active =
     subscriptions?.find((row) => subscriptionGrantsAccess(row)) ?? null;

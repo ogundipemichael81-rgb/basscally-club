@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AdminSoftDeleteDialog } from "@/components/admin/admin-soft-delete-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,8 @@ type Props = {
 export function AdminContentList({ rows }: Props) {
   const [query, setQuery] = useState("");
   const [resendState, setResendState] = useState<Record<string, string>>({});
+  const searchParams = useSearchParams();
+  const saved = searchParams.get("saved");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -81,6 +84,11 @@ export function AdminContentList({ rows }: Props) {
 
   return (
     <div className="admin-content-list">
+      {saved ? (
+        <div className="mb-6 rounded-[var(--radius-md)] border border-[rgba(52,211,153,0.35)] bg-[rgba(52,211,153,0.08)] p-4 text-sm text-[var(--color-success)]" role="status">
+          {saved === "created" ? "Drop uploaded successfully." : "Drop updated successfully."}
+        </div>
+      ) : null}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">
