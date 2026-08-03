@@ -149,8 +149,8 @@ export function LoginForm({ initialError }: { initialError?: string }) {
         </h1>
         <p className="mb-6 max-w-[340px] text-[length:var(--text-body-sm)] leading-relaxed text-[var(--color-text-muted)]">
           We sent a magic link to{" "}
-          <span className="font-medium text-[var(--color-text)]">{sentEmail}</span>. Click it to
-          sign in.
+          <span className="font-medium text-[var(--color-text)]">{sentEmail}</span>. Open it on
+          this device or another trusted browser to sign in.
         </p>
         <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-dim)]">
           Didn&apos;t get it? Check spam, or{" "}

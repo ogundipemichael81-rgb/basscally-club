@@ -1,8 +1,9 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { checkMagicLinkRateLimit } from "@/lib/auth/rate-limit";
-import { clientEnv, getSupabasePublishableKey, getSupabaseUrl, isSupabaseClientConfigured } from "@/lib/env";
+import { hasSupabaseServiceRole, isSupabaseClientConfigured } from "@/lib/env";
 import { routes } from "@/lib/routes";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { sendEmail } from "@/lib/email/client";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,16 @@ function getClientIp(request: NextRequest) {
     return forwarded.split(",")[0]?.trim() || "unknown";
   }
   return "unknown";
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;",
+  })[character] ?? character);
 }
 
 export async function POST(request: NextRequest) {
@@ -68,62 +79,49 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  if (!isSupabaseClientConfigured()) {
+  if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
     return NextResponse.json(
       { error: "Auth service is not configured." },
       { status: 503 },
     );
   }
 
-  let response = NextResponse.json({ ok: true });
-  const supabase = createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => {
-          request.cookies.set(name, value);
-        });
-        response = NextResponse.json({ ok: true });
-        cookiesToSet.forEach(({ name, value, options }) => {
-          response.cookies.set(name, value, options);
-        });
-      },
-    },
-  });
+  try {
+    const admin = createAdminClient();
+    let generated = await admin.auth.admin.generateLink({ type: "magiclink", email });
 
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${clientEnv.NEXT_PUBLIC_APP_URL}${routes.auth.callback}`,
-    },
-  });
-
-  if (error) {
-    const isProviderRateLimit =
-      error.status === 429 ||
-      /rate limit|too many requests/i.test(error.message);
-
-    if (isProviderRateLimit) {
-      const body: MagicLinkFailure = {
-        error:
-          "Email delivery is temporarily at capacity. Please wait a little before requesting another sign-in link.",
-        reason: "provider_email_limit",
-      };
-
-      return NextResponse.json(body, { status: 429 });
+    if (generated.error && /not found|user.*exist/i.test(generated.error.message)) {
+      const created = await admin.auth.admin.createUser({ email, email_confirm: true });
+      if (created.error && !/already registered|already exists/i.test(created.error.message)) {
+        throw created.error;
+      }
+      generated = await admin.auth.admin.generateLink({ type: "magiclink", email });
     }
 
-    const body: MagicLinkFailure = {
-      error: "We could not send a sign-in link right now. Please try again shortly.",
-      reason: "provider_error",
-    };
-    return NextResponse.json(
-      body,
-      { status: 500 },
-    );
-  }
+    if (generated.error) throw generated.error;
+    const hashedToken = generated.data.properties?.hashed_token;
+    if (!hashedToken) throw new Error("Magic link generation failed.");
 
-  return response;
+    const origin = process.env.NODE_ENV === "production"
+      ? "https://basscallyhub.vercel.app"
+      : (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
+    const callbackUrl = `${origin}${routes.auth.callback}?token_hash=${encodeURIComponent(hashedToken)}&type=email`;
+    const safeUrl = escapeHtml(callbackUrl);
+    const emailResult = await sendEmail({
+      to: email,
+      subject: "Your Basscally Hub sign-in link",
+      html: `<h2>Sign in to Basscally Hub</h2><p>Use the button below to securely enter your Basscally Hub account.</p><p><a href="${safeUrl}">Sign in to Basscally Hub</a></p><p>This link can only be used once and expires shortly.</p><p>If you did not request this email, you can safely ignore it.</p>`,
+      text: `Sign in to Basscally Hub: ${callbackUrl}\n\nThis link can only be used once and expires shortly.`,
+    });
+    if (!emailResult.ok) throw new Error(emailResult.error);
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (/rate limit|too many requests/i.test(message)) {
+      return NextResponse.json({ error: "Email delivery is temporarily at capacity. Please wait a little before trying again.", reason: "provider_email_limit" }, { status: 429 });
+    }
+    console.error("[auth/magic-link] delivery failed:", message);
+    return NextResponse.json({ error: "We could not send a sign-in link right now. Please try again shortly.", reason: "provider_error" }, { status: 500 });
+  }
 }
