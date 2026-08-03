@@ -5,6 +5,7 @@ type Bucket = {
 
 const resendCooldownByEmail = new Map<string, number>();
 const burstByIp = new Map<string, Bucket>();
+const pendingByEmail = new Set<string>();
 
 const RESEND_COOLDOWN_MS = 60_000;
 const BURST_WINDOW_MS = 15 * 60_000;
@@ -15,6 +16,9 @@ export function checkMagicLinkRateLimit(email: string, ip: string) {
   const normalizedEmail = email.trim().toLowerCase();
 
   const emailNextAllowedAt = resendCooldownByEmail.get(normalizedEmail) ?? 0;
+  if (pendingByEmail.has(normalizedEmail)) {
+    return { allowed: false, retryAfterSeconds: 5, reason: "send_in_progress" } as const;
+  }
   if (emailNextAllowedAt > now) {
     return {
       allowed: false,
@@ -39,10 +43,26 @@ export function checkMagicLinkRateLimit(email: string, ip: string) {
 
   freshBucket.count += 1;
   burstByIp.set(ip, freshBucket);
-  resendCooldownByEmail.set(normalizedEmail, now + RESEND_COOLDOWN_MS);
+  pendingByEmail.add(normalizedEmail);
 
   return {
     allowed: true,
   } as const;
 }
 
+export function commitMagicLinkRateLimit(email: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+  pendingByEmail.delete(normalizedEmail);
+  resendCooldownByEmail.set(normalizedEmail, Date.now() + RESEND_COOLDOWN_MS);
+}
+
+export function releaseMagicLinkRateLimit(email: string, ip: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+  pendingByEmail.delete(normalizedEmail);
+  resendCooldownByEmail.delete(normalizedEmail);
+  const bucket = burstByIp.get(ip);
+  if (bucket) {
+    bucket.count = Math.max(0, bucket.count - 1);
+    burstByIp.set(ip, bucket);
+  }
+}

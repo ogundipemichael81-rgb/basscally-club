@@ -8,6 +8,7 @@ import {
 } from "@/lib/env";
 import { routes } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isAdminEmail } from "@/lib/admin/allowlist";
 
 function loginErrorRedirect(request: NextRequest, message: string) {
   const url = new URL(routes.auth.login, request.url);
@@ -66,6 +67,9 @@ export async function GET(request: NextRequest) {
     if (userError) {
       console.error("[auth/callback] public user sync failed:", userError.message);
     }
+  }
+  if (user?.email && isAdminEmail(user.email)) {
+    destination.pathname = routes.admin.root;
   }
 
   response.headers.set("Cache-Control", "private, no-store");

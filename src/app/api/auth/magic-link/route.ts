@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { checkMagicLinkRateLimit } from "@/lib/auth/rate-limit";
+import { checkMagicLinkRateLimit, commitMagicLinkRateLimit, releaseMagicLinkRateLimit } from "@/lib/auth/rate-limit";
+import { isResendConfigured } from "@/lib/email/config";
 import { hasSupabaseServiceRole, isSupabaseClientConfigured } from "@/lib/env";
 import { routes } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -13,7 +14,7 @@ type Payload = {
 
 type MagicLinkFailure = {
   error: string;
-  reason: "resend_cooldown" | "ip_burst_limit" | "provider_email_limit" | "provider_error";
+  reason: "resend_cooldown" | "ip_burst_limit" | "send_in_progress" | "provider_email_limit" | "resend_not_configured" | "provider_error";
   retryAfterSeconds?: number;
 };
 
@@ -56,6 +57,11 @@ export async function POST(request: NextRequest) {
   }
 
   const ip = getClientIp(request);
+  if (!isResendConfigured()) {
+    console.error("[auth/magic-link] resend_not_configured");
+    return NextResponse.json({ error: "We could not send a sign-in link right now. Please try again shortly.", reason: "resend_not_configured" }, { status: 503 });
+  }
+
   const rate = checkMagicLinkRateLimit(email, ip);
   if (!rate.allowed) {
     const body: MagicLinkFailure = {
@@ -76,6 +82,7 @@ export async function POST(request: NextRequest) {
     process.env.NODE_ENV === "development" &&
     email.endsWith("@basscally.club")
   ) {
+    commitMagicLinkRateLimit(email);
     return NextResponse.json({ ok: true });
   }
 
@@ -115,8 +122,11 @@ export async function POST(request: NextRequest) {
     });
     if (!emailResult.ok) throw new Error(emailResult.error);
 
+    commitMagicLinkRateLimit(email);
+
     return NextResponse.json({ ok: true });
   } catch (error) {
+    releaseMagicLinkRateLimit(email, ip);
     const message = error instanceof Error ? error.message : "";
     if (/rate limit|too many requests/i.test(message)) {
       return NextResponse.json({ error: "Email delivery is temporarily at capacity. Please wait a little before trying again.", reason: "provider_email_limit" }, { status: 429 });

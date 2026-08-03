@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ButtonLink } from "@/components/marketing/button-link";
 import { SectionLabel } from "@/components/marketing/section-label";
-import { createClient } from "@/lib/supabase/client";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -23,10 +22,6 @@ export function CallbackContent() {
 
     async function run() {
       try {
-        const supabase = createClient();
-        const code = searchParams.get("code");
-        const tokenHash = searchParams.get("token_hash");
-        const type = searchParams.get("type");
         const errorCode = searchParams.get("error");
         const errorDescription = searchParams.get("error_description");
 
@@ -34,33 +29,10 @@ export function CallbackContent() {
           throw new Error(errorDescription || "Magic link is invalid or expired.");
         }
 
-        if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) throw error;
-        } else if (tokenHash && type) {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: tokenHash,
-            type: type as
-              | "magiclink"
-              | "recovery"
-              | "invite"
-              | "email_change"
-              | "email",
-          });
-          if (error) throw error;
-        } else {
-          const { data } = await supabase.auth.getSession();
-          if (!data.session) {
-            throw new Error("No auth token found in callback URL.");
-          }
-        }
-
         if (cancelled) return;
         setState("success");
-        setMessage("Session is ready. Sending you to your dashboard now.");
-        window.setTimeout(() => {
-          router.replace(routes.member.dashboard);
-        }, 900);
+        setMessage("Session is ready. Sending you to your account now.");
+        window.setTimeout(() => router.replace(routes.member.dashboard), 1200);
       } catch (err) {
         if (cancelled) return;
         const fallback = "We could not verify this magic link. Please request a new one.";
