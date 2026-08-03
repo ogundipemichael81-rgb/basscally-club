@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getServerEnv } from "@/lib/env";
+import { isAdminEmail } from "@/lib/admin/allowlist";
 import { updateSession } from "@/lib/supabase/middleware";
 import { routes } from "@/lib/routes";
 
@@ -60,16 +60,6 @@ function isMockAdmin(request: NextRequest) {
   return request.cookies.get(MOCK_COOKIE_NAME)?.value === MOCK_ADMIN_ID;
 }
 
-function isAllowlistedAdmin(email: string | undefined) {
-  if (!email) return false;
-  const env = getServerEnv();
-  const list = `${env.ADMIN_EMAIL_ALLOWLIST},${env.ADMIN_EMAILS}`
-    .split(",")
-    .map((v) => v.trim().toLowerCase())
-    .filter(Boolean);
-  return list.includes(email.toLowerCase());
-}
-
 /**
  * Refreshes Supabase session and protects member/admin routes.
  * Dev simulator mock cookie remains supported.
@@ -101,7 +91,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (user) {
-      if (isAllowlistedAdmin(user.email ?? undefined)) {
+      if (isAdminEmail(user.email)) {
         return NextResponse.redirect(new URL(routes.admin.root, request.url));
       }
       return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
@@ -149,11 +139,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginRedirect(request));
   }
 
-  if (isAdminPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {
+  if (isAdminPath(pathname) && !isAdminEmail(user.email)) {
     return NextResponse.redirect(new URL(routes.admin.unauthorized, request.url));
   }
 
-  if (isAdminApiPath(pathname) && !isAllowlistedAdmin(user.email ?? undefined)) {
+  if (isAdminApiPath(pathname) && !isAdminEmail(user.email)) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   }
 

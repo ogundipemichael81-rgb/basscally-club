@@ -1,31 +1,17 @@
 import "server-only";
 
 import { NextResponse } from "next/server";
-import { getServerEnv } from "@/lib/env";
 import { resolveMemberFromRequest } from "@/lib/subscriptions/resolve-member";
+import { isAdminEmail } from "@/lib/admin/allowlist";
 
 export type AdminSession = {
   userId: string;
   email: string;
 };
 
-function isAllowlistedAdmin(email: string): boolean {
-  const env = getServerEnv();
-  const list = `${env.ADMIN_EMAIL_ALLOWLIST},${env.ADMIN_EMAILS}`
-    .split(",")
-    .map((value) => value.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (list.length === 0 && process.env.NODE_ENV === "development") {
-    return email.endsWith("@basscally.club");
-  }
-
-  return list.includes(email.toLowerCase());
-}
-
 export async function getAdminSession(): Promise<AdminSession | null> {
   const member = await resolveMemberFromRequest();
-  if (!member || !isAllowlistedAdmin(member.email)) {
+  if (!member || !isAdminEmail(member.email)) {
     return null;
   }
 

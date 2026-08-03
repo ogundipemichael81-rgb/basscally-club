@@ -2,6 +2,8 @@
 
 Date: 2026-08-03
 
+Cross-browser update: Supabase is now `ACTIVE_HEALTHY`. Existing Auth accounts for the official admin, the plural-email account, and the owner account were backfilled into `public.users` using an idempotent SQL upsert. The callback accepts `token_hash`/`type=email` as the cross-browser path and `code` as a backward-compatible PKCE path.
+
 ## Root causes
 
 1. Production was serving an older deployment because the latest deployment failed its build on `/admin/content` (`useSearchParams` without Suspense).
