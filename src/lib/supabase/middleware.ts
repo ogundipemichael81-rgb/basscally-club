@@ -29,7 +29,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   if (!isSupabaseClientConfigured()) {
-    return supabaseResponse;
+    return { response: supabaseResponse, user: null };
   }
 
   const supabase = createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
@@ -51,9 +51,9 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }
 
 export async function getUserFromRequest(request: NextRequest) {

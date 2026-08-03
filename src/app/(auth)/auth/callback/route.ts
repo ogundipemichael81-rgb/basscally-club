@@ -3,9 +3,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   getSupabasePublishableKey,
   getSupabaseUrl,
+  hasSupabaseServiceRole,
   isSupabaseClientConfigured,
 } from "@/lib/env";
 import { routes } from "@/lib/routes";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 function loginErrorRedirect(request: NextRequest, message: string) {
   const url = new URL(routes.auth.login, request.url);
@@ -23,7 +25,8 @@ export async function GET(request: NextRequest) {
   }
 
   const code = request.nextUrl.searchParams.get("code");
-  if (!code) {
+  const tokenHash = request.nextUrl.searchParams.get("token_hash");
+  if (!code && !tokenHash) {
     return loginErrorRedirect(request, "This sign-in link is invalid or has expired.");
   }
 
@@ -43,12 +46,26 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { error } = tokenHash
+    ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" })
+    : await supabase.auth.exchangeCodeForSession(code!);
   if (error) {
     return loginErrorRedirect(
       request,
       "This sign-in link must be opened in the same browser where it was requested. Please request a new link there.",
     );
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user?.id && user.email && hasSupabaseServiceRole()) {
+    const admin = createAdminClient();
+    const { error: userError } = await admin.from("users").upsert(
+      { id: user.id, email: user.email.toLowerCase(), last_login_at: new Date().toISOString() },
+      { onConflict: "id" },
+    );
+    if (userError) {
+      console.error("[auth/callback] public user sync failed:", userError.message);
+    }
   }
 
   response.headers.set("Cache-Control", "private, no-store");

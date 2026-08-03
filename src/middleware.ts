@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getServerEnv } from "@/lib/env";
-import { getUserFromRequest, updateSession } from "@/lib/supabase/middleware";
+import { updateSession } from "@/lib/supabase/middleware";
 import { routes } from "@/lib/routes";
 
 const MOCK_COOKIE_NAME = "basscally_mock_user_id";
@@ -77,14 +77,13 @@ function isAllowlistedAdmin(email: string | undefined) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const response = await updateSession(request);
+  const { response, user } = await updateSession(request);
 
   if (pathname === routes.admin.unauthorized) {
     if (isMockAllowed(request)) {
       return response;
     }
 
-    const user = await getUserFromRequest(request);
     if (!user) {
       return NextResponse.redirect(loginRedirect(request));
     }
@@ -101,7 +100,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
     }
 
-    const user = await getUserFromRequest(request);
     if (user) {
       if (isAllowlistedAdmin(user.email ?? undefined)) {
         return NextResponse.redirect(new URL(routes.admin.root, request.url));
@@ -135,7 +133,6 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const user = await getUserFromRequest(request);
   if (!user) {
     if (isAdminApiPath(pathname)) {
       return NextResponse.json({ error: "Admin access required." }, { status: 401 });

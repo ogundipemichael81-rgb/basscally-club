@@ -65,12 +65,10 @@ export async function resolveMemberFromRequest(): Promise<ResolvedMember | null>
           return { ...member, source: "supabase_auth" };
         }
 
-        // Auth can succeed before the public users row is provisioned by a
-        // payment webhook. Preserve the authenticated identity so admins can
-        // enter the console and members receive a clear membership state.
+        const provisioned = await provisionPublicUser(user.id, user.email);
         return {
-          userId: user.id,
-          email: user.email,
+          userId: provisioned?.userId ?? user.id,
+          email: provisioned?.email ?? user.email,
           source: "supabase_auth",
         };
       }
@@ -114,5 +112,23 @@ async function lookupUserByEmail(
     return null;
   }
 
+  return { userId: data.id, email: data.email };
+}
+
+async function provisionPublicUser(userId: string, email: string) {
+  if (!hasSupabaseServiceRole()) return null;
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("users")
+    .upsert(
+      { id: userId, email: email.toLowerCase(), last_login_at: new Date().toISOString() },
+      { onConflict: "id" },
+    )
+    .select("id, email")
+    .single();
+  if (error) {
+    console.error("[member-resolution] public user provisioning failed:", error.message);
+    return null;
+  }
   return { userId: data.id, email: data.email };
 }
