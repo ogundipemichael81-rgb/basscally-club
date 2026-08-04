@@ -29,6 +29,7 @@ export type AdminContentRow = {
   publishedAt: string | null;
   updatedAt: string;
   styleLabel: string | null;
+  isFreePreview: boolean;
 };
 
 export type AdminContentDetail = {
@@ -48,6 +49,7 @@ export type AdminContentDetail = {
   emailBody: string | null;
   styleId: string | null;
   styleLabel: string | null;
+  isFreePreview: boolean;
 };
 
 function readArtistName(artists: unknown): string | null {
@@ -102,7 +104,7 @@ export async function listAdminContent(): Promise<AdminContentRow[]> {
   const { data } = await admin
     .from("content")
     .select(
-      "id, title, type, difficulty, status, scheduled_for, published_at, updated_at, content_style_tags(style_id, styles(title, artists(name)))",
+      "id, title, type, difficulty, status, scheduled_for, published_at, updated_at, is_free_preview, content_style_tags(style_id, styles(title, artists(name)))",
     )
     .order("updated_at", { ascending: false });
 
@@ -123,6 +125,7 @@ export async function listAdminContent(): Promise<AdminContentRow[]> {
       publishedAt: row.published_at,
       updatedAt: row.updated_at,
       styleLabel: style ? mapStyleLabel(style) : null,
+      isFreePreview: Boolean(row.is_free_preview),
     };
   });
 }
@@ -138,7 +141,7 @@ export async function getAdminContentById(
   const { data } = await admin
     .from("content")
     .select(
-      "id, title, type, description, difficulty, audio_storage_key, cover_image_url, status, scheduled_for, published_at, email_subject, email_body, content_style_tags(style_id, styles(title, artists(name)))",
+      "id, title, type, description, difficulty, audio_storage_key, cover_image_url, status, scheduled_for, published_at, email_subject, email_body, is_free_preview, content_style_tags(style_id, styles(title, artists(name)))",
     )
     .eq("id", id)
     .maybeSingle();
@@ -167,6 +170,7 @@ export async function getAdminContentById(
     emailBody: data.email_body,
     styleId: tag?.style_id ?? null,
     styleLabel: style ? mapStyleLabel(style) : null,
+    isFreePreview: Boolean(data.is_free_preview),
   };
 }
 
@@ -212,6 +216,7 @@ export async function createAdminContent(options: {
       published_at: options.publish.publishedAt,
       email_subject: options.fields.emailSubject || null,
       email_body: options.fields.emailBody || null,
+      is_free_preview: options.fields.isFreePreview,
       created_by_admin_id: options.adminUserId,
       updated_at: new Date().toISOString(),
     })
@@ -256,6 +261,7 @@ export async function updateAdminContent(options: {
     published_at: options.publish.publishedAt,
     email_subject: options.fields.emailSubject || null,
     email_body: options.fields.emailBody || null,
+    is_free_preview: options.fields.isFreePreview,
     updated_at: new Date().toISOString(),
   };
 

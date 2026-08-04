@@ -10,6 +10,7 @@ import { getMemberSession } from "@/lib/subscriptions/member-session";
 import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
 import { ButtonLink } from "@/components/marketing/button-link";
+import { UnpaidPreviewDashboard } from "@/components/dashboard/unpaid-preview-dashboard";
 
 export const metadata: Metadata = {
   title: "Dashboard — Basscally Hub",
@@ -31,26 +32,6 @@ async function DashboardContent({
   const session = await getMemberSession();
   if (!session) {
     redirect(routes.auth.login);
-  }
-
-  if (!session.hasAccess) {
-    return (
-      <div className="mx-auto max-w-3xl rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 lg:p-12">
-        <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">
-          Membership required
-        </p>
-        <h1 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-black tracking-[-0.04em]">
-          Your practice room is ready.
-        </h1>
-        <p className="mt-4 max-w-xl text-[length:var(--text-body)] text-[var(--color-text-muted)]">
-          Your email is signed in, but there is no active membership attached yet. Choose a plan to unlock published drops, playback, and downloads.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <ButtonLink href={routes.pricing}>View membership plans</ButtonLink>
-          <ButtonLink href={routes.home} variant="secondary">Return home</ButtonLink>
-        </div>
-      </div>
-    );
   }
 
   const filterParam = searchParams.filter;
@@ -79,7 +60,7 @@ async function DashboardContent({
   return (
     <>
       {summary ? <PastDueBanner summary={summary} className="mb-8" /> : null}
-      <DashboardPageView session={session} data={data} filter={filter} />
+      {session.hasAccess ? <DashboardPageView session={session} data={data} filter={filter} /> : <UnpaidPreviewDashboard data={data} />}
     </>
   );
 }

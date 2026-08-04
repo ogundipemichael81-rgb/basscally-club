@@ -35,7 +35,7 @@ export default async function StylePage({ params }: Props) {
     notFound();
   }
 
-  const checkoutHref = getFoundingCheckoutUrl();
+  const checkoutHref = await getFoundingCheckoutUrl();
 
   return <StylePageView data={data} checkoutHref={checkoutHref} />;
 }

@@ -26,7 +26,7 @@ export default async function PricingPage({ searchParams }: Props) {
 
   const [foundingStats, checkoutByPlan] = await Promise.all([
     getFoundingMemberStats(),
-    Promise.resolve(getCheckoutUrlsByPlan()),
+    getCheckoutUrlsByPlan(),
   ]);
 
   return (

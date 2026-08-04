@@ -50,11 +50,11 @@ export async function resolvePaywallContext(options: {
 
   let reactivateCheckoutUrl: string;
   if (showFoundingRejoin) {
-    reactivateCheckoutUrl = getCheckoutUrl("founding_monthly");
+    reactivateCheckoutUrl = await getCheckoutUrl("founding_monthly");
   } else if (reason === "anonymous" && foundingAvailable) {
-    reactivateCheckoutUrl = getCheckoutUrl("founding_monthly");
+    reactivateCheckoutUrl = await getCheckoutUrl("founding_monthly");
   } else {
-    reactivateCheckoutUrl = getCheckoutUrl("standard_monthly");
+    reactivateCheckoutUrl = await getCheckoutUrl("standard_monthly");
   }
 
   const loginNext = contentId

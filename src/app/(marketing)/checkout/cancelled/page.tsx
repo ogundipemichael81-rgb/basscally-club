@@ -12,7 +12,7 @@ export default async function CheckoutCancelledPage() {
   const stats = await getFoundingMemberStats();
   return (
     <CheckoutCancelledContent
-      foundingCheckoutHref={getFoundingCheckoutUrl()}
+      foundingCheckoutHref={await getFoundingCheckoutUrl()}
       spotsRemaining={stats.live ? stats.spotsRemaining : null}
     />
   );

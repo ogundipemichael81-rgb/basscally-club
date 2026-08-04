@@ -34,6 +34,13 @@ function loginRedirect(request: NextRequest) {
   return url;
 }
 
+function adminLoginRedirect(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  url.pathname = routes.admin.login;
+  url.search = `next=${encodeURIComponent(`${request.nextUrl.pathname}${request.nextUrl.search}`)}`;
+  return url;
+}
+
 function paywallRedirect(
   request: NextRequest,
   options: { contentId?: string; reason?: string },
@@ -108,10 +115,17 @@ export async function middleware(request: NextRequest) {
       if (isAdminEmail(user.email)) {
         return NextResponse.redirect(new URL(routes.admin.root, request.url));
       }
-      return NextResponse.redirect(new URL(routes.member.dashboard, request.url));
+      const next = request.nextUrl.searchParams.get("next");
+      const safeNext = next?.startsWith("/") && !next.startsWith("//") ? next : routes.member.dashboard;
+      return NextResponse.redirect(new URL(safeNext, request.url));
     }
 
     return response;
+  }
+
+  if (pathname === routes.admin.login) {
+    if (!user) return response;
+    return NextResponse.redirect(new URL(isAdminEmail(user.email) ? routes.admin.root : routes.admin.unauthorized, request.url));
   }
 
   const needsMemberAuth =
@@ -150,7 +164,7 @@ export async function middleware(request: NextRequest) {
         );
       }
     }
-    return NextResponse.redirect(loginRedirect(request));
+    return NextResponse.redirect(isAdminPath(pathname) ? adminLoginRedirect(request) : loginRedirect(request));
   }
 
   if (isAdminPath(pathname) && !isAdminEmail(user.email)) {

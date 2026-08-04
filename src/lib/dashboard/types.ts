@@ -7,6 +7,7 @@ export type DashboardContentItem = {
   difficulty: string | null;
   coverUrl: string | null;
   publishedAt: string | null;
+  isFreePreview?: boolean;
 };
 
 export type UpcomingDrop = {

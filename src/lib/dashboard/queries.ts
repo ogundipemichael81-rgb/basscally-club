@@ -20,6 +20,7 @@ type ContentRow = {
   status: string;
   published_at: string | null;
   scheduled_for: string | null;
+  is_free_preview?: boolean;
 };
 
 function mapPublishedRow(row: ContentRow): DashboardContentItem {
@@ -32,6 +33,7 @@ function mapPublishedRow(row: ContentRow): DashboardContentItem {
     difficulty: row.difficulty,
     coverUrl: getCoverPublicUrl(row.cover_image_url),
     publishedAt: row.published_at,
+    isFreePreview: Boolean(row.is_free_preview),
   };
 }
 
@@ -56,7 +58,7 @@ export async function getDashboardData(userId?: string): Promise<DashboardData> 
   const { data: publishedRows } = await admin
     .from("content")
     .select(
-      "id, title, type, description, difficulty, cover_image_url, status, published_at, scheduled_for",
+      "id, title, type, description, difficulty, cover_image_url, status, published_at, scheduled_for, is_free_preview",
     )
     .eq("status", "published")
     .order("published_at", { ascending: false });

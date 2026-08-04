@@ -67,6 +67,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
   );
   const [emailSubject, setEmailSubject] = useState(initial?.emailSubject ?? "");
   const [emailBody, setEmailBody] = useState(initial?.emailBody ?? "");
+  const [isFreePreview, setIsFreePreview] = useState(initial?.isFreePreview ?? false);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -117,6 +118,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     formData.set("publishAction", publishAction);
     formData.set("emailSubject", emailSubject);
     formData.set("emailBody", emailBody);
+    formData.set("isFreePreview", String(isFreePreview));
     if (audioFile) formData.set("audio", audioFile);
     if (coverFile) formData.set("cover", coverFile);
 
@@ -293,6 +295,11 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
                 artist style tag — links this drop to style pages and the conversion
                 funnel.
               </p>
+              <label className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] px-4 py-3 text-sm">
+                <input type="checkbox" checked={isFreePreview} onChange={(event) => setIsFreePreview(event.target.checked)} className="h-5 w-5 accent-[var(--color-brand)]" />
+                Make this the free preview sample
+              </label>
+              <p className="text-xs text-[var(--color-text-dim)]">Only one published drop can be the unpaid preview. If another published preview exists, saving will safely fail until it is changed.</p>
             </div>
           </section>
 

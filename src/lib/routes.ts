@@ -42,6 +42,7 @@ export const routes = {
     accountSecurity: "/account/security",
   },
   admin: {
+    login: "/admin/login",
     root: "/admin",
     unauthorized: "/admin/unauthorized",
     content: "/admin/content",

@@ -109,6 +109,7 @@ export const content = pgTable("content", {
   audioStorageKey: text("audio_storage_key"),
   coverImageUrl: text("cover_image_url"),
   status: text("status").notNull().default("draft"),
+  isFreePreview: boolean("is_free_preview").notNull().default(false),
   scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   emailSubject: text("email_subject"),

@@ -39,7 +39,7 @@ export async function createPreviewAccess(
 
   const { data: content, error: contentError } = await admin
     .from("content")
-    .select("id, status, audio_storage_key")
+    .select("id, status, audio_storage_key, is_free_preview")
     .eq("id", contentId)
     .maybeSingle();
 
@@ -68,6 +68,10 @@ export async function createPreviewAccess(
     const subscription =
       subscriptions?.find((row) => subscriptionGrantsAccess(row)) ?? null;
     hasFullAccess = subscriptionGrantsAccess(subscription);
+  }
+
+  if (!hasFullAccess && !content.is_free_preview) {
+    return { ok: false, status: 403, error: "Activate membership to play this practice drop." };
   }
 
   const objectPath = storageObjectPath(

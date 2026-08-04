@@ -20,6 +20,7 @@ export const contentFieldsSchema = z.object({
   publishAction: z.enum(PUBLISH_ACTIONS),
   emailSubject: z.string().trim().max(160).optional().nullable(),
   emailBody: z.string().trim().max(2000).optional().nullable(),
+  isFreePreview: z.boolean().default(false),
 });
 
 export type ContentFieldsInput = z.infer<typeof contentFieldsSchema>;
@@ -43,6 +44,7 @@ export function parseContentFields(formData: FormData) {
       ? String(formData.get("emailSubject"))
       : null,
     emailBody: formData.get("emailBody") ? String(formData.get("emailBody")) : null,
+    isFreePreview: formData.get("isFreePreview") === "true",
   };
 
   return contentFieldsSchema.safeParse(raw);
