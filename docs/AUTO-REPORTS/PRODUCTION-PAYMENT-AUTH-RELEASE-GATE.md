@@ -31,6 +31,10 @@ No predictable temporary password, public admin reset endpoint, Resend request o
 - Database has 0 subscriptions and 0 checkout intents. No payment, webhook, cancellation, interrupted-return or replay test has been run.
 - Vercel reported no runtime errors in the latest one-hour window. Older pre-password-login recovery/magic-link errors remain historical only.
 
+## Password-change acceptance — production
+
+A fresh controlled unpaid account completed the live sequence: account creation -> `/account/security` -> password update -> application sign-out -> old-password rejection using the same safe login error -> new-password login -> `/dashboard`. The browser made zero magic-link endpoint requests. This confirms the account-security route is authenticated, password-only, and independent of Resend or recovery SMTP.
+
 ## Payment gate: blocked pending safe test mode
 
 Lemon test credentials, variant IDs and webhook secret must be confirmed in Vercel without revealing values. Confirm the credentials are test-mode, the webhook is subscribed to the required order/subscription events, and the target is `/api/webhooks/lemonsqueezy`. Then run one no-charge test purchase to prove the signed webhook, user-bound intent, atomic subscription binding, paid-content access, cancelled checkout, interrupted return and replay handling.
