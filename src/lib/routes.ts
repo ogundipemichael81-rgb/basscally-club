@@ -8,6 +8,8 @@ export const routes = {
   home: "/",
   pricing: "/pricing",
   waitlist: "/waitlist",
+  join: "/join",
+  checkoutFlow: "/checkout",
   style: (slug: string) => `/style/${slug}` as const,
   defaultStyle: `/style/${DEFAULT_STYLE_SLUG}` as const,
   auth: {
@@ -37,6 +39,7 @@ export const routes = {
     accountBilling: "/account/billing",
     accountBillingPortal: "/account/billing/portal",
     accountCancel: "/account/cancel",
+    accountSecurity: "/account/security",
   },
   admin: {
     root: "/admin",
@@ -53,6 +56,9 @@ export const routes = {
   api: {
     auth: {
       magicLink: "/api/auth/magic-link",
+      joinCreateAccount: "/api/join/create-account",
+      checkoutCreate: "/api/checkout/create",
+      checkoutStatus: "/api/checkout/status",
     },
     waitlist: "/api/waitlist",
     adminContent: "/api/admin/content",
@@ -75,3 +81,4 @@ export const routes = {
 } as const;
 
 export type Routes = typeof routes;
+

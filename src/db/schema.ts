@@ -1,5 +1,5 @@
-/**
- * Drizzle schema — Basscally Hub (BH-02).
+﻿/**
+ * Drizzle schema â€” Basscally Hub (BH-02).
  * Apply to Supabase Postgres (EU) via `supabase/migrations/*.sql`.
  */
 import {
@@ -30,9 +30,7 @@ export const subscriptions = pgTable(
   "subscriptions",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
     provider: text("provider").notNull(),
     providerCustomerId: text("provider_customer_id"),
     providerSubscriptionId: text("provider_subscription_id"),
@@ -50,6 +48,7 @@ export const subscriptions = pgTable(
     customerPortalUrl: text("customer_portal_url"),
     updatePaymentMethodUrl: text("update_payment_method_url"),
     lastWebhookEventId: text("last_webhook_event_id"),
+    lemonOrderId: text("lemon_order_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -189,9 +188,7 @@ export const emailLogs = pgTable("email_logs", {
 
 export const downloads = pgTable("downloads", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
   contentId: uuid("content_id")
     .notNull()
     .references(() => content.id, { onDelete: "cascade" }),
@@ -215,5 +212,8 @@ export const auditEvents = pgTable("audit_events", {
     .defaultNow(),
 });
 
-/** Alias for admin_audit_log naming in MVP plan — same table as audit_events. */
+/** Alias for admin_audit_log naming in MVP plan â€” same table as audit_events. */
 export const adminAuditLog = auditEvents;
+
+
+

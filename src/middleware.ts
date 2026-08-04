@@ -173,6 +173,9 @@ export const config = {
     "/api/admin/:path*",
     "/api/content/:path*",
     "/auth/:path*",
+    "/checkout/:path*",
     "/api/cron/:path*",
   ],
 };
+
+
