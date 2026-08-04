@@ -114,6 +114,9 @@ export function AccountMembershipView({ summary }: Props) {
               />
             </div>
             <div className="mt-6 border-t border-[var(--color-border)] pt-4">
+              <ButtonLink href={routes.member.accountSecurity} variant="secondary" className="mb-3 w-full">
+                Account security
+              </ButtonLink>
               <SignOutButton />
             </div>
           </aside>
