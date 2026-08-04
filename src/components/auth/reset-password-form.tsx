@@ -1,0 +1,7 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+export function ResetPasswordForm(){const router=useRouter();const[p,setP]=useState("");const[c,setC]=useState("");const[e,setE]=useState<string>();const[l,setL]=useState(false);async function submit(ev:React.FormEvent){ev.preventDefault();if(p.length<10||p!==c){setE("Use at least 10 characters and make both passwords match.");return;}setL(true);const{error}=await createClient().auth.updateUser({password:p});if(error){setE("This recovery link has expired. Request a new one.");setL(false);return;}router.replace("/auth/login?authError=Password%20updated.%20Please%20sign%20in.");}return <div className="relative z-[1] w-full max-w-[400px]"><h1 className="mb-3 text-2xl font-bold">Choose a new password</h1><p className="mb-6 text-sm text-[var(--color-text-muted)]">Your password is stored securely by Supabase.</p><form onSubmit={submit} className="space-y-4"><Input label="New password" type="password" autoComplete="new-password" required value={p} onChange={x=>setP(x.target.value)}/><Input label="Confirm password" type="password" autoComplete="new-password" required value={c} onChange={x=>setC(x.target.value)}/>{e?<p role="alert" className="text-sm text-[var(--color-danger)]">{e}</p>:null}<Button className="w-full" disabled={l}>{l?"Updating…":"Update password"}</Button></form></div>}

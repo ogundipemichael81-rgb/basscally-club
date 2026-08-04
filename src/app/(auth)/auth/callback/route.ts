@@ -7,8 +7,8 @@ import {
   isSupabaseClientConfigured,
 } from "@/lib/env";
 import { routes } from "@/lib/routes";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/admin/allowlist";
+import { provisionPublicUser } from "@/lib/auth/provision-user";
 
 function loginErrorRedirect(request: NextRequest, message: string) {
   const url = new URL(routes.auth.login, request.url);
@@ -27,11 +27,12 @@ export async function GET(request: NextRequest) {
 
   const code = request.nextUrl.searchParams.get("code");
   const tokenHash = request.nextUrl.searchParams.get("token_hash");
+  const callbackType = request.nextUrl.searchParams.get("type");
   if (!code && !tokenHash) {
     return loginErrorRedirect(request, "This sign-in link is invalid or has expired.");
   }
 
-  const destination = new URL(routes.member.dashboard, request.url);
+  const destination = new URL(callbackType === "recovery" ? "/auth/reset-password" : routes.member.dashboard, request.url);
   const response = NextResponse.redirect(destination);
 
   const supabase = createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
   });
 
   const { error } = tokenHash
-    ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" })
+    ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type: callbackType === "recovery" ? "recovery" : "email" })
     : await supabase.auth.exchangeCodeForSession(code!);
   if (error) {
     return loginErrorRedirect(
@@ -58,17 +59,8 @@ export async function GET(request: NextRequest) {
   }
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (user?.id && user.email && hasSupabaseServiceRole()) {
-    const admin = createAdminClient();
-    const { error: userError } = await admin.from("users").upsert(
-      { id: user.id, email: user.email.toLowerCase(), last_login_at: new Date().toISOString() },
-      { onConflict: "id" },
-    );
-    if (userError) {
-      console.error("[auth/callback] public user sync failed:", userError.message);
-    }
-  }
-  if (user?.email && isAdminEmail(user.email)) {
+  if (user?.id && user.email && hasSupabaseServiceRole()) await provisionPublicUser(user);
+  if (callbackType !== "recovery" && user?.email && isAdminEmail(user.email)) {
     destination.pathname = routes.admin.root;
   }
 
