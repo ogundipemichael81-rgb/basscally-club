@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAdminEmail } from "@/lib/admin/allowlist";
 import { updateSession } from "@/lib/supabase/middleware";
 import { routes } from "@/lib/routes";
+import { AUTH_FLOW_COOKIE, readAuthFlow } from "@/lib/auth/flow-cookie";
 
 const MOCK_COOKIE_NAME = "basscally_mock_user_id";
 const MOCK_ADMIN_ID = "mock-admin-michael";
@@ -68,6 +69,19 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const { response, user } = await updateSession(request);
+  const flow = await readAuthFlow(request.cookies.get(AUTH_FLOW_COOKIE)?.value);
+
+  if (pathname === "/auth/reset-password" && flow !== "recovery_pending") {
+    return NextResponse.redirect(new URL("/auth/forgot-password", request.url));
+  }
+
+  if (flow === "recovery_pending") {
+    const allowed = pathname === "/auth/reset-password" || pathname === "/auth/cancel-recovery" || pathname.startsWith("/_next/") || pathname.startsWith("/favicon");
+    if (!allowed) {
+      if (pathname.startsWith("/api/")) return NextResponse.json({ error: "recovery_incomplete" }, { status: 403 });
+      return NextResponse.redirect(new URL("/auth/reset-password", request.url));
+    }
+  }
 
   if (pathname === routes.admin.unauthorized) {
     if (isMockAllowed(request)) {

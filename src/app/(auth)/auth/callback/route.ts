@@ -9,6 +9,7 @@ import {
 import { routes } from "@/lib/routes";
 import { isAdminEmail } from "@/lib/admin/allowlist";
 import { provisionPublicUser } from "@/lib/auth/provision-user";
+import { AUTH_FLOW_COOKIE, encodeAuthFlow } from "@/lib/auth/flow-cookie";
 
 function loginErrorRedirect(request: NextRequest, message: string) {
   const url = new URL(routes.auth.login, request.url);
@@ -59,11 +60,16 @@ export async function GET(request: NextRequest) {
   }
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (user?.id && user.email && hasSupabaseServiceRole()) await provisionPublicUser(user);
+  if (callbackType !== "recovery" && user?.id && user.email && hasSupabaseServiceRole()) await provisionPublicUser(user);
   if (callbackType !== "recovery" && user?.email && isAdminEmail(user.email)) {
     destination.pathname = routes.admin.root;
   }
 
   response.headers.set("Cache-Control", "private, no-store");
+  if (callbackType === "recovery") {
+    response.cookies.set(AUTH_FLOW_COOKIE, await encodeAuthFlow("recovery_pending"), {
+      httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 15 * 60,
+    });
+  }
   return response;
 }
