@@ -125,7 +125,10 @@ export async function middleware(request: NextRequest) {
 
   if (pathname === routes.admin.login) {
     if (!user) return response;
-    return NextResponse.redirect(new URL(isAdminEmail(user.email) ? routes.admin.root : routes.admin.unauthorized, request.url));
+    // Let the dedicated login screen clear a normal member's local session and
+    // show one generic message rather than silently dropping them into member UI.
+    if (!isAdminEmail(user.email)) return response;
+    return NextResponse.redirect(new URL(routes.admin.root, request.url));
   }
 
   const needsMemberAuth =

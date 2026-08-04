@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -8,6 +8,18 @@ export function AdminLoginForm({ next }: { next?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
   const [error, setError] = useState(""); const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    let active = true;
+    const supabase = createClient();
+    void supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const check = await fetch("/api/admin/session-check", { cache: "no-store" });
+      if (check.ok) { router.replace("/admin"); return; }
+      await supabase.auth.signOut({ scope: "local" });
+      if (active) setError("This account is not authorised for administration.");
+    });
+    return () => { active = false; };
+  }, [router]);
   async function submit(event: React.FormEvent) {
     event.preventDefault(); setLoading(true); setError("");
     const supabase = createClient();
