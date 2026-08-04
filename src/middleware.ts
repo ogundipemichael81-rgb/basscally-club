@@ -171,6 +171,7 @@ export const config = {
     "/c/:path*",
     "/admin/:path*",
     "/api/admin/:path*",
+    "/api/content/:path*",
     "/auth/:path*",
     "/api/cron/:path*",
   ],
