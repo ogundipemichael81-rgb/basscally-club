@@ -29,6 +29,8 @@ The admin form uses shared Basscally field components for text fields. Native ch
 
 ## Verification
 
+The first deployment of this repair (`dpl_Vt5RuGj5eT7oZSWm8jTCeq2Vv917`) failed because the initial commit referenced `getPracticeSequence` before the corresponding export was included in the production commit. The follow-up commit completes that integration and keeps the free-preview type and authorization changes together.
+
 - `npm run lint`: passed with existing warnings only; 0 errors.
 - `npm run typecheck`: passed.
 - `npm run build`: passed on Next.js 16.2.6.

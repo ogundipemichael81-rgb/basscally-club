@@ -19,7 +19,10 @@ export type ContentDetail = {
   publishedAt: string | null;
   downloadCount: number;
   issueLabel: string | null;
+  isFreePreview: boolean;
 };
+
+export type PracticeTrack = Pick<ContentDetail, "id" | "title">;
 
 const DEMO_CONTENT: Record<string, ContentDetail> = {
   "e0000000-0000-4000-8000-000000000001": {
@@ -33,6 +36,7 @@ const DEMO_CONTENT: Record<string, ContentDetail> = {
     publishedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
     downloadCount: 0,
     issueLabel: "Issue 003",
+    isFreePreview: false,
   },
   "e0000000-0000-4000-8000-000000000002": {
     id: "e0000000-0000-4000-8000-000000000002",
@@ -45,6 +49,7 @@ const DEMO_CONTENT: Record<string, ContentDetail> = {
     publishedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
     downloadCount: 0,
     issueLabel: "Issue 002",
+    isFreePreview: false,
   },
   "e0000000-0000-4000-8000-000000000003": {
     id: "e0000000-0000-4000-8000-000000000003",
@@ -58,6 +63,7 @@ const DEMO_CONTENT: Record<string, ContentDetail> = {
     publishedAt: new Date(Date.now() - 86400000).toISOString(),
     downloadCount: 0,
     issueLabel: "Issue 001",
+    isFreePreview: false,
   },
 };
 
@@ -71,7 +77,7 @@ export async function getContentDetail(contentId: string): Promise<ContentDetail
   const { data: content, error } = await admin
     .from("content")
     .select(
-      "id, title, type, description, difficulty, cover_image_url, status, published_at",
+      "id, title, type, description, difficulty, cover_image_url, status, published_at, is_free_preview",
     )
     .eq("id", contentId)
     .maybeSingle();
@@ -104,5 +110,43 @@ export async function getContentDetail(contentId: string): Promise<ContentDetail
     publishedAt: content.published_at,
     downloadCount: downloadCount ?? 0,
     issueLabel: issueNumber ? `Issue ${String(issueNumber).padStart(3, "0")}` : null,
+    isFreePreview: Boolean(content.is_free_preview),
   };
+}
+
+/**
+ * The lightweight practice sequence used by the player next/previous controls.
+ * A future pack model can replace this ordering without changing player behaviour.
+ */
+export async function getPracticeSequence(contentId: string): Promise<PracticeTrack[]> {
+  if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
+    return Object.values(DEMO_CONTENT)
+      .sort((a, b) => (a.publishedAt ?? "").localeCompare(b.publishedAt ?? ""))
+      .map(({ id, title }) => ({ id, title }));
+  }
+
+  const admin = createAdminClient();
+  const { data: tags } = await admin
+    .from("content_style_tags")
+    .select("style_id")
+    .eq("content_id", contentId);
+  const styleIds = tags?.map((tag) => tag.style_id).filter(Boolean) ?? [];
+
+  let query = admin
+    .from("content")
+    .select("id, title")
+    .eq("status", "published")
+    .order("published_at", { ascending: true });
+
+  if (styleIds.length) {
+    const { data: tagged } = await admin
+      .from("content_style_tags")
+      .select("content_id")
+      .in("style_id", styleIds);
+    const ids = tagged?.map((tag) => tag.content_id).filter(Boolean) ?? [];
+    if (ids.length) query = query.in("id", ids);
+  }
+
+  const { data } = await query;
+  return data?.map(({ id, title }) => ({ id, title })) ?? [];
 }
