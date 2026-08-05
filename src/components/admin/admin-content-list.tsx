@@ -145,7 +145,10 @@ export function AdminContentList({ rows, loadError }: Props) {
                   <TableCell>{row.typeLabel}</TableCell>
                   <TableCell>{row.styleLabel ?? "—"}</TableCell>
                   <TableCell>
-                    <Badge variant={statusBadgeVariant(row.status)}>{row.status}</Badge>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant={statusBadgeVariant(row.status)}>{row.status}</Badge>
+                      {row.isFreePreview && row.status === "published" ? <Badge variant="active">Free Preview</Badge> : null}
+                    </div>
                   </TableCell>
                   <TableCell>{formatDate(row.publishedAt ?? row.scheduledFor)}</TableCell>
                   <TableCell className="text-right">

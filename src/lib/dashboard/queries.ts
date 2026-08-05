@@ -9,6 +9,7 @@ import {
   isSupabaseClientConfigured,
 } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getPublishedFreePreview } from "@/lib/content/queries";
 
 type ContentRow = {
   id: string;
@@ -55,6 +56,10 @@ export async function getDashboardData(userId?: string): Promise<DashboardData> 
   const admin = createAdminClient();
   const nowIso = new Date().toISOString();
 
+  // Resolve this separately from the dashboard filters so an unpaid user's
+  // access never depends on account age, downloads, or a library query shape.
+  const currentPreview = await getPublishedFreePreview();
+
   const { data: publishedRows } = await admin
     .from("content")
     .select(
@@ -83,9 +88,26 @@ export async function getDashboardData(userId?: string): Promise<DashboardData> 
     downloadedIds = (downloadRows ?? []).map((row) => row.content_id);
   }
 
-  const published = (publishedRows ?? []).map((row) =>
-    mapPublishedRow(row as ContentRow),
-  );
+  let published = (publishedRows ?? []).map((row) => {
+    const item = mapPublishedRow(row as ContentRow);
+    return currentPreview ? { ...item, isFreePreview: item.id === currentPreview.id } : item;
+  });
+  if (currentPreview && !published.some((item) => item.id === currentPreview.id)) {
+    published = [
+      {
+        id: currentPreview.id,
+        title: currentPreview.title,
+        type: currentPreview.type,
+        typeLabel: currentPreview.typeLabel,
+        description: currentPreview.description,
+        difficulty: currentPreview.difficulty,
+        coverUrl: currentPreview.coverUrl,
+        publishedAt: currentPreview.publishedAt,
+        isFreePreview: true,
+      },
+      ...published,
+    ];
+  }
   const upcoming = (upcomingRows ?? []).map((row) =>
     mapUpcomingRow(row as ContentRow),
   );

@@ -24,6 +24,60 @@ export type ContentDetail = {
 
 export type PracticeTrack = Pick<ContentDetail, "id" | "title">;
 
+/**
+ * Resolve the one global preview offered to unpaid members. This is deliberately
+ * content-based, never user-based: an administrator can replace the row without
+ * changing any account or membership record.
+ */
+export async function getPublishedFreePreview(): Promise<ContentDetail | null> {
+  if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
+    return Object.values(DEMO_CONTENT).find((item) => item.isFreePreview) ?? null;
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("content")
+    .select(
+      "id, title, type, description, difficulty, cover_image_url, status, published_at, is_free_preview, audio_storage_key",
+    )
+    .eq("status", "published")
+    .eq("is_free_preview", true)
+    .not("audio_storage_key", "is", null)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[content] published free preview query failed:", error.message);
+    throw new Error("Could not resolve the current free preview.");
+  }
+
+  if (!data) return null;
+
+  const { count: downloadCount } = await admin
+    .from("downloads")
+    .select("id", { count: "exact", head: true })
+    .eq("content_id", data.id);
+
+  const { count: issueIndex } = await admin
+    .from("content")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published")
+    .lte("published_at", data.published_at ?? new Date().toISOString());
+
+  return {
+    id: data.id,
+    title: data.title,
+    type: data.type,
+    typeLabel: contentTypeLabel(data.type),
+    description: data.description,
+    difficulty: data.difficulty,
+    coverUrl: getCoverPublicUrl(data.cover_image_url),
+    publishedAt: data.published_at,
+    downloadCount: downloadCount ?? 0,
+    issueLabel: issueIndex ? `Issue ${String(issueIndex).padStart(3, "0")}` : null,
+    isFreePreview: true,
+  };
+}
+
 const DEMO_CONTENT: Record<string, ContentDetail> = {
   "e0000000-0000-4000-8000-000000000001": {
     id: "e0000000-0000-4000-8000-000000000001",

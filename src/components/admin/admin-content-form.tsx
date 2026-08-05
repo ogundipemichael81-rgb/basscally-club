@@ -105,6 +105,12 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isFreePreview && !initial?.isFreePreview) {
+      const confirmed = window.confirm(
+        "Make this the current free preview? The existing preview will return to member-only access.",
+      );
+      if (!confirmed) return;
+    }
     setSubmitting(true);
     setError(null);
     setSuccess(null);
@@ -300,7 +306,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
                 <input type="checkbox" checked={isFreePreview} onChange={(event) => setIsFreePreview(event.target.checked)} className="h-5 w-5 accent-[var(--color-brand)]" />
                 Make this the free preview sample
               </label>
-              <p className="text-xs text-[var(--color-text-dim)]">Only one published drop can be the unpaid preview. If another published preview exists, saving will safely fail until it is changed.</p>
+              <p className="text-xs text-[var(--color-text-dim)]">Only one published, audio-backed drop can be the unpaid preview. Saving this as preview atomically replaces the current one; the previous preview returns to member-only access.</p>
             </div>
           </section>
 

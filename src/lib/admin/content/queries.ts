@@ -52,6 +52,15 @@ export type AdminContentDetail = {
   isFreePreview: boolean;
 };
 
+/** Atomically moves the global preview flag to another published audio drop. */
+export async function replacePublishedFreePreview(contentId: string): Promise<void> {
+  const admin = createAdminClient();
+  const { error } = await admin.rpc("replace_published_free_preview", {
+    p_new_content_id: contentId,
+  });
+  if (error) throw new Error(`Could not replace free preview: ${error.message}`);
+}
+
 function readArtistName(artists: unknown): string | null {
   if (!artists) return null;
   if (Array.isArray(artists)) {
@@ -227,7 +236,8 @@ export async function createAdminContent(options: {
       published_at: options.publish.publishedAt,
       email_subject: options.fields.emailSubject || null,
       email_body: options.fields.emailBody || null,
-      is_free_preview: options.fields.isFreePreview,
+      // The unique preview flag is changed through the atomic RPC below.
+      is_free_preview: false,
       created_by_admin_id: options.adminUserId,
       updated_at: new Date().toISOString(),
     })
@@ -242,6 +252,10 @@ export async function createAdminContent(options: {
   if (verifyError || !verified) throw new Error("Drop was not confirmed after saving.");
 
   await syncStyleTag(data.id, options.fields.styleId);
+
+  if (options.fields.isFreePreview) {
+    await replacePublishedFreePreview(data.id);
+  }
 
   if (options.publish.queueEmail) {
     // Publishing must not fail because optional Resend/email tables are not configured.
@@ -265,6 +279,17 @@ export async function updateAdminContent(options: {
   coverImageUrl?: string | null;
 }): Promise<void> {
   const admin = createAdminClient();
+  const { data: existing, error: existingError } = await admin
+    .from("content")
+    .select("status, is_free_preview")
+    .eq("id", options.id)
+    .maybeSingle();
+  if (existingError) throw new Error(existingError.message);
+  if (!existing) throw new Error("Drop not found.");
+  if (existing.is_free_preview && !options.fields.isFreePreview) {
+    throw new Error("Select a replacement published drop before removing the current free preview.");
+  }
+
   const patch: Record<string, unknown> = {
     title: options.fields.title,
     type: options.fields.type,
@@ -275,7 +300,8 @@ export async function updateAdminContent(options: {
     published_at: options.publish.publishedAt,
     email_subject: options.fields.emailSubject || null,
     email_body: options.fields.emailBody || null,
-    is_free_preview: options.fields.isFreePreview,
+    // The unique preview flag is changed through the atomic RPC below.
+    is_free_preview: false,
     updated_at: new Date().toISOString(),
   };
 
@@ -294,6 +320,10 @@ export async function updateAdminContent(options: {
   }
 
   await syncStyleTag(options.id, options.fields.styleId);
+
+  if (options.fields.isFreePreview) {
+    await replacePublishedFreePreview(options.id);
+  }
 
   if (options.publish.queueEmail) {
     try {
