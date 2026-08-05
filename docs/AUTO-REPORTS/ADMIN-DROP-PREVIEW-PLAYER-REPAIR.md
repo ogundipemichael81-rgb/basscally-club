@@ -29,7 +29,7 @@ The admin form uses shared Basscally field components for text fields. Native ch
 
 ## Verification
 
-The first deployment of this repair (`dpl_Vt5RuGj5eT7oZSWm8jTCeq2Vv917`) failed because the initial commit referenced `getPracticeSequence` before the corresponding export was included in the production commit. The follow-up commit completes that integration and keeps the free-preview type and authorization changes together.
+The first deployment of this repair (`dpl_Vt5RuGj5eT7oZSWm8jTCeq2Vv917`) failed because the initial commit referenced `getPracticeSequence` before the corresponding export was included in the production commit. A follow-up deployment then exposed a second integration gap: `ContentDetailView` passed `practiceSequence` while the deployed `ContentAudioPlayer` props did not yet declare it. The player contract is now reconciled with the sequence/query implementation, keeping the free-preview type, authorization, and practice navigation changes together.
 
 - `npm run lint`: passed with existing warnings only; 0 errors.
 - `npm run typecheck`: passed.
