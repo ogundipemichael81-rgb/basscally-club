@@ -8,14 +8,16 @@ import {
   difficultyBadgeVariant,
   formatDropDate,
 } from "@/lib/dashboard/format";
-import type { ContentDetail } from "@/lib/content/queries";
+import type { ContentDetail, PracticeTrack } from "@/lib/content/queries";
 import { routes } from "@/lib/routes";
 
 type Props = {
   content: ContentDetail;
+  practiceSequence: PracticeTrack[];
+  accessMode?: "preview" | "member";
 };
 
-export function ContentDetailView({ content }: Props) {
+export function ContentDetailView({ content, practiceSequence, accessMode = "member" }: Props) {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <DashboardScrollReveal>
@@ -104,7 +106,7 @@ export function ContentDetailView({ content }: Props) {
             </dl>
 
             <div className="mt-6 flex flex-wrap gap-3 max-[680px]:flex-col">
-              <ContentDownloadButton contentId={content.id} />
+              {accessMode === "member" ? <ContentDownloadButton contentId={content.id} /> : <Badge variant="brand">Free sample</Badge>}
               <ContentShareButton contentId={content.id} title={content.title} />
             </div>
           </div>
@@ -112,7 +114,11 @@ export function ContentDetailView({ content }: Props) {
       </DashboardScrollReveal>
 
       <DashboardScrollReveal delayMs={120}>
-        <ContentAudioPlayer contentId={content.id} title={content.title} />
+        <ContentAudioPlayer
+          contentId={content.id}
+          title={content.title}
+          practiceSequence={practiceSequence}
+        />
       </DashboardScrollReveal>
     </div>
   );

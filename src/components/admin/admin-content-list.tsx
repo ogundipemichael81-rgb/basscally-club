@@ -36,9 +36,10 @@ function formatDate(value: string | null): string {
 
 type Props = {
   rows: AdminContentRow[];
+  loadError?: string | null;
 };
 
-export function AdminContentList({ rows }: Props) {
+export function AdminContentList({ rows, loadError }: Props) {
   const [query, setQuery] = useState("");
   const [resendState, setResendState] = useState<Record<string, string>>({});
   const searchParams = useSearchParams();
@@ -113,7 +114,12 @@ export function AdminContentList({ rows }: Props) {
         onChange={(event) => setQuery(event.target.value)}
       />
 
-      {filtered.length === 0 ? (
+      {loadError ? (
+        <div className="mt-8 rounded-[var(--radius-md)] border border-[rgba(248,113,113,0.35)] bg-[rgba(248,113,113,0.08)] p-4 text-sm text-[var(--color-danger)]" role="alert">
+          <p>{loadError}</p>
+          <Link href={routes.admin.content} className="mt-3 inline-flex min-h-11 items-center underline">Retry</Link>
+        </div>
+      ) : filtered.length === 0 ? (
         <p className="mt-8 text-sm text-[var(--color-text-muted)]">
           {rows.length === 0
             ? "No drops yet. Upload your first practice drop."

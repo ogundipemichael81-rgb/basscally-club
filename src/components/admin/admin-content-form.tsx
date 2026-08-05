@@ -45,7 +45,7 @@ function initialPublishAction(content?: AdminContentDetail): PublishAction {
 const PUBLISH_LABELS: Record<PublishAction, { title: string; hint: string }> = {
   draft: { title: "Draft", hint: "Save without sending" },
   scheduled: { title: "Scheduled", hint: "Publish later" },
-  publish_now: { title: "Publish now", hint: "Queue member email" },
+  publish_now: { title: "Publish now", hint: "Make this drop available immediately" },
 };
 
 export function AdminContentForm({ mode, styles, initial }: Props) {
@@ -67,6 +67,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
   );
   const [emailSubject, setEmailSubject] = useState(initial?.emailSubject ?? "");
   const [emailBody, setEmailBody] = useState(initial?.emailBody ?? "");
+  const [notifyMembers, setNotifyMembers] = useState(false);
   const [isFreePreview, setIsFreePreview] = useState(initial?.isFreePreview ?? false);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -118,6 +119,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     formData.set("publishAction", publishAction);
     formData.set("emailSubject", emailSubject);
     formData.set("emailBody", emailBody);
+    formData.set("notifyMembers", String(notifyMembers));
     formData.set("isFreePreview", String(isFreePreview));
     if (audioFile) formData.set("audio", audioFile);
     if (coverFile) formData.set("cover", coverFile);
@@ -160,8 +162,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
             {pageTitle}
           </h1>
           <p className="mt-3 max-w-2xl text-[var(--color-text-muted)]">
-            Audio upload, metadata, artist/style tag, status toggle, and member
-            email on one admin surface.
+            Audio upload, metadata, artist/style tag, and publish status on one admin surface.
           </p>
         </div>
         <Link
@@ -343,16 +344,21 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
               Email notification
             </p>
             <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold">
-              Tell members clearly
+              Optional member notification
             </h2>
+            <label className="mt-4 flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] px-4 py-3 text-sm">
+              <input type="checkbox" checked={notifyMembers} onChange={(event) => setNotifyMembers(event.target.checked)} className="h-5 w-5 accent-[var(--color-brand)]" />
+              <span>Notify active members by email (currently unavailable)</span>
+            </label>
+            <p className="mt-2 text-xs text-[var(--color-text-dim)]">Member email notifications will become available when Basscally email delivery is configured. Publishing never depends on this.</p>
             <div className="mt-4 space-y-4">
               <Input
-                label="Email subject"
+                label="Email subject (optional)"
                 value={emailSubject}
                 onChange={(event) => setEmailSubject(event.target.value)}
               />
               <Textarea
-                label="Email body"
+                label="Email body (optional)"
                 value={emailBody}
                 onChange={(event) => setEmailBody(event.target.value)}
               />

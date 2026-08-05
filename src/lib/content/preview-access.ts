@@ -2,7 +2,6 @@ import "server-only";
 
 import {
   AUDIO_STORAGE_BUCKET,
-  PREVIEW_MAX_SECONDS,
   SIGNED_URL_EXPIRY_SECONDS,
 } from "@/lib/constants";
 import { storageObjectPath } from "@/lib/storage/audio-path";
@@ -96,6 +95,6 @@ export async function createPreviewAccess(
     url: signed.signedUrl,
     expiresIn: SIGNED_URL_EXPIRY_SECONDS,
     gated: !hasFullAccess,
-    previewSeconds: hasFullAccess ? null : PREVIEW_MAX_SECONDS,
+    previewSeconds: null,
   };
 }

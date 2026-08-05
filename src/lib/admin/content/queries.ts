@@ -75,11 +75,12 @@ export async function listStyleOptions(): Promise<StyleOption[]> {
   }
 
   const admin = createAdminClient();
-  const { data } = await admin
+  const { data, error } = await admin
     .from("styles")
     .select("id, slug, title, artists(name)")
     .order("sort_order", { ascending: true });
 
+  if (error) throw new Error(`style options query failed: ${error.message}`);
   return (data ?? []).map((row) => {
     const label = mapStyleLabel({
       title: row.title,
@@ -101,19 +102,27 @@ export async function listAdminContent(): Promise<AdminContentRow[]> {
   }
 
   const admin = createAdminClient();
-  const { data } = await admin
+  const { data, error } = await admin
     .from("content")
-    .select(
-      "id, title, type, difficulty, status, scheduled_for, published_at, updated_at, is_free_preview, content_style_tags(style_id, styles(title, artists(name)))",
-    )
+    .select("id, title, type, difficulty, status, scheduled_for, published_at, updated_at, is_free_preview")
     .order("updated_at", { ascending: false });
+  if (error) throw new Error(`content list query failed: ${error.message}`);
+
+  const styleLabels = new Map<string, string>();
+  const ids = (data ?? []).map((row) => row.id);
+  if (ids.length) {
+    const { data: tags, error: tagError } = await admin
+      .from("content_style_tags")
+      .select("content_id, styles(title, artists(name))")
+      .in("content_id", ids);
+    if (tagError) throw new Error(`content style query failed: ${tagError.message}`);
+    for (const tag of tags ?? []) {
+      const style = tag.styles as unknown as { title: string; artists: unknown } | null;
+      if (style) styleLabels.set(tag.content_id, mapStyleLabel(style));
+    }
+  }
 
   return (data ?? []).map((row) => {
-    const tag = Array.isArray(row.content_style_tags)
-      ? row.content_style_tags[0]
-      : null;
-    const style = tag?.styles as { title: string; artists: unknown } | null | undefined;
-
     return {
       id: row.id,
       title: row.title,
@@ -124,7 +133,7 @@ export async function listAdminContent(): Promise<AdminContentRow[]> {
       scheduledFor: row.scheduled_for,
       publishedAt: row.published_at,
       updatedAt: row.updated_at,
-      styleLabel: style ? mapStyleLabel(style) : null,
+      styleLabel: styleLabels.get(row.id) ?? null,
       isFreePreview: Boolean(row.is_free_preview),
     };
   });
@@ -176,13 +185,15 @@ export async function getAdminContentById(
 
 async function syncStyleTag(contentId: string, styleId: string | null | undefined) {
   const admin = createAdminClient();
-  await admin.from("content_style_tags").delete().eq("content_id", contentId);
+  const { error: deleteError } = await admin.from("content_style_tags").delete().eq("content_id", contentId);
+  if (deleteError) throw new Error(`Could not update style tag: ${deleteError.message}`);
 
   if (styleId) {
-    await admin.from("content_style_tags").insert({
+    const { error: insertError } = await admin.from("content_style_tags").insert({
       content_id: contentId,
       style_id: styleId,
     });
+    if (insertError) throw new Error(`Could not attach style tag: ${insertError.message}`);
   }
 }
 
@@ -226,6 +237,9 @@ export async function createAdminContent(options: {
   if (error || !data) {
     throw new Error(error?.message ?? "Could not save drop.");
   }
+
+  const { data: verified, error: verifyError } = await admin.from("content").select("id, status").eq("id", data.id).maybeSingle();
+  if (verifyError || !verified) throw new Error("Drop was not confirmed after saving.");
 
   await syncStyleTag(data.id, options.fields.styleId);
 

@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { PastDueBanner } from "@/components/account/past-due-banner";
 import { ContentDetailView } from "@/components/content/content-detail-view";
 import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summary";
-import { getContentDetail } from "@/lib/content/queries";
+import { getContentDetail, getPracticeSequence } from "@/lib/content/queries";
 import { getMemberSession } from "@/lib/subscriptions/member-session";
 import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
@@ -33,19 +33,22 @@ export default async function ContentDetailPage({ params }: Props) {
     redirect(routes.paywall({ contentId: id, reason: "past_due" }));
   }
 
-  if (!session.hasAccess) {
-    redirect(routes.paywall({ contentId: id, reason: "lapsed" }));
-  }
-
-  const content = await getContentDetail(id);
+  const [content, practiceSequence] = await Promise.all([
+    getContentDetail(id),
+    getPracticeSequence(id),
+  ]);
   if (!content) {
     notFound();
+  }
+
+  if (!session.hasAccess && !content.isFreePreview) {
+    redirect(routes.paywall({ contentId: id, reason: "lapsed" }));
   }
 
   return (
     <>
       {summary?.isPastDue ? <PastDueBanner summary={summary} className="mb-8" /> : null}
-      <ContentDetailView content={content} />
+      <ContentDetailView content={content} practiceSequence={practiceSequence} accessMode={session.hasAccess ? "member" : "preview"} />
     </>
   );
 }

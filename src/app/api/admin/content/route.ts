@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { logAdminAudit } from "@/lib/admin/audit";
 import { requireAdminApi } from "@/lib/admin/auth";
 import { resolvePublishState } from "@/lib/admin/content/publish";
@@ -91,7 +92,11 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ ok: true, id: created.id });
+    revalidatePath("/admin/content");
+    revalidatePath("/dashboard");
+    revalidatePath(`/c/${created.id}`);
+
+    return NextResponse.json({ ok: true, id: created.id, status: publish.status });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Could not save drop." },

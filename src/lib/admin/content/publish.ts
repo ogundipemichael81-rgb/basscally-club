@@ -30,7 +30,7 @@ export function resolvePublishState(
       status: "scheduled",
       scheduledFor,
       publishedAt: null,
-      queueEmail: true,
+      queueEmail: Boolean(fields.notifyMembers),
       emailScheduledFor: scheduledFor,
     };
   }
@@ -39,7 +39,7 @@ export function resolvePublishState(
     status: "published",
     scheduledFor: null,
     publishedAt: now.toISOString(),
-    queueEmail: true,
+    queueEmail: Boolean(fields.notifyMembers),
     emailScheduledFor: now.toISOString(),
   };
 }

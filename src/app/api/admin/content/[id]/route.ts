@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { logAdminAudit } from "@/lib/admin/audit";
 import { requireAdminApi } from "@/lib/admin/auth";
 import { resolvePublishState } from "@/lib/admin/content/publish";
@@ -117,7 +118,11 @@ export async function PATCH(request: Request, { params }: Props) {
       },
     });
 
-    return NextResponse.json({ ok: true, id });
+    revalidatePath("/admin/content");
+    revalidatePath("/dashboard");
+    revalidatePath(`/c/${id}`);
+
+    return NextResponse.json({ ok: true, id, status: publish.status });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Could not save changes." },
@@ -152,6 +157,10 @@ export async function DELETE(_request: Request, { params }: Props) {
       entityId: id,
       metadata: { title: existing.title },
     });
+
+    revalidatePath("/admin/content");
+    revalidatePath("/dashboard");
+    revalidatePath(`/c/${id}`);
 
     return NextResponse.json({ ok: true });
   } catch (err) {

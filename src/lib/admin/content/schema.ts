@@ -20,6 +20,7 @@ export const contentFieldsSchema = z.object({
   publishAction: z.enum(PUBLISH_ACTIONS),
   emailSubject: z.string().trim().max(160).optional().nullable(),
   emailBody: z.string().trim().max(2000).optional().nullable(),
+  notifyMembers: z.boolean().default(false),
   isFreePreview: z.boolean().default(false),
 });
 
@@ -45,6 +46,7 @@ export function parseContentFields(formData: FormData) {
       : null,
     emailBody: formData.get("emailBody") ? String(formData.get("emailBody")) : null,
     isFreePreview: formData.get("isFreePreview") === "true",
+    notifyMembers: formData.get("notifyMembers") === "true",
   };
 
   return contentFieldsSchema.safeParse(raw);
@@ -57,12 +59,11 @@ export function validatePublishRequirements(
     return "Release date is required when scheduling a drop.";
   }
 
-  if (
-    (fields.publishAction === "publish_now" ||
-      fields.publishAction === "scheduled") &&
-    !fields.emailSubject?.trim()
-  ) {
-    return "Email subject is required before publishing.";
+  if (fields.notifyMembers && !fields.emailSubject?.trim()) {
+    return "Email subject is required when member notifications are enabled.";
+  }
+  if (fields.notifyMembers && !fields.emailBody?.trim()) {
+    return "Email body is required when member notifications are enabled.";
   }
 
   return null;
