@@ -23,6 +23,10 @@ function isAuthedApiPath(pathname: string) {
   return pathname.startsWith("/api/content/");
 }
 
+function isPausedDownloadPath(pathname: string) {
+  return pathname.startsWith("/api/content/") && pathname.endsWith("/download");
+}
+
 function isAdminApiPath(pathname: string) {
   return pathname.startsWith("/api/admin");
 }
@@ -131,7 +135,7 @@ export async function middleware(request: NextRequest) {
   const needsMemberAuth =
     isMemberPath(pathname) ||
     isAdminPath(pathname) ||
-    isAuthedApiPath(pathname) ||
+    (isAuthedApiPath(pathname) && !isPausedDownloadPath(pathname)) ||
     isAdminApiPath(pathname);
 
   if (!needsMemberAuth) {
