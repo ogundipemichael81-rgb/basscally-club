@@ -19,6 +19,8 @@ import {
 import type { AdminContentDetail, StyleOption } from "@/lib/admin/content/queries";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { localDateTimeToUtcIso, validateScheduledFor } from "@/lib/admin/content/schedule";
 
 type PublishAction = (typeof PUBLISH_ACTIONS)[number];
 
@@ -103,6 +105,28 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     ],
   );
 
+  const uploadAudioDirectly = async (): Promise<string | null> => {
+    if (!audioFile) return null;
+    const authorization = await fetch("/api/admin/content/upload-authorize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: audioFile.name, size: audioFile.size, contentType: audioFile.type || null, contentId: initial?.id }),
+    });
+    const details = (await authorization.json().catch(() => ({}))) as { error?: string; bucket?: string; path?: string; token?: string; storageKey?: string };
+    if (!authorization.ok || !details.bucket || !details.path || !details.token || !details.storageKey) {
+      throw new Error(details.error ?? "Could not authorize audio upload.");
+    }
+    const supabase = createClient();
+    const { error: uploadError } = await supabase.storage.from(details.bucket).uploadToSignedUrl(
+      details.path,
+      details.token,
+      audioFile,
+      { contentType: audioFile.type || "audio/mpeg" },
+    );
+    if (uploadError) throw new Error(uploadError.message);
+    return details.storageKey;
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFreePreview && !initial?.isFreePreview) {
@@ -112,9 +136,8 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
       if (!confirmed) return;
     }
     if (publishAction === "scheduled") {
-      if (!scheduledFor) { setError("Release date is required when scheduling a drop."); return; }
-      const scheduledTimestamp = new Date(scheduledFor).getTime();
-      if (!Number.isFinite(scheduledTimestamp) || scheduledTimestamp <= Date.now()) { setError("Scheduled release must be a valid future date."); return; }
+      const scheduledError = validateScheduledFor(scheduledFor);
+      if (scheduledError) { setError(scheduledError); return; }
     }
     setSubmitting(true);
     setError(null);
@@ -126,13 +149,14 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     formData.set("difficulty", difficulty);
     formData.set("description", description);
     if (styleId) formData.set("styleId", styleId);
-    formData.set("scheduledFor", publishAction === "scheduled" ? new Date(scheduledFor).toISOString() : scheduledFor);
+    formData.set("scheduledFor", publishAction === "scheduled" ? localDateTimeToUtcIso(scheduledFor) : scheduledFor);
     formData.set("publishAction", publishAction);
     formData.set("emailSubject", emailSubject);
     formData.set("emailBody", emailBody);
     formData.set("notifyMembers", String(notifyMembers));
     formData.set("isFreePreview", String(isFreePreview));
-    if (audioFile) formData.set("audio", audioFile);
+    const audioStorageKey = await uploadAudioDirectly();
+    if (audioStorageKey) formData.set("audioStorageKey", audioStorageKey);
     if (coverFile) formData.set("cover", coverFile);
 
     const endpoint =
@@ -304,7 +328,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
                 ))}
               </Select>
               <p className="text-xs text-[var(--color-text-dim)]">
-                artist style tag — links this drop to style pages and the conversion
+                artist style tag ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â links this drop to style pages and the conversion
                 funnel.
               </p>
               <label className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] px-4 py-3 text-sm">
@@ -399,7 +423,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
             </Link>
             <AdminEmailPreviewDialog subject={emailSubject} body={emailBody} />
             <Button type="submit" disabled={submitting} className="min-h-11">
-              {submitting ? "Saving…" : saveLabel}
+              {submitting ? "SavingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦" : saveLabel}
             </Button>
           </div>
         </div>
@@ -474,7 +498,7 @@ function ChecklistItem({ done, title }: { done: boolean; title: string }) {
             : "bg-[rgba(255,255,255,0.04)] text-[var(--color-text-dim)]",
         )}
       >
-        {done ? "✓" : "·"}
+        {done ? "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ" : "ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â·"}
       </span>
       <strong className="text-sm text-[var(--color-text)]">{title}</strong>
     </div>

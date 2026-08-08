@@ -2,7 +2,7 @@
   "name": "basscally-club",
   "version": "0.1.0",
   "private": true,
-  "description": "Basscally Hub ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â weekly bass practice membership at basscally.club",
+  "description": "Basscally Hub ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â weekly bass practice membership at basscally.club",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -20,7 +20,8 @@
     "test:founding-trial-launch": "node scripts/test-founding-trial-launch.mjs",
     "test:founding-trial-acceptance": "node scripts/test-founding-trial-acceptance.mjs",
     "test:auth-isolation": "node scripts/test-auth-isolation.mjs",
-    "test:beta-publishing-library": "node scripts/test-beta-publishing-library.mjs"
+    "test:beta-publishing-library": "node scripts/test-beta-publishing-library.mjs",
+    "test:beta-production-safe": "node --experimental-strip-types scripts/test-beta-production-safe.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

@@ -10,6 +10,8 @@ import { routes } from "@/lib/routes";
 
 type Props = {
   items: DashboardContentItem[];
+  emptyTitle?: string;
+  emptyDescription?: string;
 };
 
 function PlayIcon() {
@@ -20,13 +22,13 @@ function PlayIcon() {
   );
 }
 
-export function DashboardContentGrid({ items }: Props) {
+export function DashboardContentGrid({ items, emptyTitle = "No drops in this view", emptyDescription = "Try another category or come back after the next release." }: Props) {
   if (items.length === 0) {
     return (
       <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--color-border)] p-8 text-center">
-        <p className="font-[family-name:var(--font-display)] text-lg font-bold">No drops in this view</p>
+        <p className="font-[family-name:var(--font-display)] text-lg font-bold">{emptyTitle}</p>
         <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-          Try another filter or download a drop from the library first.
+{emptyDescription}
         </p>
       </div>
     );

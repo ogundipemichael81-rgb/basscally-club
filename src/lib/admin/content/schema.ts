@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateScheduledFor } from "@/lib/admin/content/schedule";
 import {
   CONTENT_DIFFICULTIES,
   CONTENT_TYPES,
@@ -17,6 +18,7 @@ export const contentFieldsSchema = z.object({
     .nullable(),
   styleId: z.string().uuid().optional().nullable(),
   scheduledFor: z.string().optional().nullable(),
+  audioStorageKey: z.string().optional().nullable(),
   publishAction: z.enum(PUBLISH_ACTIONS),
   emailSubject: z.string().trim().max(160).optional().nullable(),
   emailBody: z.string().trim().max(2000).optional().nullable(),
@@ -40,6 +42,9 @@ export function parseContentFields(formData: FormData) {
     scheduledFor: formData.get("scheduledFor")
       ? String(formData.get("scheduledFor"))
       : null,
+    audioStorageKey: formData.get("audioStorageKey")
+      ? String(formData.get("audioStorageKey"))
+      : null,
     publishAction: String(formData.get("publishAction") ?? "draft"),
     emailSubject: formData.get("emailSubject")
       ? String(formData.get("emailSubject"))
@@ -55,12 +60,9 @@ export function parseContentFields(formData: FormData) {
 export function validatePublishRequirements(
   fields: ContentFieldsInput,
 ): string | null {
-  if (fields.publishAction === "scheduled" && !fields.scheduledFor) {
-    return "Release date is required when scheduling a drop.";
-  }
-  if (fields.publishAction === "scheduled" && fields.scheduledFor) {
-    const timestamp = Date.parse(fields.scheduledFor);
-    if (!Number.isFinite(timestamp) || timestamp <= Date.now()) return "Scheduled release must be a valid future date.";
+  if (fields.publishAction === "scheduled") {
+    const scheduledError = validateScheduledFor(fields.scheduledFor);
+    if (scheduledError) return scheduledError;
   }
 
   if (fields.notifyMembers && !fields.emailSubject?.trim()) {
@@ -72,3 +74,4 @@ export function validatePublishRequirements(
 
   return null;
 }
+

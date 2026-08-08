@@ -15,7 +15,7 @@ const ITEMS = [
   },
   {
     id: "mobile-library",
-    href: `${routes.member.dashboard}?filter=all#library`,
+    href: `${routes.member.dashboard}?filter=all`,
     label: "Library",
     match: (_pathname: string, filter: string | null) =>
       filter === "all" ||

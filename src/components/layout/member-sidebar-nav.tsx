@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/utils";
 import { routes } from "@/lib/routes";
+import { isMemberPrimaryNavActive } from "@/lib/dashboard/navigation";
 
 type NavItem = {
   href: string;
@@ -36,11 +37,7 @@ function isActive(pathname: string, filter: string | null, item: NavItem): boole
     return false;
   }
 
-  if (!item.filter) {
-    return !filter || filter === "all";
-  }
-
-  return filter === item.filter;
+  return isMemberPrimaryNavActive(filter, (item.filter ?? "dashboard") as "dashboard" | "all" | "bassless" | "grooves" | "fills" | "challenges");
 }
 
 export function MemberSidebarNav({ brand }: { brand: string }) {

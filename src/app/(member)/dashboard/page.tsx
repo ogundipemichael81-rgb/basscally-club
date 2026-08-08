@@ -14,7 +14,7 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { UnpaidPreviewDashboard } from "@/components/dashboard/unpaid-preview-dashboard";
 
 export const metadata: Metadata = {
-  title: "Dashboard — Basscally Hub",
+  title: "Dashboard â€” Basscally Hub",
   description: "Your latest drops, practice library, and upcoming releases.",
 };
 
@@ -46,6 +46,7 @@ async function DashboardContent({
   const filterParam = searchParams.filter;
   const filterValue = Array.isArray(filterParam) ? filterParam[0] : filterParam;
   const filter = parseDashboardFilter(filterValue);
+  const isOverview = !filterValue;
 
   let data;
   let summary;
@@ -70,7 +71,7 @@ async function DashboardContent({
     <>
       <TrialStateBanner session={session} nowMs={nowMs} />
       {summary ? <PastDueBanner summary={summary} className="mb-8" /> : null}
-      {session.hasAccess ? <DashboardPageView session={session} data={data} filter={filter} /> : <UnpaidPreviewDashboard data={data} />}
+      {session.hasAccess ? <DashboardPageView session={session} data={data} filter={filter} isOverview={isOverview} /> : <UnpaidPreviewDashboard data={data} />}
     </>
   );
 }
