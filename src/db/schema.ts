@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Drizzle schema â€” Basscally Hub (BH-02).
  * Apply to Supabase Postgres (EU) via `supabase/migrations/*.sql`.
  */
@@ -20,6 +20,13 @@ export const users = pgTable("users", {
   name: text("name"),
   country: text("country"),
   isFoundingMember: boolean("is_founding_member").notNull().default(false),
+  trialStartedAt: timestamp("trial_started_at", { withTimezone: true }),
+  trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),
+  foundingEligible: boolean("founding_eligible").notNull().default(false),
+  foundingPriceLocked: boolean("founding_price_locked").notNull().default(false),
+  foundingLockedAt: timestamp("founding_locked_at", { withTimezone: true }),
+  foundingPriceCents: integer("founding_price_cents"),
+  foundingCurrency: text("founding_currency").notNull().default("USD"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

@@ -328,7 +328,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
                 ))}
               </Select>
               <p className="text-xs text-[var(--color-text-dim)]">
-                artist style tag ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â links this drop to style pages and the conversion
+                Artist style tag - links this drop to style pages and the conversion
                 funnel.
               </p>
               <label className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border)] px-4 py-3 text-sm">
@@ -423,7 +423,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
             </Link>
             <AdminEmailPreviewDialog subject={emailSubject} body={emailBody} />
             <Button type="submit" disabled={submitting} className="min-h-11">
-              {submitting ? "SavingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦" : saveLabel}
+              {submitting ? "Saving..." : saveLabel}
             </Button>
           </div>
         </div>
@@ -498,7 +498,7 @@ function ChecklistItem({ done, title }: { done: boolean; title: string }) {
             : "bg-[rgba(255,255,255,0.04)] text-[var(--color-text-dim)]",
         )}
       >
-        {done ? "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ" : "ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â·"}
+        {done ? "Done" : "Pending"}
       </span>
       <strong className="text-sm text-[var(--color-text)]">{title}</strong>
     </div>

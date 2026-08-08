@@ -2,7 +2,7 @@
   "name": "basscally-club",
   "version": "0.1.0",
   "private": true,
-  "description": "Basscally Hub ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â weekly bass practice membership at basscally.club",
+  "description": "Basscally Hub - weekly bass practice membership at basscally.club",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +10,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test:recovery-request": "node scripts/test-recovery-request-guard.mjs",
+    "test:encoding-source": "node scripts/test-encoding-source.mjs",
     "bh:status": "python scripts/basscally-autopilot-controller.py status",
     "bh:next": "python scripts/basscally-autopilot-controller.py next",
     "bh:complete": "python scripts/basscally-autopilot-controller.py complete",
