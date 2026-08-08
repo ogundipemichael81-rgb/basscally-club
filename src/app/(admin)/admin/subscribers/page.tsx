@@ -1,27 +1,7 @@
-import { AdminSubscribersList } from "@/components/admin/admin-subscribers-list";
-import { listAdminSubscribers } from "@/lib/admin/metrics/queries";
+﻿import { AdminSubscribersList } from "@/components/admin/admin-subscribers-list";
+import { listAdminMembers, type AdminMemberFilter, type AdminMemberSort } from "@/lib/admin/metrics/queries";
 import type { Metadata } from "next";
+export const metadata: Metadata={title:"Members — Basscally Admin",description:"Founding trial member control room."};
+type Props={searchParams:Promise<Record<string,string|string[]|undefined>>};
+export default async function AdminSubscribersPage({searchParams}:Props){const p=await searchParams; const q=typeof p.q==='string'?p.q:""; const filter=(typeof p.filter==='string'?p.filter:"all") as AdminMemberFilter; const sort=(typeof p.sort==='string'?p.sort:"newest") as AdminMemberSort; const page=Number.parseInt(typeof p.page==='string'?p.page:"1",10)||1; const data=await listAdminMembers({query:q,filter,sort,page,pageSize:50}); return <AdminSubscribersList data={data} query={q} filter={filter} sort={sort}/>;}
 
-export const metadata: Metadata = {
-  title: "Subscribers — Basscally Admin",
-  description: "Search, filter, and export Basscally Hub subscribers.",
-};
-
-type Props = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-export default async function AdminSubscribersPage({ searchParams }: Props) {
-  const params = await searchParams;
-  const q = typeof params.q === "string" ? params.q : "";
-  const status = typeof params.status === "string" ? params.status : "all";
-  const pageParam = typeof params.page === "string" ? Number.parseInt(params.page, 10) : 1;
-
-  const data = await listAdminSubscribers({
-    page: Number.isFinite(pageParam) ? pageParam : 1,
-    query: q,
-    status,
-  });
-
-  return <AdminSubscribersList data={data} query={q} status={status} />;
-}

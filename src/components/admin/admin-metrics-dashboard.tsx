@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { AdminDropCountdown } from "@/components/admin/admin-drop-countdown";
 import { AdminMetricSparkline } from "@/components/admin/admin-metric-sparkline";
 import { AdminMetricsContentPanel } from "@/components/admin/admin-metrics-content-panel";
@@ -23,7 +23,7 @@ export function AdminMetricsDashboard({ metrics }: Props) {
           </h1>
           {!metrics.isLive ? (
             <p className="mt-3 text-sm text-[var(--color-warning)]">
-              Local demo — connect Supabase service role for live metrics.
+              Local demo â€” connect Supabase service role for live metrics.
             </p>
           ) : null}
         </div>
@@ -66,6 +66,8 @@ export function AdminMetricsDashboard({ metrics }: Props) {
           variant="danger"
         />
       </div>
+
+      {metrics.memberMetrics ? (<div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{Object.entries(metrics.memberMetrics).map(([label,value]) => <div key={label} className="rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4"><p className="text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">{label.replace(/[A-Z]/g,m=>` ${m}`).trim()}</p><p className="mt-2 text-2xl font-black">{value}</p></div>)}</div>) : null}\n\n      {metrics.memberMetrics ? (<div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{Object.entries(metrics.memberMetrics).map(([label,value]) => <div key={label} className="rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4"><p className="text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">{label.replace(/[A-Z]/g,m=>` ${m}`).trim()}</p><p className="mt-2 text-2xl font-black">{value}</p></div>)}</div>) : null}
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.55fr)]">
         <AdminMetricsContentPanel rows={metrics.contentRows} />
@@ -112,3 +114,6 @@ function MetricCard({
     </article>
   );
 }
+
+
+

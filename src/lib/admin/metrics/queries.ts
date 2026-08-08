@@ -1,9 +1,11 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 
 import { planMonthlyUsd } from "@/lib/admin/metrics/mrr";
 import { listAdminContent } from "@/lib/admin/content/queries";
 import { PLANS } from "@/lib/plans";
 import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
+import { deriveTrialState, formatTrialRemaining } from "@/lib/subscriptions/trial-state";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   hasSupabaseServiceRole,
@@ -35,6 +37,7 @@ export type AdminMetricsSnapshot = {
   nextScheduledDrop: { id: string; title: string; scheduledFor: string } | null;
   contentRows: Awaited<ReturnType<typeof listAdminContent>>;
   isLive: boolean;
+  memberMetrics?: Awaited<ReturnType<typeof getAdminMemberMetrics>>;
 };
 
 export type AdminSubscriberRow = {
@@ -109,6 +112,7 @@ export async function getAdminMetricsSnapshot(): Promise<AdminMetricsSnapshot> {
       nextScheduledDrop: null,
       contentRows,
       isLive: false,
+      memberMetrics: {totalUsers:0,signedUpToday:0,activeTrials:0,trialExpiring:0,trialExpired:0,foundingUsers:0,foundingUnpaid:0,foundingPaid:0,paidMembers:0,convertedDuringTrial:0},
     };
   }
 
@@ -185,6 +189,7 @@ export async function getAdminMetricsSnapshot(): Promise<AdminMetricsSnapshot> {
       newSubs: buildSparkline(newByDay),
       failed: buildSparkline(failedByDay),
     },
+    memberMetrics: await getAdminMemberMetrics(),
     nextScheduledDrop: scheduledDrop?.scheduled_for
       ? {
           id: scheduledDrop.id,
@@ -211,6 +216,7 @@ export type ListSubscribersResult = {
   pageSize: number;
   totalPages: number;
   isLive: boolean;
+  memberMetrics?: Awaited<ReturnType<typeof getAdminMemberMetrics>>;
 };
 
 export async function listAdminSubscribers(
@@ -229,6 +235,7 @@ export async function listAdminSubscribers(
       pageSize,
       totalPages: 0,
       isLive: false,
+      memberMetrics: {totalUsers:0,signedUpToday:0,activeTrials:0,trialExpiring:0,trialExpired:0,foundingUsers:0,foundingUnpaid:0,foundingPaid:0,paidMembers:0,convertedDuringTrial:0},
     };
   }
 
@@ -368,3 +375,34 @@ function csvEscape(value: string): string {
   }
   return value;
 }
+
+export type AdminMemberFilter = "all" | "signed-up-today" | "just-signed-up" | "trial-active" | "trial-expiring" | "trial-expired" | "founding-users" | "founding-unpaid" | "founding-paid" | "paid-members" | "converted-during-trial";
+export type AdminMemberSort = "newest" | "oldest" | "trial-ending-soon" | "recently-converted";
+export type AdminMemberRow = {
+  id:string; email:string; name:string|null; createdAt:string; trialStartedAt:string|null; trialEndsAt:string|null; trialRemaining:string; trialStatus:string; foundingEligible:boolean; foundingPriceLocked:boolean; foundingPriceCents:number|null; foundingCurrency:string|null; paymentStatus:string; paidAt:string|null; planCode:string|null; planLabel:string|null; provider:string|null; convertedDuringTrial:boolean; isNew:boolean;
+};
+export type ListAdminMembersResult = { rows:AdminMemberRow[]; total:number; page:number; pageSize:number; totalPages:number; isLive:boolean };
+
+export async function listAdminMembers(options:{page?:number; pageSize?:number; query?:string; filter?:AdminMemberFilter; sort?:AdminMemberSort}={}):Promise<ListAdminMembersResult>{
+  const page=Math.max(1,options.page??1); const pageSize=Math.min(10000,Math.max(1,options.pageSize??50));
+  if(!isSupabaseClientConfigured()||!hasSupabaseServiceRole()) return {rows:[],total:0,page,pageSize,totalPages:0,isLive:false};
+  const admin=createAdminClient(); const q=options.query?.trim()??"";
+  let usersQuery=admin.from("users").select("id,email,name,created_at,last_login_at,trial_started_at,trial_ends_at,founding_eligible,founding_price_locked,founding_price_cents,founding_currency",{count:"exact"});
+  if(q) usersQuery=usersQuery.or(`email.ilike.%${q}%,name.ilike.%${q}%`);
+  const {data:usersData,error}=await usersQuery.order("created_at",{ascending:options.sort==="oldest"}).range(0,9999);
+  if(error) { console.error("[admin members] query failed",error.message); return {rows:[],total:0,page,pageSize,totalPages:0,isLive:true}; }
+  const userIds=(usersData??[]).map((u:any)=>u.id); const {data:subsData}=userIds.length?await admin.from("subscriptions").select("user_id,plan_code,status,provider,current_period_end,created_at").in("user_id",userIds).order("created_at",{ascending:false}):{data:[]};
+  const subByUser=new Map<string,any>(); for(const s of (subsData??[])){if(!subByUser.has(s.user_id))subByUser.set(s.user_id,s);}
+  const now=Date.now(); const rows=(usersData??[]).map((u:any)=>{const s=subByUser.get(u.id); const paid=Boolean(s&&subscriptionGrantsAccess({status:s.status,current_period_end:s.current_period_end,ends_at:null,cancel_at_period_end:false})); const trial=deriveTrialState({nowMs:now,trialEndsAt:u.trial_ends_at,foundingEligible:Boolean(u.founding_eligible),foundingPriceLocked:Boolean(u.founding_price_locked),paid}); const remaining=trial.trialRemainingMs>0?formatTrialRemaining(trial.trialRemainingMs):"Expired"; const paidAt=paid?s.created_at:null; const converted=Boolean(paidAt&&u.trial_ends_at&&Date.parse(paidAt)<Date.parse(u.trial_ends_at)); return {id:u.id,email:u.email,name:u.name??null,createdAt:u.created_at,trialStartedAt:u.trial_started_at??null,trialEndsAt:u.trial_ends_at??null,trialRemaining:remaining,trialStatus:trial.trialActive?(trial.trialExpiring?"expiring":"active"):(trial.trialExpired?"expired":"none"),foundingEligible:Boolean(u.founding_eligible),foundingPriceLocked:Boolean(u.founding_price_locked),foundingPriceCents:u.founding_price_cents??null,foundingCurrency:u.founding_currency??null,paymentStatus:paid?"paid":"unpaid",paidAt,planCode:s?.plan_code??null,planLabel:s?PLANS[s.plan_code as keyof typeof PLANS]?.label??s.plan_code:null,provider:s?.provider??null,convertedDuringTrial:converted,isNew:Date.parse(u.created_at)>=now-86400000};});
+  const f=options.filter??"all"; const filtered=rows.filter((r:any)=>f==="all"||(f==="signed-up-today"||f==="just-signed-up"?r.isNew:f==="trial-active"?r.trialStatus==="active":f==="trial-expiring"?r.trialStatus==="expiring":f==="trial-expired"?r.trialStatus==="expired":f==="founding-users"?r.foundingEligible:f==="founding-unpaid"?r.foundingEligible&&r.paymentStatus==="unpaid":f==="founding-paid"?r.foundingEligible&&r.paymentStatus==="paid":f==="paid-members"?r.paymentStatus==="paid":f==="converted-during-trial"?r.convertedDuringTrial:false));
+  filtered.sort((a:any,b:any)=>options.sort==="oldest"?Date.parse(a.createdAt)-Date.parse(b.createdAt):options.sort==="trial-ending-soon"?Date.parse(a.trialEndsAt??"9999")-Date.parse(b.trialEndsAt??"9999"):options.sort==="recently-converted"?Date.parse(b.paidAt??"1970")-Date.parse(a.paidAt??"1970"):Date.parse(b.createdAt)-Date.parse(a.createdAt));
+  const total=filtered.length,totalPages=Math.max(1,Math.ceil(total/pageSize)),safePage=Math.min(page,totalPages),start=(safePage-1)*pageSize; return {rows:filtered.slice(start,start+pageSize),total,page:safePage,pageSize,totalPages,isLive:true};
+}
+
+export async function getAdminMemberMetrics(){ const result=await listAdminMembers({page:1,pageSize:10000}); const rows=result.rows; return {totalUsers:result.total,signedUpToday:rows.filter(r=>r.isNew).length,activeTrials:rows.filter(r=>r.trialStatus==="active").length,trialExpiring:rows.filter(r=>r.trialStatus==="expiring").length,trialExpired:rows.filter(r=>r.trialStatus==="expired").length,foundingUsers:rows.filter(r=>r.foundingEligible).length,foundingUnpaid:rows.filter(r=>r.foundingEligible&&r.paymentStatus==="unpaid").length,foundingPaid:rows.filter(r=>r.foundingEligible&&r.paymentStatus==="paid").length,paidMembers:rows.filter(r=>r.paymentStatus==="paid").length,convertedDuringTrial:rows.filter(r=>r.convertedDuringTrial).length}; }
+
+
+
+
+
+

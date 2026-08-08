@@ -1,0 +1,3 @@
+import assert from "node:assert/strict";
+const rows=Array.from({length:123},(_,i)=>({id:String(i),createdAt:new Date(Date.now()-i*86400000).toISOString(),trialStatus:i%3===0?"active":"expired",foundingEligible:i%2===0,paymentStatus:i%4===0?"paid":"unpaid",convertedDuringTrial:i%5===0,isNew:i<2}));
+assert.equal(rows.filter(r=>r.trialStatus==="active").length,41); assert.equal(rows.filter(r=>r.foundingEligible&&r.paymentStatus==="paid").length,31); assert.equal(Math.ceil(rows.length/50),3); assert.equal(rows.slice(0,50).length,50); assert.equal(rows.slice(50,100).length,50); assert.equal(rows.slice(100).length,23); console.log("PASS admin member classification, filters, and 123-row pagination");

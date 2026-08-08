@@ -1,4 +1,4 @@
-import { AdminMetricsDashboard } from "@/components/admin/admin-metrics-dashboard";
+﻿import { AdminMetricsDashboard } from "@/components/admin/admin-metrics-dashboard";
 import { getAdminMetricsSnapshot } from "@/lib/admin/metrics/queries";
 import type { Metadata } from "next";
 import type { AdminMetricsSnapshot } from "@/lib/admin/metrics/queries";
@@ -14,11 +14,13 @@ function fallbackMetrics(): AdminMetricsSnapshot {
     nextScheduledDrop: null,
     contentRows: [],
     isLive: false,
+    memberMetrics: {totalUsers:0,signedUpToday:0,activeTrials:0,trialExpiring:0,trialExpired:0,foundingUsers:0,foundingUnpaid:0,foundingPaid:0,paidMembers:0,convertedDuringTrial:0},
+
   };
 }
 
 export const metadata: Metadata = {
-  title: "Admin metrics — Basscally Hub",
+  title: "Admin metrics â€” Basscally Hub",
   description: "Active subscribers, MRR, failed payments, and content health.",
 };
 
@@ -37,3 +39,7 @@ export default async function AdminMetricsPage() {
 
   return <AdminMetricsDashboard metrics={metrics} />;
 }
+
+
+
+
