@@ -1,11 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export function JoinForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -24,9 +22,9 @@ export function JoinForm() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
-      const { error: signInError } = await createClient().auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
-      if (signInError) throw new Error("Your account was created. Sign in to continue.");
-      router.replace("/dashboard?welcome=1");
+      const { data: signInData, error: signInError } = await createClient().auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+      if (signInError || !signInData.session) throw new Error("Your account was created. Sign in to continue.");
+      window.location.replace("/dashboard?welcome=1");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create account.");
       setLoading(false);
@@ -35,10 +33,15 @@ export function JoinForm() {
 
   return <form onSubmit={submit} className="space-y-4">
     <label className="block text-sm">Email address<input className="mt-2 w-full rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-    <label className="block text-sm">Password<div className="flex gap-2"><input className="mt-2 w-full rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type={show ? "text" : "password"} autoComplete="new-password" minLength={12} required value={password} onChange={(event) => setPassword(event.target.value)} /><button className="mt-2 min-h-11 px-3" type="button" onClick={() => setShow(!show)}>{show ? "Hide" : "Show"}</button></div></label>
-    <label className="block text-sm">Confirm password<input className="mt-2 w-full rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type={show ? "text" : "password"} autoComplete="new-password" minLength={12} required value={confirm} onChange={(event) => setConfirm(event.target.value)} /></label>
+    <label className="block text-sm">Password<div className="flex gap-2"><input className="mt-2 min-w-0 flex-1 rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type={show ? "text" : "password"} autoComplete="new-password" minLength={12} required value={password} onChange={(event) => setPassword(event.target.value)} /><button className="mt-2 min-h-11 shrink-0 px-3" type="button" onClick={() => setShow(!show)}>{show ? "Hide" : "Show"}</button></div></label>
+    <label className="block text-sm">Confirm password<input className="mt-2 min-w-0 flex-1 rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type={show ? "text" : "password"} autoComplete="new-password" minLength={12} required value={confirm} onChange={(event) => setConfirm(event.target.value)} /></label>
     <p className="text-sm text-[var(--color-text-muted)]">Use at least 12 characters. This email becomes your login. Your seven-day trial starts after account creation; no card is required.</p>
     {error ? <p role="alert" className="text-sm text-red-400">{error}</p> : null}
-    <button className="min-h-11 w-full rounded bg-[var(--color-brand)] px-4 py-3 font-bold text-[var(--color-text)] disabled:opacity-60" disabled={loading}>{loading ? "Creating accountâ€¦" : "Start my free trial"}</button>
+    <button className="min-h-11 w-full rounded bg-[var(--color-brand)] px-4 py-3 font-bold text-[var(--color-text)] disabled:opacity-60" disabled={loading}>{loading ? "Creating accountÃ¢â‚¬Â¦" : "Start my free trial"}</button>
   </form>;
 }
+
+
+
+
+
