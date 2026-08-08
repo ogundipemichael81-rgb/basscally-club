@@ -1,4 +1,4 @@
-﻿# Basscally Hub — Fresh-Browser Admin Authentication Audit
+# Basscally Hub — Fresh-Browser Admin Authentication Audit
 
 Date: 2026-08-08
 
@@ -56,3 +56,10 @@ Existing session: session check may redirect directly to `/admin`; this is inten
 ## Remaining blocker
 
 A fresh password-authentication result from a clean browser/device is still required to distinguish a Supabase credential/account problem from an application/session problem. Do not reset the password until direct Supabase authentication has been tested.
+
+## Safe local utilities added
+
+- `npm run admin:set-password` updates only the verified Auth user ID after hidden human password entry and explicit confirmation. It is not an HTTP route and refuses production execution.
+- `npm run auth:test-admin-password` tests direct publishable-key `signInWithPassword`, prints only safe status/error metadata, signs out locally, and never prints tokens.
+
+These utilities do not modify the plural account or application ownership records. They have not been executed; no password was changed by Codex.

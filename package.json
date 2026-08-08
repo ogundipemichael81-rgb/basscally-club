@@ -13,7 +13,9 @@
     "bh:next": "python scripts/basscally-autopilot-controller.py next",
     "bh:complete": "python scripts/basscally-autopilot-controller.py complete",
     "bh:check": "python scripts/basscally-autopilot-controller.py check",
-    "db:apply": "node scripts/apply-supabase-schema.mjs"
+    "db:apply": "node scripts/apply-supabase-schema.mjs",
+    "admin:set-password": "node scripts/admin/set-admin-password.mjs",
+    "auth:test-admin-password": "node scripts/admin/test-admin-password.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -36,6 +38,7 @@
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "lighthouse": "^13.4.1",
     "pg": "^8.16.0",
     "playwright": "^1.52.0",
     "tailwindcss": "^4",
