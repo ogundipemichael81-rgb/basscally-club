@@ -296,7 +296,7 @@ export function LandingSections() {
             For less than a coffee, get a new bass practice drop every week.
           </p>
           <ButtonLink
-            href={routes.pricing}
+            href={routes.joinPlan("founding-monthly")}
             size="lg"
             className="landing-cta-glow group mx-auto mt-8 w-full max-w-md sm:w-auto"
           >

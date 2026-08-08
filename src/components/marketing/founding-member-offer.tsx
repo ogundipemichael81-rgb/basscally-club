@@ -48,7 +48,7 @@ export async function FoundingMemberOffer() {
           After that, the price goes up.
         </p>
         <ButtonLink
-          href={routes.pricing}
+          href={routes.joinPlan("founding-monthly")}
           size="lg"
           className="landing-cta-glow group relative z-[1] mx-auto w-full max-w-md sm:w-auto"
         >

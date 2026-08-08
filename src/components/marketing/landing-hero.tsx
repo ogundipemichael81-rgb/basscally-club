@@ -122,7 +122,7 @@ export function LandingHero() {
             className="mb-6 flex flex-col gap-3 lg:mb-0 lg:hidden"
           >
             <ButtonLink
-              href={routes.defaultStyle}
+              href={routes.joinPlan("founding-monthly")}
               size="lg"
               className="landing-cta-glow group inline-flex w-full"
             >
@@ -144,7 +144,7 @@ export function LandingHero() {
 
           <div className="hidden flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center lg:flex">
             <ButtonLink
-              href={routes.defaultStyle}
+              href={routes.joinPlan("founding-monthly")}
               size="lg"
               className="landing-cta-glow group w-full sm:w-auto"
             >

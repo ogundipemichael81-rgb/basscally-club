@@ -9,6 +9,7 @@ export const routes = {
   pricing: "/pricing",
   waitlist: "/waitlist",
   join: "/join",
+  joinPlan: (plan: "founding-monthly" | "standard-monthly" | "annual") => `/join?plan=${plan}` as const,
   checkoutFlow: "/checkout",
   style: (slug: string) => `/style/${slug}` as const,
   defaultStyle: `/style/${DEFAULT_STYLE_SLUG}` as const,

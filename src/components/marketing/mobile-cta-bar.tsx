@@ -37,7 +37,7 @@ export function MobileCtaBar() {
       )}
       aria-hidden={!visible}
     >
-      <ButtonLink href={routes.defaultStyle} className="landing-cta-glow w-full">
+      <ButtonLink href={routes.joinPlan("founding-monthly")} className="landing-cta-glow w-full">
         Join — $1.50/mo
       </ButtonLink>
     </div>
