@@ -18,7 +18,8 @@
     "test:founding-trial-states": "node --experimental-strip-types scripts/test-founding-trial-states.mjs",
     "test:admin-members": "node --experimental-strip-types scripts/test-admin-members.mjs",
     "test:founding-trial-launch": "node scripts/test-founding-trial-launch.mjs",
-    "test:founding-trial-acceptance": "node scripts/test-founding-trial-acceptance.mjs"
+    "test:founding-trial-acceptance": "node scripts/test-founding-trial-acceptance.mjs",
+    "test:auth-isolation": "node scripts/test-auth-isolation.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

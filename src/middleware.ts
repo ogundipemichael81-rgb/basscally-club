@@ -112,9 +112,6 @@ export async function middleware(request: NextRequest) {
     }
 
     if (user) {
-      if (isAdminEmail(user.email)) {
-        return NextResponse.redirect(new URL(routes.admin.root, request.url));
-      }
       const next = request.nextUrl.searchParams.get("next");
       const safeNext = next?.startsWith("/") && !next.startsWith("//") ? next : routes.member.dashboard;
       return NextResponse.redirect(new URL(safeNext, request.url));
