@@ -58,6 +58,10 @@ export function validatePublishRequirements(
   if (fields.publishAction === "scheduled" && !fields.scheduledFor) {
     return "Release date is required when scheduling a drop.";
   }
+  if (fields.publishAction === "scheduled" && fields.scheduledFor) {
+    const timestamp = Date.parse(fields.scheduledFor);
+    if (!Number.isFinite(timestamp) || timestamp <= Date.now()) return "Scheduled release must be a valid future date.";
+  }
 
   if (fields.notifyMembers && !fields.emailSubject?.trim()) {
     return "Email subject is required when member notifications are enabled.";

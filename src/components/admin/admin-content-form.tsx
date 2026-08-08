@@ -111,6 +111,11 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
       );
       if (!confirmed) return;
     }
+    if (publishAction === "scheduled") {
+      if (!scheduledFor) { setError("Release date is required when scheduling a drop."); return; }
+      const scheduledTimestamp = new Date(scheduledFor).getTime();
+      if (!Number.isFinite(scheduledTimestamp) || scheduledTimestamp <= Date.now()) { setError("Scheduled release must be a valid future date."); return; }
+    }
     setSubmitting(true);
     setError(null);
     setSuccess(null);
@@ -121,7 +126,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     formData.set("difficulty", difficulty);
     formData.set("description", description);
     if (styleId) formData.set("styleId", styleId);
-    formData.set("scheduledFor", scheduledFor);
+    formData.set("scheduledFor", publishAction === "scheduled" ? new Date(scheduledFor).toISOString() : scheduledFor);
     formData.set("publishAction", publishAction);
     formData.set("emailSubject", emailSubject);
     formData.set("emailBody", emailBody);

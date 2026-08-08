@@ -23,7 +23,7 @@ export function DashboardPageView({ session, data, filter }: Props) {
   const isEmpty = data.published.length === 0;
   const nextDropIso = data.upcoming[0]?.scheduledFor ?? null;
   const filteredItems = filterDashboardItems(data.published, filter, data.downloadedIds);
-  const latestDrop = data.published[0] ?? null;
+  const latestDrop = filteredItems[0] ?? null;
 
   if (isEmpty) {
     return (
