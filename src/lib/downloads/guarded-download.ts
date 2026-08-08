@@ -6,9 +6,8 @@ import {
   SIGNED_URL_EXPIRY_SECONDS,
 } from "@/lib/constants";
 import { storageObjectPath } from "@/lib/storage/audio-path";
-import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
-import { resolveMemberFromRequest, readMockPersonaId } from "@/lib/subscriptions/resolve-member";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getMemberSession } from "@/lib/subscriptions/member-session";
 import {
   hasSupabaseServiceRole,
   isSupabaseClientConfigured,
@@ -21,20 +20,18 @@ export type DownloadResult =
 export async function createGuardedDownloadUrl(
   contentId: string,
 ): Promise<DownloadResult> {
-  const member = await resolveMemberFromRequest();
-  if (!member) {
+  const session = await getMemberSession();
+  if (!session) {
     return { ok: false, status: 401, error: "Sign in required." };
   }
 
-  const mockId = await readMockPersonaId();
-  if (process.env.NODE_ENV === "development" && mockId === "mock-member-lapsed") {
+  if (!session.hasAccess) {
     return {
       ok: false,
       status: 403,
       error: "Active membership required to download this drop.",
     };
   }
-
   if (!isSupabaseClientConfigured() || !hasSupabaseServiceRole()) {
     return {
       ok: false,
@@ -44,23 +41,6 @@ export async function createGuardedDownloadUrl(
   }
 
   const admin = createAdminClient();
-
-  const { data: subscriptions } = await admin
-    .from("subscriptions")
-    .select("status, current_period_end, ends_at, cancel_at_period_end")
-    .eq("user_id", member.userId)
-    .order("updated_at", { ascending: false });
-
-  const subscription =
-    subscriptions?.find((row) => subscriptionGrantsAccess(row)) ?? null;
-
-  if (!subscriptionGrantsAccess(subscription)) {
-    return {
-      ok: false,
-      status: 403,
-      error: "Active membership required to download this drop.",
-    };
-  }
 
   const { data: content, error: contentError } = await admin
     .from("content")
@@ -84,7 +64,7 @@ export async function createGuardedDownloadUrl(
   const { count: recentDownloads } = await admin
     .from("downloads")
     .select("id", { count: "exact", head: true })
-    .eq("user_id", member.userId)
+    .eq("user_id", session.userId)
     .gte("downloaded_at", oneHourAgo);
 
   if ((recentDownloads ?? 0) >= DOWNLOAD_RATE_LIMIT_PER_HOUR) {
@@ -113,7 +93,7 @@ export async function createGuardedDownloadUrl(
   }
 
   await admin.from("downloads").insert({
-    user_id: member.userId,
+    user_id: session.userId,
     content_id: content.id,
   });
 

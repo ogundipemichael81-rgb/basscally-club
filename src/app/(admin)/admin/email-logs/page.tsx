@@ -4,7 +4,7 @@ import { listAdminEmailLogs } from "@/lib/admin/metrics/queries";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Email logs — Basscally Admin",
+  title: "Email logs",
   description: "Delivery logs for Basscally Hub transactional email.",
 };
 

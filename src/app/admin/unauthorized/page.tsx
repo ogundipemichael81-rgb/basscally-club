@@ -4,7 +4,7 @@ import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin unauthorized — Basscally Hub",
+  title: "Admin unauthorized",
   description: "Your account does not have permission to access the Basscally Hub admin console.",
 };
 

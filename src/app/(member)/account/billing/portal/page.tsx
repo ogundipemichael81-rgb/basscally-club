@@ -8,7 +8,7 @@ import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Billing portal — Basscally Hub",
+  title: "Billing portal",
   description: "Open the Lemon Squeezy customer portal to manage billing.",
 };
 

@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 
 /** Screen 32 — three-tier plan selector */
 export const metadata: Metadata = {
-  title: "Choose your Hub plan — Basscally Hub",
+  title: "Choose your Hub plan",
   description:
     "Monthly $2.99, Founding Member $1.50, or Annual $18. Lock your groove and join Basscally Hub.",
 };

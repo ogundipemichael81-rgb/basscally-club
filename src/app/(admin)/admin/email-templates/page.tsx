@@ -4,7 +4,7 @@ import { getEmailTemplatePreviews } from "@/lib/admin/email/template-previews";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Email templates — Basscally Admin",
+  title: "Email templates",
   description: "Preview welcome, new drop, payment failed, and cancellation emails.",
 };
 

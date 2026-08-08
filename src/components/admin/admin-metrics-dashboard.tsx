@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { AdminDropCountdown } from "@/components/admin/admin-drop-countdown";
 import { AdminMetricSparkline } from "@/components/admin/admin-metric-sparkline";
 import { AdminMetricsContentPanel } from "@/components/admin/admin-metrics-content-panel";
@@ -23,7 +23,7 @@ export function AdminMetricsDashboard({ metrics }: Props) {
           </h1>
           {!metrics.isLive ? (
             <p className="mt-3 text-sm text-[var(--color-warning)]">
-              Local demo â€” connect Supabase service role for live metrics.
+              Local demo \u2014 connect Supabase service role for live metrics.
             </p>
           ) : null}
         </div>
@@ -114,6 +114,3 @@ function MetricCard({
     </article>
   );
 }
-
-
-

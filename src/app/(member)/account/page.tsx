@@ -5,7 +5,7 @@ import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Membership — Basscally Hub",
+  title: "Membership",
   description: "Your Basscally Hub plan, renewal date, and account actions.",
 };
 

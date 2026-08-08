@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: content
-      ? `Archive ${content.title} — Basscally Admin`
-      : "Archive drop — Basscally Admin",
+      ? `Archive ${content.title}`
+      : "Archive drop",
   };
 }
 

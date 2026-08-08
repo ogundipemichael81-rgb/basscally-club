@@ -37,7 +37,7 @@ export type LegalDocument = {
 export const privacyPolicy: LegalDocument = {
   slug: "privacy",
   title: "Privacy Policy",
-  metaTitle: "Privacy Policy — Basscally Hub",
+  metaTitle: "Privacy Policy",
   metaDescription:
     "How Basscally Ltd collects, uses, and protects your personal information when you use Basscally Hub.",
   lastUpdated: LEGAL_LAST_UPDATED,
@@ -344,7 +344,7 @@ export const privacyPolicy: LegalDocument = {
 export const termsOfService: LegalDocument = {
   slug: "terms",
   title: "Terms of Service",
-  metaTitle: "Terms of Service — Basscally Hub",
+  metaTitle: "Terms of Service",
   metaDescription:
     "Terms for using Basscally Hub, including subscriptions, payments through Lemon Squeezy, and member access.",
   lastUpdated: LEGAL_LAST_UPDATED,
@@ -635,7 +635,7 @@ export const termsOfService: LegalDocument = {
 export const refundPolicy: LegalDocument = {
   slug: "refund-policy",
   title: "Refund Policy",
-  metaTitle: "Refund Policy — Basscally Hub",
+  metaTitle: "Refund Policy",
   metaDescription:
     "How refunds and cancellations work for Basscally Hub subscriptions billed through Lemon Squeezy.",
   lastUpdated: LEGAL_LAST_UPDATED,

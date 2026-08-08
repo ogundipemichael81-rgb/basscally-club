@@ -5,9 +5,8 @@ import {
   SIGNED_URL_EXPIRY_SECONDS,
 } from "@/lib/constants";
 import { storageObjectPath } from "@/lib/storage/audio-path";
-import { subscriptionGrantsAccess } from "@/lib/subscriptions/access";
-import { resolveMemberFromRequest } from "@/lib/subscriptions/resolve-member";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getMemberSession } from "@/lib/subscriptions/member-session";
 import {
   hasSupabaseServiceRole,
   isSupabaseClientConfigured,
@@ -54,20 +53,8 @@ export async function createPreviewAccess(
     return { ok: false, status: 404, error: "Audio preview is not available." };
   }
 
-  const member = await resolveMemberFromRequest();
-  let hasFullAccess = false;
-
-  if (member) {
-    const { data: subscriptions } = await admin
-      .from("subscriptions")
-      .select("status, current_period_end, ends_at, cancel_at_period_end")
-      .eq("user_id", member.userId)
-      .order("updated_at", { ascending: false });
-
-    const subscription =
-      subscriptions?.find((row) => subscriptionGrantsAccess(row)) ?? null;
-    hasFullAccess = subscriptionGrantsAccess(subscription);
-  }
+  const session = await getMemberSession();
+  const hasFullAccess = Boolean(session?.hasAccess);
 
   if (!hasFullAccess && !content.is_free_preview) {
     return { ok: false, status: 403, error: "Activate membership to play this practice drop." };

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const content = await getContentDetail(id);
 
   return {
-    title: content ? `${content.title} — Basscally Hub` : "Practice drop — Basscally Hub",
+    title: content?.title ?? "Practice drop",
     description: content?.description ?? "Play, download, and practice this Basscally Hub drop.",
   };
 }

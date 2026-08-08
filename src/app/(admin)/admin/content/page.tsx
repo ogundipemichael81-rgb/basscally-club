@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Content list — Basscally Admin",
+  title: "Content list",
   description: "Manage all Basscally Hub practice drops.",
 };
 

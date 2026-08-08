@@ -4,7 +4,7 @@ import { listStyleOptions } from "@/lib/admin/content/queries";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Upload drop — Basscally Admin",
+  title: "Upload drop",
   description: "Upload audio, metadata, and publish a new Basscally Hub practice drop.",
 };
 

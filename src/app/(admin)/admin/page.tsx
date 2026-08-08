@@ -21,7 +21,7 @@ function fallbackMetrics(): AdminMetricsSnapshot {
 }
 
 export const metadata: Metadata = {
-  title: "Admin metrics â€” Basscally Hub",
+  title: "Admin metrics",
   description: "Active subscribers, MRR, failed payments, and content health.",
 };
 
@@ -41,6 +41,3 @@ export default async function AdminMetricsPage() {
 
   return <AdminMetricsDashboard metrics={metrics} />;
 }
-
-
-

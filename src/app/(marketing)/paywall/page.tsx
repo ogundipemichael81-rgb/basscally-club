@@ -3,7 +3,7 @@ import { resolvePaywallContext } from "@/lib/paywall/resolve-context";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Members only — Basscally Hub",
+  title: "Members only",
   description: "Reactivate or join Basscally Hub to play and download practice drops.",
 };
 

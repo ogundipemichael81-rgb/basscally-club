@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StylePageView } from "@/components/style/style-page-view";
-import { APP_NAME, DEFAULT_STYLE_SLUG } from "@/lib/constants";
+import { DEFAULT_STYLE_SLUG } from "@/lib/constants";
 import { getFoundingCheckoutUrl } from "@/lib/lemonsqueezy/checkout-url";
 import { getStylePageBySlug } from "@/lib/style/queries";
 
@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getStylePageBySlug(slug);
 
   if (!data) {
-    return { title: `Style — ${APP_NAME}` };
+    return { title: "Style" };
   }
 
   return {
-    title: `${data.headline} — ${APP_NAME}`,
+    title: data.headline,
     description:
       data.description ??
       `Practice ${data.title} with weekly drops from Chris and world-class bassists.`,

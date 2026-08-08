@@ -14,7 +14,7 @@ import { ButtonLink } from "@/components/marketing/button-link";
 import { UnpaidPreviewDashboard } from "@/components/dashboard/unpaid-preview-dashboard";
 
 export const metadata: Metadata = {
-  title: "Dashboard â€” Basscally Hub",
+  title: "Dashboard",
   description: "Your latest drops, practice library, and upcoming releases.",
 };
 

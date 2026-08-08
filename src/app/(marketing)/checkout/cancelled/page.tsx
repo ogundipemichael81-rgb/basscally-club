@@ -4,7 +4,7 @@ import { getFoundingCheckoutUrl } from "@/lib/lemonsqueezy/checkout-url";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Checkout paused — Basscally Hub",
+  title: "Checkout paused",
   description: "Return to checkout and join Basscally Hub for $1.50/month.",
 };
 

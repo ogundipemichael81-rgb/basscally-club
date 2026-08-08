@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: content
-      ? `Edit ${content.title} — Basscally Admin`
-      : "Edit drop — Basscally Admin",
+      ? `Edit ${content.title}`
+      : "Edit drop",
   };
 }
 
