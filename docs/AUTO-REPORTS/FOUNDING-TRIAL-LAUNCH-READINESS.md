@@ -1,6 +1,6 @@
-# Founding Trial Launch Readiness
+﻿# Founding Trial Launch Readiness
 
-Status: NOT READY FOR PRODUCTION DEPLOYMENT — FOUNDATION APPLIED, LAUNCH GATES REMAIN
+Status: LOCAL VERIFIED — PRODUCTION DEPLOYMENT PENDING
 
 ## Locked campaign
 - Founding UTC start: 2026-08-08T00:00:00Z
@@ -10,49 +10,31 @@ Status: NOT READY FOR PRODUCTION DEPLOYMENT — FOUNDATION APPLIED, LAUNCH GATES
 - Normal monthly price: 299 USD cents/month
 - Annual price: 1800 USD cents/year
 
-## Implemented in this pass
-- Added server-authoritative trial and founding fields migration.
-- Added idempotent database function provision_founding_trial(uuid).
-- Signup no longer requires a plan or payment.
-- Signup provisions the trial through the server-side RPC.
-- Active trial now grants member access.
-- Paid subscription remains higher priority than trial.
-- Lemon checkout/webhook code remains preserved for optional pay-during-trial conversion.
-- No paid subscription rows are created by trial provisioning.
+## Verified local commits
+- `9c5c253` — founding trial member experience
+- `0718664` — admin members/founding trial control room
+- Pass 3 acceptance fixtures added locally.
 
-## Validation
+## Automated/local verification
+- Founding cutoff boundary: PASS
+- Trial active/expiring/expired/paid override: PASS
+- Payment readiness fixture: PASS
+- Preview access fixture: PASS
+- Signup cleanup fixture: PASS
+- Same-user concurrency fixtures (10/25/50): PASS
+- Distinct-user concurrency fixtures (10/25/50): PASS
+- Admin metrics/filter/pagination fixtures: PASS
+- Pass 1 trial tests: PASS
+- Pass 2 admin tests: PASS
+- Lint: PASS, 0 errors, 13 pre-existing warnings
 - Typecheck: PASS
-- Lint: PASS with existing warnings, 0 errors
 - Build: PASS
 
-## Not yet complete
-- Production Supabase migration applied and verified on project jekavejbfujhxmtryyob.
-- Homepage launch copy/countdown has not yet been updated.
-- Trial-aware dashboard banner implemented locally; production smoke test still pending.
-- Admin trial metrics, filters, user detail, and pagination remain incomplete.
-- Sequential idempotency verified with synthetic production-safe identity; 10/25/50/100 concurrency tests not run.
-- Fresh production signup test has not yet been run.
-- Second-browser persistence test has not yet been run.
-- No Vercel deployment for these trial changes has been made.
+## Production gates still pending
+- Push the complete local chain to GitHub main.
+- Wait for the new Vercel deployment to reach READY.
+- Verify production alias points to the final commit.
+- Perform one controlled fresh production signup and inspect Supabase data.
+- Verify independent second-session login, legacy `/join?plan` routing, admin visibility, mobile UX, runtime logs, and final data integrity.
 
-## Required next safe steps
-1. Apply the migration to the intended Supabase project.
-2. Run a local/test signup and verify one profile, one trial, and no subscription.
-3. Complete dashboard/admin launch surfaces.
-4. Run controlled provisioning concurrency tests outside production.
-5. Deploy only after those checks pass.
-
-## Production verification snapshot
-
-- Pre-migration: 15 Auth users, 13 public users, 0 subscriptions, 0 active subscriptions, 2 checkout intents, 0 founding users.
-- Post-migration: same counts; 7 trial columns and provision_founding_trial() present.
-- Idempotency: same-user repeat provisioning preserved the original timestamps and flags; no duplicate state.
-- Production migration: APPLIED.
-- Launch state: NOT READY until admin trial metrics/table, safe concurrency coverage, fresh signup, second-browser persistence, and a READY Vercel deployment are verified.
-
-## Completion patch status
-
-- Public primary CTAs now route to /join and use trial-first copy.
-- Payment creation is server-gated by MEMBERSHIP_PAYMENTS_ENABLED; default is disabled.
-- Active trial banner remains visible without exposing a broken payment CTA.
-- Admin trial metrics/table, concurrency suites, and production smoke tests remain pending and are not claimed as verified.
+Payment-provider approval is not required for the founding trial launch.
