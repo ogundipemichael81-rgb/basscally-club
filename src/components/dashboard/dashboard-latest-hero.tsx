@@ -1,3 +1,4 @@
+import { ContentDownloadButton } from "@/components/content/content-download-button";
 import { ButtonLink } from "@/components/marketing/button-link";
 import { DashboardScrollReveal } from "@/components/dashboard/dashboard-scroll-reveal";
 import { Badge } from "@/components/ui/badge";
@@ -45,13 +46,10 @@ export function DashboardLatestHero({ item }: Props) {
             >
               Play
             </ButtonLink>
-            <ButtonLink
-              href={routes.api.contentDownload(item.id)}
-              variant="secondary"
+            <ContentDownloadButton
+              contentId={item.id}
               className="max-[680px]:w-full"
-            >
-              Download
-            </ButtonLink>
+            />
           </div>
         </div>
 
