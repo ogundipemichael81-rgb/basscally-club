@@ -63,7 +63,7 @@ const valueCards = [
 ] as const;
 
 const howItWorksSteps = [
-  { id: "how-join", step: "Step 01", strong: "Join Basscally Hub", rest: " for $1.50/month." },
+  { id: "how-join", step: "Step 01", strong: "Start My Free Trial", rest: " during Founding Week." },
   {
     id: "how-email",
     step: "Step 02",
@@ -253,7 +253,7 @@ export function LandingSections() {
               Most bass platforms cost $20, $30, $50 a month — gatekeeping serious players behind serious money. We built Basscally Hub for every bassist with internet, anywhere on Earth.
             </p>
             <p className="text-[var(--color-text-muted)]">
-              Cancel anytime. Keep everything you&apos;ve already downloaded.
+              Your trial starts immediately. Your Founding Member price stays locked.
             </p>
           </div>
           <div>
@@ -296,11 +296,11 @@ export function LandingSections() {
             For less than a coffee, get a new bass practice drop every week.
           </p>
           <ButtonLink
-            href={routes.joinPlan("founding-monthly")}
+            href={routes.join}
             size="lg"
             className="landing-cta-glow group mx-auto mt-8 w-full max-w-md sm:w-auto"
           >
-            Join Basscally Hub — $1.50/month
+            Start My Free Trial
             <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
           </ButtonLink>
         </div>

@@ -28,6 +28,7 @@ const serverEnvSchema = z.object({
   DATABASE_URL: optionalString,
   DIRECT_URL: optionalString,
   LEMONSQUEEZY_API_KEY: optionalString,
+  MEMBERSHIP_PAYMENTS_ENABLED: z.enum(["true", "false"]).default("false"),
   LEMONSQUEEZY_WEBHOOK_SECRET: optionalString,
   LEMONSQUEEZY_STORE_ID: optionalString,
   LEMONSQUEEZY_FOUNDING_MONTHLY_VARIANT_ID: optionalString,
@@ -65,6 +66,7 @@ function parseServerEnvFromProcess(): ServerEnv {
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
     LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
+    MEMBERSHIP_PAYMENTS_ENABLED: process.env.MEMBERSHIP_PAYMENTS_ENABLED,
     LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
     LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
     LEMONSQUEEZY_FOUNDING_MONTHLY_VARIANT_ID:

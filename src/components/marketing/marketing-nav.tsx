@@ -84,7 +84,7 @@ export function MarketingNav(props: MarketingNavProps) {
   const ghostLabel = props.ghostLabel ?? routeDefaults?.ghostLabel ?? "Sign in";
   const primaryHref = props.primaryHref ?? routeDefaults?.primaryHref ?? routes.pricing;
   const primaryLabel =
-    props.primaryLabel ?? routeDefaults?.primaryLabel ?? "Join — $1.50/mo";
+    props.primaryLabel ?? routeDefaults?.primaryLabel ?? "Start My Free Trial";
 
   const showPrimary = !hidePrimary;
   const primaryClassName = hidePrimaryOnMobile ? "hidden lg:inline-flex" : undefined;

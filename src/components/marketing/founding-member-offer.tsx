@@ -48,11 +48,11 @@ export async function FoundingMemberOffer() {
           After that, the price goes up.
         </p>
         <ButtonLink
-          href={routes.joinPlan("founding-monthly")}
+          href={routes.join}
           size="lg"
           className="landing-cta-glow group relative z-[1] mx-auto w-full max-w-md sm:w-auto"
         >
-          Become a Founding Member — $1.50/month
+          Start My Free Trial
           <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
         </ButtonLink>
         <p

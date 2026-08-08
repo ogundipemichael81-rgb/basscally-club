@@ -96,7 +96,7 @@ export function LandingHero() {
               className="hidden h-px w-4 bg-[var(--color-border-strong)] sm:block"
               aria-hidden
             />
-            <span>Issue 001 — May 2026</span>
+            <span>7 Days Free · Founding Price Locked</span>
           </div>
 
           <h1
@@ -122,15 +122,15 @@ export function LandingHero() {
             className="mb-6 flex flex-col gap-3 lg:mb-0 lg:hidden"
           >
             <ButtonLink
-              href={routes.joinPlan("founding-monthly")}
+              href={routes.join}
               size="lg"
               className="landing-cta-glow group inline-flex w-full"
             >
-              Join Basscally Hub — $1.50/month
+              Start My Free Trial
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>
             <span className="text-sm text-[var(--color-text-dim)]">
-              Cancel anytime · No contracts
+              No card required · Full access during Founding Week
             </span>
           </div>
 
@@ -144,15 +144,15 @@ export function LandingHero() {
 
           <div className="hidden flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center lg:flex">
             <ButtonLink
-              href={routes.joinPlan("founding-monthly")}
+              href={routes.join}
               size="lg"
               className="landing-cta-glow group w-full sm:w-auto"
             >
-              Join Basscally Hub — $1.50/month
+              Start My Free Trial
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>
             <span className="text-sm text-[var(--color-text-dim)]">
-              Cancel anytime · No contracts
+              No card required · Full access during Founding Week
             </span>
           </div>
         </div>

@@ -49,3 +49,10 @@ Status: NOT READY FOR PRODUCTION DEPLOYMENT — FOUNDATION APPLIED, LAUNCH GATES
 - Idempotency: same-user repeat provisioning preserved the original timestamps and flags; no duplicate state.
 - Production migration: APPLIED.
 - Launch state: NOT READY until admin trial metrics/table, safe concurrency coverage, fresh signup, second-browser persistence, and a READY Vercel deployment are verified.
+
+## Completion patch status
+
+- Public primary CTAs now route to /join and use trial-first copy.
+- Payment creation is server-gated by MEMBERSHIP_PAYMENTS_ENABLED; default is disabled.
+- Active trial banner remains visible without exposing a broken payment CTA.
+- Admin trial metrics/table, concurrency suites, and production smoke tests remain pending and are not claimed as verified.
