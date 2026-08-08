@@ -76,6 +76,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [progress, setProgress] = useState<string | null>(null);
 
   const pageTitle = mode === "create" ? "Upload drop" : "Edit drop";
   const saveLabel =
@@ -107,26 +108,34 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
 
   const uploadAudioDirectly = async (): Promise<string | null> => {
     if (!audioFile) return null;
+    setProgress("Authorizing upload...");
     const authorization = await fetch("/api/admin/content/upload-authorize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filename: audioFile.name, size: audioFile.size, contentType: audioFile.type || null, contentId: initial?.id }),
     });
-    const details = (await authorization.json().catch(() => ({}))) as { error?: string; bucket?: string; path?: string; token?: string; storageKey?: string };
-    if (!authorization.ok || !details.bucket || !details.path || !details.token || !details.storageKey) {
+    const details = (await authorization.json().catch(() => ({}))) as {
+      error?: string;
+      bucket?: string;
+      path?: string;
+      token?: string;
+      storageKey?: string;
+      contentType?: string;
+    };
+    if (!authorization.ok || !details.bucket || !details.path || !details.token || !details.storageKey || !details.contentType) {
       throw new Error(details.error ?? "Could not authorize audio upload.");
     }
+    setProgress("Uploading audio...");
     const supabase = createClient();
     const { error: uploadError } = await supabase.storage.from(details.bucket).uploadToSignedUrl(
       details.path,
       details.token,
       audioFile,
-      { contentType: audioFile.type || "audio/mpeg" },
+      { contentType: details.contentType },
     );
-    if (uploadError) throw new Error(uploadError.message);
+    if (uploadError) throw new Error(`Audio upload failed: ${uploadError.message}`);
     return details.storageKey;
   };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFreePreview && !initial?.isFreePreview) {
@@ -135,46 +144,39 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
       );
       if (!confirmed) return;
     }
-    if (publishAction === "scheduled") {
-      const scheduledError = validateScheduledFor(scheduledFor);
-      if (scheduledError) { setError(scheduledError); return; }
-    }
     setSubmitting(true);
     setError(null);
     setSuccess(null);
-
-    const formData = new FormData();
-    formData.set("title", title);
-    formData.set("type", type);
-    formData.set("difficulty", difficulty);
-    formData.set("description", description);
-    if (styleId) formData.set("styleId", styleId);
-    formData.set("scheduledFor", publishAction === "scheduled" ? localDateTimeToUtcIso(scheduledFor) : scheduledFor);
-    formData.set("publishAction", publishAction);
-    formData.set("emailSubject", emailSubject);
-    formData.set("emailBody", emailBody);
-    formData.set("notifyMembers", String(notifyMembers));
-    formData.set("isFreePreview", String(isFreePreview));
-    const audioStorageKey = await uploadAudioDirectly();
-    if (audioStorageKey) formData.set("audioStorageKey", audioStorageKey);
-    if (coverFile) formData.set("cover", coverFile);
-
-    const endpoint =
-      mode === "create"
-        ? routes.api.adminContent
-        : routes.api.adminContentById(initial!.id);
-    const method = mode === "create" ? "POST" : "PATCH";
+    setProgress(null);
 
     try {
-      const res = await fetch(endpoint, { method, body: formData });
-      const json = (await res.json().catch(() => ({}))) as {
-        error?: string;
-        id?: string;
-      };
-
-      if (!res.ok) {
-        throw new Error(json.error || "Could not save drop.");
+      if (publishAction === "scheduled") {
+        const scheduledError = validateScheduledFor(scheduledFor);
+        if (scheduledError) throw new Error(scheduledError);
       }
+
+      const audioStorageKey = await uploadAudioDirectly();
+      const formData = new FormData();
+      formData.set("title", title);
+      formData.set("type", type);
+      formData.set("difficulty", difficulty);
+      formData.set("description", description);
+      if (styleId) formData.set("styleId", styleId);
+      formData.set("scheduledFor", publishAction === "scheduled" ? localDateTimeToUtcIso(scheduledFor) : scheduledFor);
+      formData.set("publishAction", publishAction);
+      formData.set("emailSubject", emailSubject);
+      formData.set("emailBody", emailBody);
+      formData.set("notifyMembers", String(notifyMembers));
+      formData.set("isFreePreview", String(isFreePreview));
+      if (audioStorageKey) formData.set("audioStorageKey", audioStorageKey);
+      if (coverFile) formData.set("cover", coverFile);
+
+      const endpoint = mode === "create" ? routes.api.adminContent : routes.api.adminContentById(initial!.id);
+      const method = mode === "create" ? "POST" : "PATCH";
+      setProgress("Saving drop...");
+      const res = await fetch(endpoint, { method, body: formData });
+      const json = (await res.json().catch(() => ({}))) as { error?: string; id?: string };
+      if (!res.ok) throw new Error(json.error || "Could not save drop.");
 
       setSuccess(mode === "create" ? "Drop uploaded successfully." : "Drop updated successfully.");
       router.push(`${routes.admin.content}?saved=${mode === "create" ? "created" : "updated"}`);
@@ -182,10 +184,10 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save drop.");
     } finally {
+      setProgress(null);
       setSubmitting(false);
     }
   };
-
   return (
     <div>
       <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -400,6 +402,11 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
             </div>
           </section>
 
+          {progress ? (
+            <div className="rounded-[var(--radius-md)] border border-[rgba(255,69,0,0.35)] bg-[rgba(255,69,0,0.08)] p-4 text-sm text-[var(--color-text)]" role="status">
+              {progress}
+            </div>
+          ) : null}
           {error ? (
             <div
               className="rounded-[var(--radius-md)] border border-[rgba(248,113,113,0.35)] bg-[rgba(248,113,113,0.08)] p-4 text-sm text-[var(--color-danger)]"
@@ -423,7 +430,7 @@ export function AdminContentForm({ mode, styles, initial }: Props) {
             </Link>
             <AdminEmailPreviewDialog subject={emailSubject} body={emailBody} />
             <Button type="submit" disabled={submitting} className="min-h-11">
-              {submitting ? "Saving..." : saveLabel}
+              {submitting ? (progress ?? "Saving...") : saveLabel}
             </Button>
           </div>
         </div>

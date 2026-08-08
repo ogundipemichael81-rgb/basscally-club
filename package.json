@@ -22,7 +22,8 @@
     "test:founding-trial-acceptance": "node scripts/test-founding-trial-acceptance.mjs",
     "test:auth-isolation": "node scripts/test-auth-isolation.mjs",
     "test:beta-publishing-library": "node scripts/test-beta-publishing-library.mjs",
-    "test:beta-production-safe": "node --experimental-strip-types scripts/test-beta-production-safe.mjs"
+    "test:beta-production-safe": "node --experimental-strip-types scripts/test-beta-production-safe.mjs",
+    "test:admin-upload-contract": "node --experimental-strip-types scripts/test-admin-upload-contract.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
