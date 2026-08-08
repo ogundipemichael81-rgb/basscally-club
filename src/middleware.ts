@@ -113,8 +113,8 @@ export async function middleware(request: NextRequest) {
 
     if (user) {
       const next = request.nextUrl.searchParams.get("next");
-      const safeNext = next?.startsWith("/") && !next.startsWith("//") ? next : routes.member.dashboard;
-      return NextResponse.redirect(new URL(safeNext, request.url));
+      const safeNext = next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/admin") && !next.startsWith("/api/admin") ? next : routes.member.dashboard;
+      return NextResponse.redirect(new URL(`/auth/continue?next=${encodeURIComponent(safeNext)}`, request.url));
     }
 
     return response;

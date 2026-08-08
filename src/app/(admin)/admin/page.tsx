@@ -1,4 +1,5 @@
-﻿import { AdminMetricsDashboard } from "@/components/admin/admin-metrics-dashboard";
+import { requireAdminPage } from "@/lib/admin/auth";
+import { AdminMetricsDashboard } from "@/components/admin/admin-metrics-dashboard";
 import { getAdminMetricsSnapshot } from "@/lib/admin/metrics/queries";
 import type { Metadata } from "next";
 import type { AdminMetricsSnapshot } from "@/lib/admin/metrics/queries";
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminMetricsPage() {
+  await requireAdminPage();
   let metrics: AdminMetricsSnapshot;
   try {
     metrics = await Promise.race([
@@ -39,7 +41,6 @@ export default async function AdminMetricsPage() {
 
   return <AdminMetricsDashboard metrics={metrics} />;
 }
-
 
 
 

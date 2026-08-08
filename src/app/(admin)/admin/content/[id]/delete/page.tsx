@@ -1,3 +1,4 @@
+import { requireAdminPage } from "@/lib/admin/auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminSoftDeleteDialog } from "@/components/admin/admin-soft-delete-dialog";
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AdminContentDeletePage({ params }: Props) {
+  await requireAdminPage();
   const { id } = await params;
   const content = await getAdminContentById(id);
 

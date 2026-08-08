@@ -1,3 +1,4 @@
+import { requireAdminPage } from "@/lib/admin/auth";
 import { notFound } from "next/navigation";
 import { AdminContentForm } from "@/components/admin/admin-content-form";
 import {
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AdminContentEditPage({ params }: Props) {
+  await requireAdminPage();
   const { id } = await params;
   const [content, styles] = await Promise.all([
     getAdminContentById(id),

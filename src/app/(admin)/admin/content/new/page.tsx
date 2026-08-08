@@ -1,3 +1,4 @@
+import { requireAdminPage } from "@/lib/admin/auth";
 import { AdminContentForm } from "@/components/admin/admin-content-form";
 import { listStyleOptions } from "@/lib/admin/content/queries";
 import type { Metadata } from "next";
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminContentNewPage() {
+  await requireAdminPage();
   const styles = await listStyleOptions();
 
   return <AdminContentForm mode="create" styles={styles} />;

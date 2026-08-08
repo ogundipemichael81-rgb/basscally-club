@@ -1,6 +1,8 @@
+import { requireAdminPage } from "@/lib/admin/auth";
 import { PlaceholderPage } from "@/components/layout/placeholder-page";
 
-export default function AdminEmailResendPage() {
+export default async function AdminEmailResendPage() {
+  await requireAdminPage();
   return (
     <PlaceholderPage
       title="Resend email"

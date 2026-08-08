@@ -1,3 +1,4 @@
+import { requireAdminPage } from "@/lib/admin/auth";
 import { Suspense } from "react";
 import { AdminContentList } from "@/components/admin/admin-content-list";
 import { listAdminContent, type AdminContentRow } from "@/lib/admin/content/queries";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminContentListPage() {
+  await requireAdminPage();
   let rows: AdminContentRow[] = [];
   let loadError: string | null = null;
   try {
