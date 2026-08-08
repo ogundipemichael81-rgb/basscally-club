@@ -23,7 +23,19 @@ export const revalidate = 0;
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
-
+function TrialBanner({ session }: { session: Awaited<ReturnType<typeof getMemberSession>> }) {
+  if (!session?.trialActive || (session.planLabel && session.planLabel !== "Founding trial")) return null;
+  return (
+    <div className="mb-8 rounded-[var(--radius-xl)] border border-[rgba(255,91,0,0.45)] bg-[linear-gradient(135deg,rgba(255,91,0,0.18),rgba(255,255,255,0.04))] p-6" role="status">
+      <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--color-brand)]">Founding trial</p>
+      <div className="mt-2 flex flex-wrap items-baseline justify-between gap-3">
+        <h2 className="font-[family-name:var(--font-display)] text-2xl font-black">Your free trial is active</h2>
+        <span className="rounded-full border border-[rgba(255,255,255,0.15)] px-3 py-1 text-sm text-[var(--color-text-muted)]">$1.50/month locked</span>
+      </div>
+      <p className="mt-2 text-sm text-[var(--color-text-muted)]">Explore the full Hub during your seven-day trial. Your Founding Member price stays reserved after it ends.</p>
+    </div>
+  );
+}
 async function DashboardContent({
   searchParams,
 }: {
@@ -56,9 +68,9 @@ async function DashboardContent({
       </div>
     );
   }
-
   return (
     <>
+      <TrialBanner session={session} />
       {summary ? <PastDueBanner summary={summary} className="mb-8" /> : null}
       {session.hasAccess ? <DashboardPageView session={session} data={data} filter={filter} /> : <UnpaidPreviewDashboard data={data} />}
     </>
