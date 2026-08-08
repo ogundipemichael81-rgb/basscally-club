@@ -108,13 +108,8 @@ export function LandingHero() {
             <span className="block">
               <span className="italic text-[var(--color-brand)]">Basscally.</span>
             </span>
-            <span className="block pl-[0.18em]">
-              <span className="font-bold text-[var(--color-text-dim)] line-through decoration-[var(--color-brand)] decoration-4">
-                $20
-              </span>{" "}
-              <span className="text-[var(--color-brand)]">$1.50</span>
-              <span className="font-medium text-[var(--color-text-muted)]">/month.</span>
-            </span>
+            <span className="block pl-[0.18em] text-[var(--color-brand)]">7 Days Free.</span>
+            <span className="block pl-[0.18em] text-[var(--color-text-dim)]">Founding Price Locked.</span>
           </h1>
 
           <div
