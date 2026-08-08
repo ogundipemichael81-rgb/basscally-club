@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -37,7 +37,7 @@ export function JoinForm() {
     <label className="block text-sm">Confirm password<input className="mt-2 min-w-0 flex-1 rounded border p-3 text-base text-[var(--color-text)] [color-scheme:dark]" type={show ? "text" : "password"} autoComplete="new-password" minLength={12} required value={confirm} onChange={(event) => setConfirm(event.target.value)} /></label>
     <p className="text-sm text-[var(--color-text-muted)]">Use at least 12 characters. This email becomes your login. Your seven-day trial starts after account creation; no card is required.</p>
     {error ? <p role="alert" className="text-sm text-red-400">{error}</p> : null}
-    <button className="min-h-11 w-full rounded bg-[var(--color-brand)] px-4 py-3 font-bold text-[var(--color-text)] disabled:opacity-60" disabled={loading}>{loading ? "Creating accountÃ¢â‚¬Â¦" : "Start my free trial"}</button>
+    <button className="min-h-11 w-full rounded bg-[var(--color-brand)] px-4 py-3 font-bold text-[var(--color-text)] disabled:opacity-60" disabled={loading}>{loading ? "Creating account…" : "Start my free trial"}</button>
   </form>;
 }
 

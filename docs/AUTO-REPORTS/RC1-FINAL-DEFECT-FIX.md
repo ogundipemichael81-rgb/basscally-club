@@ -1,7 +1,7 @@
-﻿# RC1 Final Defect Fix Report
+# RC1 Final Defect Fix Report
 
-- Commit: `9791ca9` (`fix: complete founding trial signup experience`)
-- Deployment: `dpl_Eg6Zxw4gSMcupgFuXrLjZvytSXLX`
+- Commit: `ac30f82` (`fix: complete founding trial signup experience`)
+- Deployment: `dpl_FtUoi7MHF7KhfzkKvXxjWV9o9aYm`
 - Deployment state: READY
 
 ## Acceptance summary
@@ -14,7 +14,7 @@
 6. Lint: PASS, 0 errors, 13 pre-existing warnings.
 7. Typecheck: PASS.
 8. Build: PASS.
-9. Commit: `9791ca9`.
+9. Commit: `ac30f82`.
 10. Deployment ID: `dpl_Eg6Zxw4gSMcupgFuXrLjZvytSXLX`.
 11. Deployment READY: PASS; production alias is `https://basscallyhub.vercel.app`.
 12. Signup API 200: previously proven in production; not repeated in this pass because the controlled browser harness could not satisfy safe cleanup requirements.
@@ -34,4 +34,4 @@
 26. Orphan profile: no new identity created; no new orphan introduced.
 27. Genuine users affected: only the JoinForm and its focused regression script/package command changed; unrelated work remained uncommitted.
 28. FINAL STATUS: NOT READY for final RC1 acceptance.
-29. Exact blocker: a fresh one-account production browser test must verify automatic `/join` to `/dashboard` and 390/360 overflow, with the temporary identity deleted afterward. The browser harness could not safely create an identity without an in-process cleanup path, so no production account was created.
+29. Exact blocker: a fresh one-account production browser test must verify automatic `/join` to `/dashboard` and 390/360 overflow, with the temporary identity deleted afterward. The production QA account was not created because the available browser harness could not provide a verified in-process Auth-ID deletion path; creating an account without guaranteed cleanup was not safe.
