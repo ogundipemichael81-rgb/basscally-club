@@ -2,18 +2,20 @@
   "name": "basscally-club",
   "version": "0.1.0",
   "private": true,
-  "description": "Basscally Hub — weekly bass practice membership at basscally.club",
+  "description": "Basscally Hub ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â weekly bass practice membership at basscally.club",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test:recovery-request": "node scripts/test-recovery-request-guard.mjs",
     "bh:status": "python scripts/basscally-autopilot-controller.py status",
     "bh:next": "python scripts/basscally-autopilot-controller.py next",
     "bh:complete": "python scripts/basscally-autopilot-controller.py complete",
     "bh:check": "python scripts/basscally-autopilot-controller.py check",
-    "db:apply": "node scripts/apply-supabase-schema.mjs"
+    "db:apply": "node scripts/apply-supabase-schema.mjs",
+    "test:founding-trial-states": "node --experimental-strip-types scripts/test-founding-trial-states.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

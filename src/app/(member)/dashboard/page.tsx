@@ -7,6 +7,7 @@ import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summar
 import { getDashboardData } from "@/lib/dashboard/queries";
 import { parseDashboardFilter } from "@/lib/dashboard/filters";
 import { getMemberSession } from "@/lib/subscriptions/member-session";
+import { deriveTrialState, formatTrialRemaining } from "@/lib/subscriptions/trial-state";
 import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
 import { ButtonLink } from "@/components/marketing/button-link";
@@ -23,18 +24,14 @@ export const revalidate = 0;
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
-function TrialBanner({ session }: { session: Awaited<ReturnType<typeof getMemberSession>> }) {
-  if (!session?.trialActive || (session.planLabel && session.planLabel !== "Founding trial")) return null;
-  return (
-    <div className="mb-8 rounded-[var(--radius-xl)] border border-[rgba(255,91,0,0.45)] bg-[linear-gradient(135deg,rgba(255,91,0,0.18),rgba(255,255,255,0.04))] p-6" role="status">
-      <p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--color-brand)]">Founding trial</p>
-      <div className="mt-2 flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="font-[family-name:var(--font-display)] text-2xl font-black">Your free trial is active</h2>
-        <span className="rounded-full border border-[rgba(255,255,255,0.15)] px-3 py-1 text-sm text-[var(--color-text-muted)]">$1.50/month locked</span>
-      </div>
-      <p className="mt-2 text-sm text-[var(--color-text-muted)]">Explore the full Hub during your seven-day trial. Your Founding Member price stays reserved after it ends.</p>
-    </div>
-  );
+function TrialStateBanner({ session, nowMs }: { session: Awaited<ReturnType<typeof getMemberSession>>; nowMs: number }) {
+  if (!session) return null;
+  const paid = Boolean(session.planLabel && session.planLabel !== "Founding trial");
+  const state = deriveTrialState({ nowMs, trialEndsAt: session.trialEndsAt, foundingEligible: session.isFoundingMember, foundingPriceLocked: session.isFoundingMember, paid });
+  if (state.trialExpired) return <div className="mb-8 rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6" role="status"><p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--color-brand)]">Your 7-day trial has ended</p><h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-black">Your Founding rate is still locked.</h2><p className="mt-2 text-sm text-[var(--color-text-muted)]">Your account and practice history remain available. Premium drops are locked until membership is active.</p></div>;
+  if (!state.trialActive) return null;
+  const expiring = state.trialExpiring;
+  return <div className={`mb-8 rounded-[var(--radius-xl)] border p-6 ${expiring ? "border-[rgba(255,183,77,0.5)] bg-[rgba(255,183,77,0.08)]" : "border-[rgba(255,91,0,0.45)] bg-[linear-gradient(135deg,rgba(255,91,0,0.18),rgba(255,255,255,0.04))]"}`} role="status"><p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[var(--color-brand)]">{expiring ? "Your free trial ends soon" : "Founding trial"}</p><div className="mt-2 flex flex-wrap items-baseline justify-between gap-3"><h2 className="font-[family-name:var(--font-display)] text-2xl font-black">{formatTrialRemaining(state.trialRemainingMs)}</h2><span className="rounded-full border border-[rgba(255,255,255,0.15)] px-3 py-1 text-sm text-[var(--color-text-muted)]">$1.50/month locked</span></div><p className="mt-2 text-sm text-[var(--color-text-muted)]">Your Founding Member rate is locked. Keep exploring Basscally Hub while your trial is active.</p></div>;
 }
 async function DashboardContent({
   searchParams,
@@ -68,9 +65,10 @@ async function DashboardContent({
       </div>
     );
   }
+  const nowMs = new Date().getTime();
   return (
     <>
-      <TrialBanner session={session} />
+      <TrialStateBanner session={session} nowMs={nowMs} />
       {summary ? <PastDueBanner summary={summary} className="mb-8" /> : null}
       {session.hasAccess ? <DashboardPageView session={session} data={data} filter={filter} /> : <UnpaidPreviewDashboard data={data} />}
     </>

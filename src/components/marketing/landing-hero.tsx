@@ -1,5 +1,6 @@
 import { IconArrowRight } from "@/components/icons";
 import { ButtonLink } from "@/components/marketing/button-link";
+import { FoundingCountdown } from "@/components/marketing/founding-countdown";
 import { HERO_CTA_SENTINEL_ID } from "@/components/marketing/mobile-cta-bar";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -96,7 +97,7 @@ export function LandingHero() {
               className="hidden h-px w-4 bg-[var(--color-border-strong)] sm:block"
               aria-hidden
             />
-            <span>7 Days Free · Founding Price Locked</span>
+            <span>7 Days Free · Founding Price Locked</span><FoundingCountdown />
           </div>
 
           <h1
