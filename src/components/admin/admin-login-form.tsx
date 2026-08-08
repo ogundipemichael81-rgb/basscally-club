@@ -18,7 +18,7 @@ export function AdminLoginForm({ next }: { next?: string }) {
     let active = true;
     const supabase = createClient();
     void supabase.auth.getUser().then(async ({ data: { user }, error: authError }) => {
-      if (authError) console.warn("[admin-login] existing session check failed", authError.message);
+      if (authError) console.warn("[admin-login] existing session check failed", { name: authError.name, status: authError.status, code: authError.code, message: authError.message });
       if (!user) return;
       const check = await fetch("/api/admin/session-check", { cache: "no-store" });
       if (check.ok) { router.replace("/admin"); return; }
@@ -36,8 +36,8 @@ export function AdminLoginForm({ next }: { next?: string }) {
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
     if (authError) {
-      console.warn("[admin-login] password authentication failed", { code: authError.code, status: authError.status });
-      setError("Email or password is incorrect.");
+      console.warn("[admin-login] password authentication failed", { name: authError.name, status: authError.status, code: authError.code, message: authError.message });
+      setError(authError.status === 429 ? "Too many attempts. Please wait briefly and try again." : "Email or password is incorrect.");
       setLoading(false);
       return;
     }
@@ -55,13 +55,13 @@ export function AdminLoginForm({ next }: { next?: string }) {
 
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
-      <Input label="Email" id="admin-email" name="email" type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} />
+      <Input label="Email" id="admin-email" name="email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} />
       <div className="relative">
         <Input label="Password" id="admin-password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
         <button type="button" className="absolute right-3 top-9 min-h-11 px-2 text-sm text-[var(--color-text-muted)] underline" aria-pressed={showPassword} onClick={() => setShowPassword((value) => !value)}>{showPassword ? "Hide" : "Show"}</button>
       </div>
       {error ? <p role="alert" className="text-sm text-[var(--color-danger)]">{error}</p> : null}
-      <Button type="submit" disabled={loading} className="w-full">{loading ? "Checking access…" : "Sign in to admin"}</Button>
+      <Button type="submit" disabled={loading} className="w-full">{loading ? "Checking access..." : "Sign in to admin"}</Button>
     </form>
   );
 }
