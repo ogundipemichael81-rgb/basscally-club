@@ -83,7 +83,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (flow === "recovery_pending") {
-    const allowed = pathname === "/auth/reset-password" || pathname === "/auth/cancel-recovery" || pathname.startsWith("/_next/") || pathname.startsWith("/favicon");
+    const allowed = pathname === "/auth/reset-password" || pathname === "/auth/cancel-recovery" || pathname === "/auth/complete-recovery" || pathname.startsWith("/_next/") || pathname.startsWith("/favicon");
     if (!allowed) {
       if (pathname.startsWith("/api/")) return NextResponse.json({ error: "recovery_incomplete" }, { status: 403 });
       return NextResponse.redirect(new URL("/auth/reset-password", request.url));
