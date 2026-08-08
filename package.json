@@ -13,9 +13,7 @@
     "bh:next": "python scripts/basscally-autopilot-controller.py next",
     "bh:complete": "python scripts/basscally-autopilot-controller.py complete",
     "bh:check": "python scripts/basscally-autopilot-controller.py check",
-    "db:apply": "node scripts/apply-supabase-schema.mjs",
-    "admin:set-password": "node --env-file=.env.local scripts/admin/set-admin-password.mjs",
-    "auth:test-admin-password": "node --env-file=.env.local scripts/admin/test-admin-password.mjs"
+    "db:apply": "node scripts/apply-supabase-schema.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

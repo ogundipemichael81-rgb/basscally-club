@@ -60,6 +60,7 @@ export function AdminLoginForm({ next }: { next?: string }) {
         <Input label="Password" id="admin-password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
         <button type="button" className="absolute right-3 top-9 min-h-11 px-2 text-sm text-[var(--color-text-muted)] underline" aria-pressed={showPassword} onClick={() => setShowPassword((value) => !value)}>{showPassword ? "Hide" : "Show"}</button>
       </div>
+      <a href="/auth/forgot-password" className="inline-flex min-h-11 items-center text-sm text-[var(--color-brand)] underline">Forgot password?</a>
       {error ? <p role="alert" className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       <Button type="submit" disabled={loading} className="w-full">{loading ? "Checking access..." : "Sign in to admin"}</Button>
     </form>

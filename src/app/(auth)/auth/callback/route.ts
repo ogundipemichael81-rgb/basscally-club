@@ -1,18 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { getSupabasePublishableKey, getSupabaseUrl, isSupabaseClientConfigured } from "@/lib/env";
 import { routes } from "@/lib/routes";
-
-function loginErrorRedirect(request: NextRequest, message: string) {
-  const url = new URL(routes.auth.login, request.url);
-  url.searchParams.set("authError", message);
-  return NextResponse.redirect(url);
-}
-
-/** Email-link callbacks are deliberately fail-closed while password recovery
- * and checkout claims are moved to server-only flows. */
-export async function GET(request: NextRequest) {
-  const callbackType = request.nextUrl.searchParams.get("type");
-  if (callbackType === "recovery") {
-    return loginErrorRedirect(request, "Password recovery is temporarily unavailable. Please contact support.");
-  }
-  return loginErrorRedirect(request, "Email-link sign-in is no longer used. Sign in with your password.");
-}
+import { AUTH_FLOW_COOKIE, encodeAuthFlow } from "@/lib/auth/flow-cookie";
+function loginErrorRedirect(request:NextRequest,message:string){const url=new URL(routes.auth.login,request.url);url.searchParams.set("authError",message);return NextResponse.redirect(url)}
+export async function GET(request:NextRequest){if(!isSupabaseClientConfigured())return loginErrorRedirect(request,"Sign-in is not configured.");if(request.nextUrl.searchParams.get("type")!=="recovery")return loginErrorRedirect(request,"Sign in with your password to continue.");const code=request.nextUrl.searchParams.get("code");if(!code)return loginErrorRedirect(request,"This recovery link is invalid or expired.");const response=NextResponse.redirect(new URL("/auth/reset-password",request.url));const supabase=createServerClient(getSupabaseUrl(),getSupabasePublishableKey(),{cookies:{getAll:()=>request.cookies.getAll(),setAll:cookies=>cookies.forEach(({name,value,options})=>response.cookies.set(name,value,options))}});const{error}=await supabase.auth.exchangeCodeForSession(code);if(error)return loginErrorRedirect(request,"This recovery link is invalid or expired.");response.cookies.set(AUTH_FLOW_COOKIE,await encodeAuthFlow("recovery_pending"),{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",path:"/"});return response}
