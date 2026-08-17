@@ -42,7 +42,7 @@ export function StylePageView({ data, checkoutHref }: Props) {
                 size="lg"
                 className="landing-cta-glow group w-full sm:w-auto"
               >
-                Unlock all tracks — $1.50/month
+                Create a free account
                 <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
               </ButtonLink>
               <Link
@@ -53,7 +53,7 @@ export function StylePageView({ data, checkoutHref }: Props) {
               </Link>
             </div>
             <p className="mt-3 font-[family-name:var(--font-mono)] text-xs text-[var(--color-text-dim)]">
-              Three-click flow: Hub → this style page → checkout
+              Create a free account for full playback.
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export function StylePageView({ data, checkoutHref }: Props) {
           </ul>
           <div className="mt-10 text-center">
             <ButtonLink href={checkoutHref} size="lg" className="landing-cta-glow mx-auto w-full max-w-md">
-              Unlock all tracks — $1.50/month
+              Create a free account
             </ButtonLink>
           </div>
         </div>

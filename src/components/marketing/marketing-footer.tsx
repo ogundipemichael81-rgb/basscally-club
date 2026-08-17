@@ -12,7 +12,7 @@ export function MarketingFooter() {
           <p className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--color-text)]">
             {APP_NAME}
           </p>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">A bass practice membership.</p>
+          <p className="mt-1 text-sm text-[var(--color-text-muted)]">A free bass practice hub.</p>
           <SocialFollowLinks layout="icons" className="mt-4" />
           <p className="mt-2 text-sm text-[var(--color-text-dim)]">
             <a

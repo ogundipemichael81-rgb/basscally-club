@@ -40,7 +40,7 @@ export function StyleMobileCtaBar({ checkoutHref }: Props) {
       aria-hidden={!visible}
     >
       <ButtonLink href={checkoutHref} className="landing-cta-glow w-full">
-        Unlock all tracks — $1.50/mo
+        Create a free account
       </ButtonLink>
     </div>
   );

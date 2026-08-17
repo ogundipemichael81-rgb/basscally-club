@@ -57,7 +57,7 @@ export async function createPreviewAccess(
   const hasFullAccess = Boolean(session?.hasAccess);
 
   if (!hasFullAccess && !content.is_free_preview) {
-    return { ok: false, status: 403, error: "Activate membership to play this practice drop." };
+    return { ok: false, status: 403, error: "Create a free account to play this drop." };
   }
 
   const objectPath = storageObjectPath(

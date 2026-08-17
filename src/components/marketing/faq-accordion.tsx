@@ -34,7 +34,7 @@ const faqItems = [
   },
   {
     q: "What if I don't like it?",
-    a: "Cancel anytime. We don't lock you in. We earn your $1.50 every month.",
+    a: "Basscally Hub is free to join. Create an account to access published practice drops.",
   },
 ];
 

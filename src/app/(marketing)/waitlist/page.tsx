@@ -32,10 +32,10 @@ export default function WaitlistPage() {
       <p className="mx-auto mt-8 max-w-md text-center text-sm text-[var(--color-text-dim)]">
         Already have access?{" "}
         <Link
-          href={routes.pricing}
+          href={routes.join}
           className="font-medium text-[var(--color-brand)] hover:underline"
         >
-          See pricing
+          Create a free account
         </Link>{" "}
         or{" "}
         <Link

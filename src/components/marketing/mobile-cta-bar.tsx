@@ -38,7 +38,7 @@ export function MobileCtaBar() {
       aria-hidden={!visible}
     >
       <ButtonLink href={routes.join} className="landing-cta-glow w-full">
-        Start My Free Trial
+        Join Basscally Hub
       </ButtonLink>
     </div>
   );

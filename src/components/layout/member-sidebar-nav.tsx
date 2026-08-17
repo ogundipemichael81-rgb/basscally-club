@@ -24,7 +24,7 @@ const PRIMARY_NAV: NavItem[] = [
 ];
 
 const ACCOUNT_NAV: NavItem[] = [
-  { href: routes.member.account, label: "Membership", prefixMatch: "/account" },
+  { href: routes.member.account, label: "Account", prefixMatch: "/account" },
   { href: routes.member.accountSecurity, label: "Security" },
 ];
 

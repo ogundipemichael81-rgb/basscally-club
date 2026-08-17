@@ -169,13 +169,13 @@ export function TrackPreviewPlayer({ track, unlockHref }: Props) {
               role="status"
             >
               <p className="text-sm font-medium text-[var(--color-text)]">
-                Preview ended — unlock the full track with Basscally Hub.
+                Preview ended — create a free account for the full track.
               </p>
               <Link
                 href={unlockHref}
                 className="mt-2 inline-flex min-h-10 items-center text-sm font-semibold text-[var(--color-brand)] hover:underline"
               >
-                Unlock all tracks — $1.50/month
+                Create a free account
               </Link>
             </div>
           ) : null}

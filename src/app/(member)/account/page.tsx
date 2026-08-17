@@ -1,19 +1,7 @@
 import { redirect } from "next/navigation";
-import { AccountMembershipView } from "@/components/account/account-membership-view";
-import { getAccountSubscriptionSummary } from "@/lib/account/subscription-summary";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+import { getMemberSession } from "@/lib/subscriptions/member-session";
 import { routes } from "@/lib/routes";
 import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Membership",
-  description: "Your Basscally Hub plan, renewal date, and account actions.",
-};
-
-export default async function AccountPage() {
-  const summary = await getAccountSubscriptionSummary();
-  if (!summary) {
-    redirect(routes.auth.login);
-  }
-
-  return <AccountMembershipView summary={summary} />;
-}
+export const metadata:Metadata={title:"Account",description:"Your Basscally Hub account and access."};
+export default async function AccountPage(){const session=await getMemberSession();if(!session)redirect(routes.auth.login);return <div className="mx-auto max-w-3xl space-y-6"><header><p className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.08em] text-[var(--color-brand)]">Basscally account</p><h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl font-black">Your account.</h1><p className="mt-3 text-[var(--color-text-muted)]">Manage your sign-in and access to Basscally Hub.</p></header><section className="basscally-depth-card rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><p className="text-sm text-[var(--color-text-dim)]">Access</p><h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold">Full Hub Access</h2><p className="mt-3 text-[var(--color-text-muted)]">Your Basscally Hub account includes full access to all published practice drops.</p><dl className="mt-6 border-t border-[var(--color-border)] pt-5"><dt className="text-sm text-[var(--color-text-dim)]">Email</dt><dd className="mt-1 font-semibold">{session.email}</dd></dl></section><section className="rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><h2 className="font-semibold">Account security</h2><p className="mt-2 text-sm text-[var(--color-text-muted)]">Keep your password private and sign out on shared devices.</p><div className="mt-5 max-w-xs"><SignOutButton/></div></section></div>}

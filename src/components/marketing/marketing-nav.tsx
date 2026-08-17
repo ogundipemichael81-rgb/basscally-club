@@ -82,9 +82,9 @@ export function MarketingNav(props: MarketingNavProps) {
     props.hidePrimaryOnMobile ?? routeDefaults?.hidePrimaryOnMobile ?? false;
   const ghostHref = props.ghostHref ?? routeDefaults?.ghostHref ?? routes.auth.login;
   const ghostLabel = props.ghostLabel ?? routeDefaults?.ghostLabel ?? "Sign in";
-  const primaryHref = props.primaryHref ?? routeDefaults?.primaryHref ?? routes.pricing;
+  const primaryHref = props.primaryHref ?? routeDefaults?.primaryHref ?? routes.join;
   const primaryLabel =
-    props.primaryLabel ?? routeDefaults?.primaryLabel ?? "Start My Free Trial";
+    props.primaryLabel ?? routeDefaults?.primaryLabel ?? "Join Basscally Hub";
 
   const showPrimary = !hidePrimary;
   const primaryClassName = hidePrimaryOnMobile ? "hidden lg:inline-flex" : undefined;

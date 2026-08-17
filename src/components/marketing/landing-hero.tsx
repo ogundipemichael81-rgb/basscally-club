@@ -1,6 +1,5 @@
 import { IconArrowRight } from "@/components/icons";
 import { ButtonLink } from "@/components/marketing/button-link";
-import { FoundingCountdown } from "@/components/marketing/founding-countdown";
 import { HERO_CTA_SENTINEL_ID } from "@/components/marketing/mobile-cta-bar";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -91,13 +90,13 @@ export function LandingHero() {
               >
                 <span className="hero-live-dot" />
               </span>
-              Now accepting members
+              Practice starts here
             </span>
             <span
               className="hidden h-px w-4 bg-[var(--color-border-strong)] sm:block"
               aria-hidden
             />
-            <span>7 Days Free · Founding Price Locked</span><FoundingCountdown />
+            <span>Full Access · Free</span>
           </div>
 
           <h1
@@ -109,8 +108,8 @@ export function LandingHero() {
             <span className="block">
               <span className="italic text-[var(--color-brand)]">Basscally.</span>
             </span>
-            <span className="block pl-[0.18em] text-[var(--color-brand)]">7 Days Free.</span>
-            <span className="block pl-[0.18em] text-[var(--color-text-dim)]">Founding Price Locked.</span>
+            <span className="block pl-[0.18em] text-[var(--color-brand)]">Full Access.</span>
+            <span className="block pl-[0.18em] text-[var(--color-text-dim)]">Free.</span>
           </h1>
 
           <div
@@ -122,11 +121,11 @@ export function LandingHero() {
               size="lg"
               className="landing-cta-glow group inline-flex w-full"
             >
-              Start My Free Trial
+              Join Basscally Hub
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>
             <span className="text-sm text-[var(--color-text-dim)]">
-              No card required · Full access during Founding Week
+              Create a free account. No card. No trial.
             </span>
           </div>
 
@@ -144,11 +143,11 @@ export function LandingHero() {
               size="lg"
               className="landing-cta-glow group w-full sm:w-auto"
             >
-              Start My Free Trial
+              Join Basscally Hub
               <IconArrowRight className="transition-transform duration-[var(--motion-fast)] ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </ButtonLink>
             <span className="text-sm text-[var(--color-text-dim)]">
-              No card required · Full access during Founding Week
+              Create a free account. No card. No trial.
             </span>
           </div>
         </div>

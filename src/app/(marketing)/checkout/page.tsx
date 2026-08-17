@@ -1,5 +1,3 @@
-﻿import { redirect } from "next/navigation";
-import { CheckoutPaymentPanel } from "@/components/checkout/checkout-payment-panel";
-import { requireNormalUser } from "@/lib/auth/authorization";
-export default async function CheckoutPage({searchParams}:{searchParams:Promise<{plan?:string}>}){const user=await requireNormalUser();if(!user)redirect("/auth/login");const {plan=""}=await searchParams;if(!["founding-monthly","standard-monthly","annual"].includes(plan))redirect("/pricing");return <main className="mx-auto flex min-h-screen max-w-lg items-center px-5 py-12"><section className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 sm:p-8"><p className="text-sm text-[var(--color-brand)]">SECURE PAYMENT</p><h1 className="mt-3 text-3xl font-black">Finish your membership</h1><p className="mt-3 text-[var(--color-text-muted)]">You are signed in as {user.email}. Review the plan in secure checkout before paying.</p><div className="mt-7"><CheckoutPaymentPanel plan={plan}/></div></section></main>}
-
+import { redirect } from "next/navigation";
+import { getMemberSession } from "@/lib/subscriptions/member-session";
+export default async function CheckoutPage() { const session = await getMemberSession(); redirect(session ? "/dashboard" : "/join"); }
