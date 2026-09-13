@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { WhatsAppCommunityCard } from "@/components/community/whatsapp-community-card";
 import { Button } from "@/components/ui/button";
+import { trackAnalyticsEvent } from "@/lib/analytics/client-events";
 import type { PracticeTrack } from "@/lib/content/queries";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -23,11 +25,6 @@ function formatTime(seconds: number): string {
   return `${mins}:${String(secs).padStart(2, "0")}`;
 }
 
-function trackPracticeEvent(name: string, props: Record<string, string | number> = {}) {
-  const plausible = (window as Window & { plausible?: (event: string, options?: unknown) => void }).plausible;
-  plausible?.(name, { props });
-}
-
 function applyPlaybackSpeed(audio: HTMLAudioElement, speed: number) {
   audio.playbackRate = speed;
   // Modern browsers expose preservesPitch; older Safari versions use the WebKit name.
@@ -43,6 +40,7 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
   const [duration, setDuration] = useState(0);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [speed, setSpeed] = useState<(typeof SPEEDS)[number]>(1);
+  const [practiceComplete, setPracticeComplete] = useState(false);
 
   const stopPlayback = useCallback(() => audioRef.current?.pause(), []);
   useEffect(() => () => stopPlayback(), [stopPlayback]);
@@ -52,7 +50,8 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
     audio.onloadedmetadata = () => setDuration(audio.duration);
     audio.onended = () => {
       setState("idle");
-      trackPracticeEvent("practice_completed", { contentId });
+      setPracticeComplete(true);
+      trackAnalyticsEvent("practice_completed", { contentId });
     };
     audio.onerror = () => {
       setError("Could not play this drop.");
@@ -79,15 +78,22 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
     if (state === "playing") {
       stopPlayback();
       setState("paused");
-      trackPracticeEvent("practice_paused", { contentId });
+      trackAnalyticsEvent("practice_paused", { contentId });
       return;
     }
     setState("loading");
     try {
       const audio = await ensureSource();
+      if (practiceComplete) {
+        if (duration > 0 && audio.currentTime >= duration) {
+          audio.currentTime = 0;
+          setCurrentTime(0);
+        }
+        setPracticeComplete(false);
+      }
       await audio.play();
       setState("playing");
-      trackPracticeEvent(state === "paused" ? "practice_resumed" : "practice_started", { contentId, speed });
+      trackAnalyticsEvent(state === "paused" ? "practice_resumed" : "practice_started", { contentId, speed });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not play audio.");
       setState("error");
@@ -99,7 +105,7 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
     if (!audio || !Number.isFinite(audio.duration)) return;
     audio.currentTime = value;
     setCurrentTime(value);
-    trackPracticeEvent("practice_seeked", { contentId, seconds: Math.round(value) });
+    trackAnalyticsEvent("practice_seeked", { contentId, seconds: Math.round(value) });
   };
 
   const skip = (seconds: number) => {
@@ -114,15 +120,15 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
       applyPlaybackSpeed(audio, nextSpeed);
     }
     setSpeed(nextSpeed);
-    trackPracticeEvent("practice_speed_changed", { contentId, speed: nextSpeed });
-    trackPracticeEvent(`practice_speed_${String(nextSpeed).replace(".", "")}`, { contentId });
+    trackAnalyticsEvent("practice_speed_changed", { contentId, speed: nextSpeed });
+    trackAnalyticsEvent(`practice_speed_${String(nextSpeed).replace(".", "")}`, { contentId });
   };
 
   const currentIndex = practiceSequence.findIndex((track) => track.id === contentId);
   const previous = currentIndex > 0 ? practiceSequence[currentIndex - 1] : undefined;
   const next = currentIndex >= 0 ? practiceSequence[currentIndex + 1] : undefined;
   const goToTrack = (track: PracticeTrack, event: "next_track_clicked" | "previous_track_clicked") => {
-    trackPracticeEvent(event, { contentId, destinationId: track.id });
+    trackAnalyticsEvent(event, { contentId, destinationId: track.id });
     window.location.assign(routes.member.content(track.id));
   };
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -142,6 +148,9 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
 
       <fieldset className="mt-5"><legend className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">Speed — pitch preserved</legend><div className="mt-2 flex flex-wrap gap-2">{SPEEDS.map((option) => <Button key={option} type="button" variant={speed === option ? "primary" : "secondary"} size="sm" onClick={() => changeSpeed(option)} aria-pressed={speed === option}>{option}×</Button>)}</div></fieldset>
       {error ? <p className="mt-3 text-sm text-[var(--color-danger)]" role="alert">{error}</p> : null}
+      {practiceComplete ? (
+        <WhatsAppCommunityCard placement="practice_complete" variant="practice" className="mt-6" />
+      ) : null}
     </section>
   );
 }

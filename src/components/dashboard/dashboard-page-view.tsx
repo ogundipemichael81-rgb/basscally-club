@@ -5,25 +5,40 @@ import { DashboardFilterTabs } from "@/components/dashboard/dashboard-filter-tab
 import { DashboardLatestHero } from "@/components/dashboard/dashboard-latest-hero";
 import { DashboardScrollReveal } from "@/components/dashboard/dashboard-scroll-reveal";
 import { DashboardUpcomingRail } from "@/components/dashboard/dashboard-upcoming-rail";
+import { WhatsAppCommunityCard } from "@/components/community/whatsapp-community-card";
 import { Badge } from "@/components/ui/badge";
 import { dashboardFilterHref, filterDashboardItems, getDashboardLibraryContext, type DashboardFilter } from "@/lib/dashboard/filters";
 import type { DashboardData } from "@/lib/dashboard/types";
 import type { MemberSession } from "@/lib/subscriptions/member-session";
 import Link from "next/link";
 
-type Props = { session: MemberSession; data: DashboardData; filter: DashboardFilter; isOverview: boolean };
+type Props = {
+  session: MemberSession;
+  data: DashboardData;
+  filter: DashboardFilter;
+  isOverview: boolean;
+  showWelcome?: boolean;
+};
 const CATEGORY_CARDS: { filter: DashboardFilter; title: string }[] = [
   { filter: "bassless", title: "Bass-less" }, { filter: "grooves", title: "Grooves" }, { filter: "fills", title: "Fills" }, { filter: "challenges", title: "Challenges" },
 ];
 
-export function DashboardPageView({ session, data, filter, isOverview }: Props) {
+export function DashboardPageView({ session, data, filter, isOverview, showWelcome = false }: Props) {
   const isEmpty = data.published.length === 0;
   const nextDropIso = data.upcoming[0]?.scheduledFor ?? null;
   const filteredItems = filterDashboardItems(data.published, filter, data.downloadedIds);
   const latestDrop = filteredItems[0] ?? null;
   const library = getDashboardLibraryContext(filter);
 
-  if (isEmpty) return <DashboardEmptyState upcoming={data.upcoming} upcomingTargetIso={nextDropIso} />;
+  if (isEmpty) {
+    return (
+      <div className="space-y-8">
+        {showWelcome ? <WhatsAppCommunityCard placement="first_login" variant="welcome" /> : null}
+        <DashboardEmptyState upcoming={data.upcoming} upcomingTargetIso={nextDropIso} />
+        <WhatsAppCommunityCard placement="dashboard" variant="card" />
+      </div>
+    );
+  }
 
   return <div className="space-y-8">
     <DashboardScrollReveal>
@@ -37,6 +52,8 @@ export function DashboardPageView({ session, data, filter, isOverview }: Props) 
       </header>
     </DashboardScrollReveal>
 
+    {showWelcome ? <WhatsAppCommunityCard placement="first_login" variant="welcome" /> : null}
+
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]"><div className="space-y-8">
       {latestDrop ? <DashboardLatestHero item={latestDrop} /> : null}
       {isOverview ? <section aria-label="Practice categories" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{CATEGORY_CARDS.map((card) => { const count = filterDashboardItems(data.published, card.filter, data.downloadedIds).length; return <Link key={card.filter} href={dashboardFilterHref(card.filter)} className="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition hover:border-[var(--color-border-strong)]"><p className="font-[family-name:var(--font-display)] text-lg font-bold">{card.title}</p><p className="mt-2 text-sm text-[var(--color-text-muted)]">{count} published {count === 1 ? "drop" : "drops"}</p><p className="mt-4 text-xs font-semibold text-[var(--color-brand)]">Open category →</p></Link>; })}</section> : null}
@@ -44,6 +61,11 @@ export function DashboardPageView({ session, data, filter, isOverview }: Props) 
         <Suspense fallback={<div className="h-11 animate-pulse rounded-full bg-[var(--color-surface-raised)]" />}><DashboardFilterTabs /></Suspense>
         <DashboardContentGrid items={filteredItems} emptyTitle={library.emptyTitle} emptyDescription={library.emptyDescription} />
       </section>
-    </div><DashboardUpcomingRail upcoming={data.upcoming} nextDropIso={nextDropIso} /></div>
+    </div>
+    <div className="space-y-5">
+      <DashboardUpcomingRail upcoming={data.upcoming} nextDropIso={nextDropIso} />
+      <WhatsAppCommunityCard placement="dashboard" variant="card" />
+    </div>
+    </div>
   </div>;
 }

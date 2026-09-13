@@ -1,7 +1,7 @@
 import { clientEnv } from "@/lib/env";
 
 const DEFAULT_WHATSAPP_COMMUNITY_URL =
-  "https://chat.whatsapp.com/DJBtxeOSjoX8coymswNbvY?mode=ems_copy_c";
+  "https://chat.whatsapp.com/DJBtxeOSjoX8coymswNbvY";
 
 /** Env override, then official Basscally WhatsApp community invite. */
 export const whatsappCommunityUrl =

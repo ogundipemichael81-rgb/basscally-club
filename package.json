@@ -26,7 +26,8 @@
     "test:admin-upload-contract": "node --experimental-strip-types scripts/test-admin-upload-contract.mjs",
     "test:trial-media-access": "node scripts/test-trial-media-access.mjs",
     "test:download-pause": "node scripts/test-download-pause.mjs",
-    "test:free-access": "node scripts/test-free-access.mjs"
+    "test:free-access": "node scripts/test-free-access.mjs",
+    "test:whatsapp-community-loop": "node scripts/test-whatsapp-community-loop.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
