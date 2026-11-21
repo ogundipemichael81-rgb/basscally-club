@@ -39,6 +39,31 @@ export function upcomingBeats(
   return due;
 }
 
+/**
+ * At speeds other than 1x the browser's pitch-preserving time-stretcher outputs the
+ * music AHEAD of what audio.currentTime reports. Measured in Chromium by recording the
+ * music and click outputs of the real engine against a tick track (0 ms at 1x):
+ * 0.5x +68 ms, 0.75x +31 ms, 1.25x -4 ms, 1.5x -5 ms (click lateness, wall time).
+ * Returned in wall seconds; the scheduler treats the audible position as
+ * currentTime + lead * rate. Other engines (WebKit/Gecko) are unmeasured, so 0.
+ */
+const CHROMIUM_STRETCH_LEAD: readonly [rate: number, seconds: number][] = [
+  [0.5, 0.068], [0.75, 0.031], [1, 0], [1.25, -0.004], [1.5, -0.005],
+];
+
+export function stretchLeadSeconds(rate: number, engine: "chromium" | "other"): number {
+  if (engine !== "chromium" || !Number.isFinite(rate) || rate === 1) return 0;
+  const table = CHROMIUM_STRETCH_LEAD;
+  if (rate <= table[0][0]) return table[0][1];
+  if (rate >= table[table.length - 1][0]) return table[table.length - 1][1];
+  for (let i = 1; i < table.length; i += 1) {
+    const [r1, s1] = table[i];
+    const [r0, s0] = table[i - 1];
+    if (rate <= r1) return s0 + ((s1 - s0) * (rate - r0)) / (r1 - r0);
+  }
+  return 0;
+}
+
 /** Tracks what was already scheduled so each beat clicks once; invalidate on seek/pause/rate change. */
 export class BeatScheduleState {
   generation = 0;

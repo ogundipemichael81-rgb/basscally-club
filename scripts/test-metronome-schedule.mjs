@@ -4,6 +4,7 @@ import {
   BeatScheduleState,
   firstBeatIndexAtOrAfter,
   parseBeatMap,
+  stretchLeadSeconds,
   upcomingBeats,
 } from "../src/lib/metronome/beat-schedule.ts";
 
@@ -37,6 +38,21 @@ state.invalidate();
 assert(state.generation === gen + 1, "invalidate bumps generation so stale clicks are dropped");
 state.invalidate();
 assert(state.take(beats, 3.45, 1, 0.12)[0].index === 6, "backward/forward seek resumes at the right beat");
+
+// Time-stretch lead: measured Chromium values at the app's practice speeds.
+assert(stretchLeadSeconds(1, "chromium") === 0, "no correction at 1x");
+assert(close(stretchLeadSeconds(0.5, "chromium"), 0.068), "0.5x lead");
+assert(close(stretchLeadSeconds(0.75, "chromium"), 0.031), "0.75x lead");
+assert(close(stretchLeadSeconds(1.25, "chromium"), -0.004), "1.25x lead");
+assert(close(stretchLeadSeconds(1.5, "chromium"), -0.005), "1.5x lead");
+assert(close(stretchLeadSeconds(0.625, "chromium"), 0.0495), "interpolates between speeds");
+assert(close(stretchLeadSeconds(0.25, "chromium"), 0.068) && close(stretchLeadSeconds(2, "chromium"), -0.005), "clamps outside table");
+assert(stretchLeadSeconds(0.5, "other") === 0, "unmeasured engines get no correction");
+assert(stretchLeadSeconds(Number.NaN, "chromium") === 0, "invalid rate gets no correction");
+// The audible position moves ahead, so a beat just ahead of currentTime is scheduled sooner.
+const lead = stretchLeadSeconds(0.5, "chromium");
+const corrected = upcomingBeats(beats, 0.9 + lead * 0.5, 0.5, 0.2);
+assert(corrected.length === 1 && close(corrected[0].wallDelay, (1.0 - 0.9 - lead * 0.5) / 0.5), "correction shifts click earlier by the lead");
 
 const good = { version: "v", contentId: "abc", durationSeconds: 5, medianBpm: 120, beats };
 assert(parseBeatMap(good, "abc")?.beats.length === beats.length, "valid map accepted");

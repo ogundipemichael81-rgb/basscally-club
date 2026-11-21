@@ -1,4 +1,4 @@
-import { BeatScheduleState } from "@/lib/metronome/beat-schedule";
+import { BeatScheduleState, stretchLeadSeconds } from "@/lib/metronome/beat-schedule";
 
 const HORIZON_SECONDS = 0.12;
 const TICK_MS = 25;
@@ -20,6 +20,9 @@ export class MetronomeEngine {
   private active: OscillatorNode[] = [];
   private enabled = false;
   private readonly detach: (() => void)[] = [];
+  // iOS browsers all use WebKit (their UA says CriOS/EdgiOS, not "Chrome/").
+  private readonly browserEngine: "chromium" | "other" =
+    typeof navigator !== "undefined" && /\b(Chrome|Chromium|Edg)\//.test(navigator.userAgent) ? "chromium" : "other";
 
   constructor(private readonly beats: readonly number[]) {}
 
@@ -92,7 +95,10 @@ export class MetronomeEngine {
     const context = this.context;
     if (!audio || !context || audio.paused || !this.enabled) return;
     const generation = this.state.generation;
-    for (const beat of this.state.take(this.beats, audio.currentTime, audio.playbackRate, HORIZON_SECONDS)) {
+    const rate = audio.playbackRate;
+    // Where the listener actually is in the track, correcting for time-stretch lead.
+    const audible = audio.currentTime + stretchLeadSeconds(rate, this.browserEngine) * rate;
+    for (const beat of this.state.take(this.beats, audible, rate, HORIZON_SECONDS)) {
       if (beat.generation !== generation) continue;
       this.click(context, context.currentTime + beat.wallDelay);
     }
