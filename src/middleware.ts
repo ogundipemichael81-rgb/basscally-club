@@ -23,10 +23,6 @@ function isAuthedApiPath(pathname: string) {
   return pathname.startsWith("/api/content/");
 }
 
-function isPausedDownloadPath(pathname: string) {
-  return pathname.startsWith("/api/content/") && pathname.endsWith("/download");
-}
-
 function isAdminApiPath(pathname: string) {
   return pathname.startsWith("/api/admin");
 }
@@ -135,7 +131,7 @@ export async function middleware(request: NextRequest) {
   const needsMemberAuth =
     isMemberPath(pathname) ||
     isAdminPath(pathname) ||
-    (isAuthedApiPath(pathname) && !isPausedDownloadPath(pathname)) ||
+    isAuthedApiPath(pathname) ||
     isAdminApiPath(pathname);
 
   if (!needsMemberAuth) {
@@ -158,6 +154,9 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     if (isAdminApiPath(pathname)) {
       return NextResponse.json({ error: "Admin access required." }, { status: 401 });
+    }
+    if (isAuthedApiPath(pathname)) {
+      return NextResponse.json({ error: "Sign in required." }, { status: 401 });
     }
     if (pathname.startsWith("/c/")) {
       const segments = pathname.split("/").filter(Boolean);

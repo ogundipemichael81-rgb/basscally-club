@@ -5,6 +5,7 @@ import {
   DOWNLOAD_RATE_LIMIT_PER_HOUR,
   SIGNED_URL_EXPIRY_SECONDS,
 } from "@/lib/constants";
+import { downloadFilename, sniffAudioExtension } from "@/lib/downloads/download-filename";
 import { storageObjectPath } from "@/lib/storage/audio-path";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMemberSession } from "@/lib/subscriptions/member-session";
@@ -44,7 +45,7 @@ export async function createGuardedDownloadUrl(
 
   const { data: content, error: contentError } = await admin
     .from("content")
-    .select("id, status, audio_storage_key")
+    .select("id, title, status, audio_storage_key")
     .eq("id", contentId)
     .maybeSingle();
 
@@ -80,9 +81,14 @@ export async function createGuardedDownloadUrl(
     AUDIO_STORAGE_BUCKET,
   );
 
+  // Name the saved file by what the audio really is: several drops are WAV data
+  // stored under an .mp3 name, which some players refuse to open.
+  const extension = await detectAudioExtension(admin, objectPath);
   const { data: signed, error: signError } = await admin.storage
     .from(AUDIO_STORAGE_BUCKET)
-    .createSignedUrl(objectPath, SIGNED_URL_EXPIRY_SECONDS);
+    .createSignedUrl(objectPath, SIGNED_URL_EXPIRY_SECONDS, {
+      download: downloadFilename(content.title, extension),
+    });
 
   if (signError || !signed?.signedUrl) {
     return {
@@ -102,4 +108,21 @@ export async function createGuardedDownloadUrl(
     signedUrl: signed.signedUrl,
     expiresIn: SIGNED_URL_EXPIRY_SECONDS,
   };
+}
+
+async function detectAudioExtension(
+  admin: ReturnType<typeof createAdminClient>,
+  objectPath: string,
+): Promise<string> {
+  try {
+    const { data } = await admin.storage
+      .from(AUDIO_STORAGE_BUCKET)
+      .createSignedUrl(objectPath, 60);
+    if (!data?.signedUrl) return sniffAudioExtension(new Uint8Array(), objectPath);
+    const res = await fetch(data.signedUrl, { headers: { Range: "bytes=0-15" }, cache: "no-store" });
+    const head = new Uint8Array(await res.arrayBuffer()).slice(0, 16);
+    return sniffAudioExtension(res.ok ? head : new Uint8Array(), objectPath);
+  } catch {
+    return sniffAudioExtension(new Uint8Array(), objectPath);
+  }
 }

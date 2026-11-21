@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
+import { createGuardedDownloadUrl } from "@/lib/downloads/guarded-download";
 
 export const runtime = "nodejs";
 
+type Props = { params: Promise<{ id: string }> };
+
 /**
- * Downloads are deliberately paused for launch. The guarded implementation is
- * retained in src/lib/downloads/guarded-download.ts for later re-enablement.
+ * Gated download: signed-in member, published drop, hourly limit, then a short-lived
+ * signed Storage URL that saves the file under the drop's name.
  */
-export function GET() {
+export async function GET(_request: Request, { params }: Props) {
+  const { id } = await params;
+  const result = await createGuardedDownloadUrl(id);
+
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.status });
+  }
+
   return NextResponse.json(
-    { error: "Downloads are temporarily unavailable." },
-    { status: 503 },
+    { url: result.signedUrl, expiresIn: result.expiresIn },
+    { headers: { "Cache-Control": "no-store" } },
   );
 }
