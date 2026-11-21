@@ -5,7 +5,7 @@ import { WhatsAppCommunityCard } from "@/components/community/whatsapp-community
 import { Button } from "@/components/ui/button";
 import { trackAnalyticsEvent } from "@/lib/analytics/client-events";
 import type { PracticeTrack } from "@/lib/content/queries";
-import { parseBeatMap, type BeatMap } from "@/lib/metronome/beat-schedule";
+import { loadBeatMap, type BeatMap } from "@/lib/metronome/beat-schedule";
 import { MetronomeEngine } from "@/lib/metronome/metronome-engine";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -50,14 +50,13 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
   const stopPlayback = useCallback(() => audioRef.current?.pause(), []);
   useEffect(() => () => stopPlayback(), [stopPlayback]);
 
-  // Beat maps ship as static files; a drop without one simply has no metronome.
+  // Beat maps come from the automatic builder (storage), else ship with the app; a drop
+  // without a verified map simply has no metronome.
   useEffect(() => {
     let cancelled = false;
-    fetch(`/beat-maps/${contentId}.json`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json) => {
+    loadBeatMap(contentId, process.env.NEXT_PUBLIC_SUPABASE_URL, (url) => fetch(url))
+      .then((map) => {
         if (cancelled) return;
-        const map = parseBeatMap(json, contentId);
         setBeatMap(map);
         metronomeRef.current = map ? new MetronomeEngine(map.beats) : null;
       })

@@ -1,0 +1,7 @@
+# Install CPU torch first: pip install --index-url https://download.pytorch.org/whl/cpu torch==2.7.1 torchaudio==2.7.1
+beat-this==1.1.0
+numpy==2.2.6
+soundfile==0.13.1
+soxr==1.1.0
+einops==0.8.2
+rotary-embedding-torch==0.9.1

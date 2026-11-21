@@ -3,6 +3,7 @@ import path from "node:path";
 import {
   BeatScheduleState,
   firstBeatIndexAtOrAfter,
+  loadBeatMap,
   parseBeatMap,
   stretchLeadSeconds,
   upcomingBeats,
@@ -61,6 +62,23 @@ assert(parseBeatMap({ ...good, beats: [1, 0.5, 2, 3, 4, 5, 6, 7] }, "abc") === n
 assert(parseBeatMap({ ...good, beats: [0.5, 1] }, "abc") === null, "too-short map rejected");
 assert(parseBeatMap({ ...good, beats: [...beats.slice(0, 8), Number.NaN] }, "abc") === null, "non-finite rejected");
 assert(parseBeatMap(null, "abc") === null, "missing map rejected");
+
+// Map loading: storage record is final (even "no metronome"); static map only when storage has none.
+const SUPA = "https://example.supabase.co";
+const storageUrl = `${SUPA}/storage/v1/object/public/beat-maps/abc.json`;
+const fakeFetch = (routes) => async (url) => {
+  const route = routes[url];
+  if (route === "throw") throw new Error("offline");
+  return route ? { ok: true, status: 200, json: async () => route } : { ok: false, status: 400, json: async () => ({}) };
+};
+const staticMap = { ...good, version: "static" };
+const storedMap = { ...good, version: "stored" };
+assert((await loadBeatMap("abc", SUPA, fakeFetch({ [storageUrl]: storedMap, "/beat-maps/abc.json": staticMap })))?.version === "stored", "storage map preferred");
+assert((await loadBeatMap("abc", SUPA, fakeFetch({ "/beat-maps/abc.json": staticMap })))?.version === "static", "falls back to shipped map when storage has none");
+assert((await loadBeatMap("abc", SUPA, fakeFetch({ [storageUrl]: "throw", "/beat-maps/abc.json": staticMap })))?.version === "static", "falls back when storage unreachable");
+assert((await loadBeatMap("abc", SUPA, fakeFetch({ [storageUrl]: { contentId: "abc", status: "unverified", beats: [] }, "/beat-maps/abc.json": staticMap }))) === null, "unverified storage record means no metronome, no fallback");
+assert((await loadBeatMap("abc", undefined, fakeFetch({ "/beat-maps/abc.json": staticMap })))?.version === "static", "works without Supabase URL");
+assert((await loadBeatMap("abc", SUPA, fakeFetch({}))) === null, "no map anywhere means no metronome");
 
 // Every shipped beat map must parse for the drop it is named after.
 const dir = path.join(process.cwd(), "public", "beat-maps");

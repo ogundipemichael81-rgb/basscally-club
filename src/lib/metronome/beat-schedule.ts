@@ -101,3 +101,28 @@ export function parseBeatMap(value: unknown, contentId: string): BeatMap | null 
     beats,
   };
 }
+
+type FetchLike = (url: string) => Promise<{ ok: boolean; status: number; json: () => Promise<unknown> }>;
+
+/**
+ * Maps built automatically live in the public `beat-maps` storage bucket. A record there
+ * is final, including one that says "no metronome" (unverified audio). Only when storage
+ * has no record (or cannot be reached) does the player fall back to a map shipped with
+ * the app in /beat-maps.
+ */
+export async function loadBeatMap(contentId: string, supabaseUrl: string | undefined, fetchImpl: FetchLike): Promise<BeatMap | null> {
+  if (supabaseUrl) {
+    try {
+      const res = await fetchImpl(`${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/beat-maps/${encodeURIComponent(contentId)}.json`);
+      if (res.ok) return parseBeatMap(await res.json(), contentId);
+    } catch {
+      // Storage unreachable: use the shipped map below.
+    }
+  }
+  try {
+    const res = await fetchImpl(`/beat-maps/${encodeURIComponent(contentId)}.json`);
+    return res.ok ? parseBeatMap(await res.json(), contentId) : null;
+  } catch {
+    return null;
+  }
+}

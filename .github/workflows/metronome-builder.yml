@@ -1,0 +1,113 @@
+name: Metronome builder
+
+# Builds a verified metronome map for each new or replaced drop and publishes it to the
+# Supabase `beat-maps` bucket. See tools/metronome-builder/README.md.
+# This repository is public, so its logs are public: the builder never prints secrets or
+# signed URLs, and audio is never uploaded as an artifact.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "One content id (optional)"
+        required: false
+        default: ""
+      force:
+        description: "Rebuild even if the map is current"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Analyse and report only, publish nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: metronome-builder
+  cancel-in-progress: false
+
+env:
+  SUPABASE_URL: https://jekavejbfujhxmtryyob.supabase.co
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      has_work: ${{ steps.plan.outputs.has_work }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: plan
+        working-directory: tools/metronome-builder
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ONLY: ${{ inputs.only }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          args=(plan)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          python builder.py "${args[@]}"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.has_work == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/metronome-builder/requirements.txt
+      - name: Install pinned analyser
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.7.1 torchaudio==2.7.1
+          pip install -r tools/metronome-builder/requirements.txt
+      - name: Restore verified model checkpoint
+        id: ckpt
+        uses: actions/cache@v4
+        with:
+          path: ~/beat-this-final0.ckpt
+          key: beat-this-final0-8c328b45f59d8dd3dff219253ff6a8d6482be57d0133a29140e2febbf8eb8331
+      - name: Download model checkpoint (verified by size and SHA-256)
+        if: steps.ckpt.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          want=8c328b45f59d8dd3dff219253ff6a8d6482be57d0133a29140e2febbf8eb8331
+          for url in \
+            "https://cloud.cp.jku.at/public.php/dav/files/7ik4RrBKTS273gp/final0.ckpt" \
+            "https://huggingface.co/AEmotionStudio/muscriptor-models/resolve/main/shared/beat_this_final0.ckpt?download=true"; do
+            rm -f /tmp/final0.ckpt
+            curl --fail --location --silent --show-error --max-time 300 --output /tmp/final0.ckpt "$url" || continue
+            if [ "$(stat -c %s /tmp/final0.ckpt)" = "81058141" ] && [ "$(sha256sum /tmp/final0.ckpt | cut -d' ' -f1)" = "$want" ]; then
+              mv /tmp/final0.ckpt ~/beat-this-final0.ckpt; exit 0
+            fi
+            echo "checkpoint from a source did not verify; trying the next"
+          done
+          echo "No verified checkpoint available"; exit 1
+      - name: Unit tests
+        working-directory: tools/metronome-builder
+        run: python -m unittest test_builder test_beat_alignment test_beat_regularizer
+      - name: Build and publish maps
+        working-directory: tools/metronome-builder
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          METRONOME_CHECKPOINT: /home/runner/beat-this-final0.ckpt
+          ONLY: ${{ inputs.only }}
+          FORCE: ${{ inputs.force }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=(build)
+          if [ -n "$ONLY" ]; then args+=(--only "$ONLY"); fi
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          python builder.py "${args[@]}"
