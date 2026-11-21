@@ -27,7 +27,8 @@
     "test:trial-media-access": "node scripts/test-trial-media-access.mjs",
     "test:download-pause": "node scripts/test-download-pause.mjs",
     "test:free-access": "node scripts/test-free-access.mjs",
-    "test:whatsapp-community-loop": "node scripts/test-whatsapp-community-loop.mjs"
+    "test:whatsapp-community-loop": "node scripts/test-whatsapp-community-loop.mjs",
+    "test:metronome-schedule": "node --experimental-strip-types scripts/test-metronome-schedule.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

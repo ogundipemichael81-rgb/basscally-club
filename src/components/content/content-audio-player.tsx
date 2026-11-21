@@ -5,6 +5,8 @@ import { WhatsAppCommunityCard } from "@/components/community/whatsapp-community
 import { Button } from "@/components/ui/button";
 import { trackAnalyticsEvent } from "@/lib/analytics/client-events";
 import type { PracticeTrack } from "@/lib/content/queries";
+import { parseBeatMap, type BeatMap } from "@/lib/metronome/beat-schedule";
+import { MetronomeEngine } from "@/lib/metronome/metronome-engine";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -41,9 +43,31 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [speed, setSpeed] = useState<(typeof SPEEDS)[number]>(1);
   const [practiceComplete, setPracticeComplete] = useState(false);
+  const [beatMap, setBeatMap] = useState<BeatMap | null>(null);
+  const [metronomeOn, setMetronomeOn] = useState(false);
+  const metronomeRef = useRef<MetronomeEngine | null>(null);
 
   const stopPlayback = useCallback(() => audioRef.current?.pause(), []);
   useEffect(() => () => stopPlayback(), [stopPlayback]);
+
+  // Beat maps ship as static files; a drop without one simply has no metronome.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/beat-maps/${contentId}.json`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (cancelled) return;
+        const map = parseBeatMap(json, contentId);
+        setBeatMap(map);
+        metronomeRef.current = map ? new MetronomeEngine(map.beats) : null;
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+      metronomeRef.current?.dispose();
+      metronomeRef.current = null;
+    };
+  }, [contentId]);
 
   const attachAudio = useCallback((audio: HTMLAudioElement) => {
     audio.ontimeupdate = () => setCurrentTime(audio.currentTime);
@@ -65,7 +89,10 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
     const json = (await res.json().catch(() => ({}))) as { error?: string; url?: string };
     if (!res.ok || !json.url) throw new Error(json.error || "Could not load audio.");
     stopPlayback();
-    const audio = new Audio(json.url);
+    const audio = new Audio();
+    // CORS mode lets the metronome route this audio through its AudioContext.
+    if (metronomeRef.current) audio.crossOrigin = "anonymous";
+    audio.src = json.url;
     applyPlaybackSpeed(audio, speed);
     attachAudio(audio);
     audioRef.current = audio;
@@ -91,6 +118,7 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
         }
         setPracticeComplete(false);
       }
+      if (metronomeOn && metronomeRef.current) await metronomeRef.current.attach(audio);
       await audio.play();
       setState("playing");
       trackAnalyticsEvent(state === "paused" ? "practice_resumed" : "practice_started", { contentId, speed });
@@ -124,6 +152,22 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
     trackAnalyticsEvent(`practice_speed_${String(nextSpeed).replace(".", "")}`, { contentId });
   };
 
+  const toggleMetronome = async () => {
+    const engine = metronomeRef.current;
+    if (!engine) return;
+    const nextOn = !metronomeOn;
+    setMetronomeOn(nextOn);
+    trackAnalyticsEvent(nextOn ? "metronome_on" : "metronome_off", { contentId });
+    try {
+      if (nextOn && audioRef.current) await engine.attach(audioRef.current);
+      engine.setEnabled(nextOn);
+    } catch (err) {
+      engine.setEnabled(false);
+      setMetronomeOn(false);
+      setError(err instanceof Error ? err.message : "Could not start the metronome.");
+    }
+  };
+
   const currentIndex = practiceSequence.findIndex((track) => track.id === contentId);
   const previous = currentIndex > 0 ? practiceSequence[currentIndex - 1] : undefined;
   const next = currentIndex >= 0 ? practiceSequence[currentIndex + 1] : undefined;
@@ -147,6 +191,14 @@ export function ContentAudioPlayer({ contentId, title, practiceSequence = [], cl
       <div className="mt-5 flex flex-wrap gap-2" aria-label="Practice navigation"><Button type="button" variant="secondary" size="sm" disabled={!sourceLoaded} onClick={() => skip(-10)}>Back 10s</Button><Button type="button" variant="secondary" size="sm" disabled={!sourceLoaded} onClick={() => skip(10)}>Forward 10s</Button><Button type="button" variant="ghost" size="sm" disabled={!previous} onClick={() => previous && goToTrack(previous, "previous_track_clicked")}>Previous</Button><Button type="button" variant="ghost" size="sm" disabled={!next} onClick={() => next && goToTrack(next, "next_track_clicked")}>Next</Button></div>
 
       <fieldset className="mt-5"><legend className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">Speed — pitch preserved</legend><div className="mt-2 flex flex-wrap gap-2">{SPEEDS.map((option) => <Button key={option} type="button" variant={speed === option ? "primary" : "secondary"} size="sm" onClick={() => changeSpeed(option)} aria-pressed={speed === option}>{option}×</Button>)}</div></fieldset>
+      {beatMap ? (
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Button type="button" variant={metronomeOn ? "primary" : "secondary"} size="sm" onClick={toggleMetronome} aria-pressed={metronomeOn}>
+            {metronomeOn ? "Metronome on" : "Metronome off"}
+          </Button>
+          <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">Beta · follows the track · turn off if it sounds off-beat</p>
+        </div>
+      ) : null}
       {error ? <p className="mt-3 text-sm text-[var(--color-danger)]" role="alert">{error}</p> : null}
       {practiceComplete ? (
         <WhatsAppCommunityCard placement="practice_complete" variant="practice" className="mt-6" />
